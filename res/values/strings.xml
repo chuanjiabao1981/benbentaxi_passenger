@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">奔奔打车</string>
@@ -11,25 +12,27 @@
     <string name="menu_settings">设置</string>
     <string name="title_activity_navi_demo">导航</string>
     <string name="title_activity_main">一键打车</string>
-    
     <string name="call_taxi">一键打车</string>
     <string name="recall_taxi">重新打车</string>
-    
     <string name="record_play">录音/播放</string>
     <string name="rec_info">按下录音，释放后发送请求</string>
     <string name="play_info">点击播放</string>
-    
     <string name="rec_ing">录音中</string>
     <string name="rec_short">录音时间太短，请重录</string>
     <string name="rec_send">正在发送</string>
     <string name="rec_retry">正在为您定位，请稍后再试</string>
-    
     <string name="confirm_ok">确认</string>
     <string name="confirm_cancel">取消</string>
     <string name="detail_title">详细信息</string>
-    
-	<color name="blue">#1b75ab</color>
-	<color name="red">#ff0000</color>
-	<color name="gray">#5f5f5f</color>
-	<color name="black">#000000</color>
+
+    <color name="blue">#1b75ab</color>
+    <color name="red">#ff0000</color>
+    <color name="gray">#5f5f5f</color>
+    <color name="black">#000000</color>
+
+    <string name="passenger_register">乘客注册</string>
+    <string name="password_confirm">密码确认</string>
+    <string name="prompt_password_confirm">确认密码</string>
+    <string name="title_activity_register">RegisterActivity</string>
+
 </resources>
