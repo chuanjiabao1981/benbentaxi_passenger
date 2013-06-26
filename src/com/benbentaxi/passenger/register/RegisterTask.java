@@ -1,8 +1,13 @@
 package com.benbentaxi.passenger.register;
 
+import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.benbentaxi.common.Configure;
+import com.benbentaxi.passenger.demo.LocationOverlayDemo;
+import com.benbentaxi.passenger.v1.LoginActivity;
+import com.benbentaxi.passenger.v1.function.DataPreference;
 import com.benbentaxi.passenger.v1.function.GetInfoTask;
 
 public class RegisterTask extends GetInfoTask{
@@ -37,9 +42,19 @@ public class RegisterTask extends GetInfoTask{
 		RegisterResponse registerResponse = new RegisterResponse(mRegisterForm,this.getResult());
 		this.mRegisterForm.showProgress(false);
 		if (registerResponse.hasError()){
-			
+			//do nothing
 		}else{
+			registerResponse.parser();
+			//TODO：这里应该用application 存数据
+			DataPreference mData = this.mRegisterForm.getDataPreference();
+			mData.SaveData(RegisterApiConstant.TOKEN_KEY, registerResponse.getTokenKey());
+			mData.SaveData(RegisterApiConstant.TOKEN_VALUE, registerResponse.getTokenVal());
+			mData.SaveData("useragent",  mConfigure.getEquipmentId());
+			//this.mRegisterForm.getActivity().
+			//Toast.makeText(this.mRegisterForm.getActivity().getApplicationContext(), mData., duration)
+			Intent locationOverlayIntent = new Intent(this.mRegisterForm.getActivity(),LocationOverlayDemo.class);
 			
+			this.mRegisterForm.getActivity().startActivity(locationOverlayIntent);
 		}
 	}
 	protected void initPostValues() {

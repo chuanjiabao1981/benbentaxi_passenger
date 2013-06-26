@@ -6,4 +6,8 @@ public class Configure {
 	{
 		return "42.121.55.211:8081";
 	}
+	public String getEquipmentId()
+	{
+		return "xxxxxxxx";
+	}
 }

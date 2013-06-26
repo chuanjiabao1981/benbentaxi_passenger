@@ -93,7 +93,7 @@
                android:orientation="vertical" >
 
                <EditText
-                   android:id="@+id/mobile"
+                   android:id="@+id/register_mobile"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:ems="10"
@@ -106,7 +106,7 @@
                </EditText>
 
                <EditText
-                   android:id="@+id/name"
+                   android:id="@+id/register_name"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:hint="@string/prompt_name"
@@ -115,7 +115,7 @@
                    android:singleLine="true" />
 
                <EditText
-                   android:id="@+id/password"
+                   android:id="@+id/register_password"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:hint="@string/prompt_password"
@@ -127,7 +127,7 @@
                    android:singleLine="true" />
 
                <EditText
-                   android:id="@+id/password_confirm"
+                   android:id="@+id/register_password_confirm"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:ems="10"

@@ -3,6 +3,8 @@ package com.benbentaxi.common.api;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.benbentaxi.passenger.v1.function.DataPreference;
+
 
 
 import android.animation.Animator;
@@ -53,6 +55,16 @@ public abstract class ViewForm {
 		e.setError(erromsg);
 		e.requestFocus();
 	}
+	@Deprecated
+	public DataPreference getDataPreference()
+	{
+		return new DataPreference(this.mActivity.getApplicationContext());
+	}
+	public Activity getActivity()
+	{
+		return this.mActivity;
+	}
+		
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public void showProgress(final boolean show) {
 		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow

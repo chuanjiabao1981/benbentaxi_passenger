@@ -1,6 +1,5 @@
 package com.benbentaxi.passenger.v1;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -16,22 +15,17 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -265,11 +259,6 @@ public class LoginActivity extends Activity {
 				showProgress(true);
 				mAuthTask = new UserLoginTask();
 				mAuthTask.doLogin(mEmail, mPassword, mTestHost, mEquipmentId.getId(), usertype);
-			} else if ( type == UserLoginTask.LOGINTYPE_CREATE ) {
-				mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
-				showProgress(true);
-				mAuthTask = new UserLoginTask();
-				mAuthTask.doCreate(mEmail, mPassword, mTestHost, mEquipmentId.getId(), usertype);
 			}
 		}
 	}
@@ -285,15 +274,12 @@ public class LoginActivity extends Activity {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 			int shortAnimTime = getResources().getInteger(
 					android.R.integer.config_shortAnimTime);
-			Log.e("*****************",""+shortAnimTime+"\t"+Thread.currentThread().getId());
 			mLoginStatusView.setVisibility(View.VISIBLE);
 			mLoginStatusView.animate().setDuration(shortAnimTime)
 					.alpha(show ? 1 : 0)
 					.setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {
-							Log.e("xxxxxxx","1.dddddddddd"+show);
-
 							mLoginStatusView.setVisibility(show ? View.VISIBLE
 									: View.GONE);
 						}
@@ -305,13 +291,11 @@ public class LoginActivity extends Activity {
 					.setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {
-							Log.e("xxxxxxx","2.dddddddddd"+show);
 
 							mLoginFormView.setVisibility(show ? View.GONE
 									: View.VISIBLE);
 						}
 					});
-			Log.e("xxxxxxx","dddddddddd"+show);
 		} else {
 			// The ViewPropertyAnimator APIs are not available, so simply show
 			// and hide the relevant UI components.
@@ -326,7 +310,7 @@ public class LoginActivity extends Activity {
 	 */
 	private class UserLoginTask extends GetInfoTask {
 		public static final int LOGINTYPE_LOGIN = 0;
-		public static final int LOGINTYPE_CREATE = 1;
+		//public static final int LOGINTYPE_CREATE = 1;
 		//private final static String _url = "http://peterwolf.cn.mu/zone_supervisor/sessions.json";
 		//private final static String _url = "http://v2.365check.net/api/v1/sessions";
 		//private final static String _testagent = "351554052661692@460018882023767@0.14@android42";
@@ -358,26 +342,7 @@ public class LoginActivity extends Activity {
 			execute(url, _useragent, GetInfoTask.TYPE_POST);
 		}
 		
-		public void doCreate(String name, String pass, String host, String ua, String type) {
-			_type = LOGINTYPE_CREATE;
-			_useragent = ua;
-			
-			initHeaders("Content-Type", "application/json");
-			_json_data = new JSONObject();
-			try {
-				//{"session":{"account":"sh_0000","password":"8"}}
-				JSONObject sess = new JSONObject();
-				sess.put("mobile", name);
-				sess.put("password", pass);
-				sess.put("password_confirmation", pass);
-				_json_data.put("user", sess);
-			} catch (JSONException e) {
-				//_info.append("form json error: "+e.toString());
-			}
-
-			String url =  "http://"+host+"/api/v1/users/create_"+type;
-			execute(url, _useragent, GetInfoTask.TYPE_POST);
-		}
+		
 		
 		@Override
 		protected void initPostValues() {
