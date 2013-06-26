@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources><string name="prompt_mobile">手机</string>
+<string name="prompt_name">姓名</string>
+<string name="action_register">注册</string>
+<string name="register">注册</string>
+<string name="goback">返回</string>
+    
+</resources>
