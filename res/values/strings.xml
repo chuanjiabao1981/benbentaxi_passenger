@@ -35,5 +35,8 @@
     <string name="prompt_password_confirm">确认密码</string>
     <string name="title_activity_register">RegisterActivity</string>
     <string name="title_activity_taxi_request_detail">TaxiRequestDetail</string>
+    <color name="taxi_request_detail_item_divide">#535353</color>
+    <color name="taxi_request_detail_item_title">#3c91aa</color>
+    <color name="taxi_request_detail_item_content">#ffffff</color>
 
 </resources>

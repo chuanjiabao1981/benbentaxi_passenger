@@ -1,6 +1,8 @@
 ﻿package com.benbentaxi.passenger.demo;
 
 
+import org.json.JSONObject;
+
 import android.app.Application;
 import android.content.Context;
 import android.widget.Toast;
@@ -14,7 +16,8 @@ import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 public class DemoApplication extends Application {
 	
     private static DemoApplication mInstance = null;
-    private static TaxiRequest mCurrentShowTaxiRequest = null;
+    private static TaxiRequest CurrentShowTaxiRequest = null;
+    private static TaxiRequest CurrentTaxiRequest = null;
     public boolean m_bKeyRight = true;
     BMapManager mBMapManager = null;
 
@@ -80,14 +83,22 @@ public class DemoApplication extends Application {
             }
         }
     }
-
+    
+    public static TaxiRequest getCurrentTaxiRequest(JSONObject o)
+    {
+    	if (CurrentTaxiRequest == null){
+    			CurrentTaxiRequest = new TaxiRequest(o);
+    	}
+    	return CurrentTaxiRequest;
+    	
+    }
 
     public static void setCurrentShowTaxiRequest(TaxiRequest t)
     {
-    	mCurrentShowTaxiRequest = t;
+    	CurrentShowTaxiRequest = t;
     }
     public static TaxiRequest getCurrentShowTaxiRequest()
     {
-    	return mCurrentShowTaxiRequest;
+    	return CurrentShowTaxiRequest;
     }
 }

@@ -439,51 +439,10 @@ public class LocationOverlayDemo extends Activity {
         	}
         } else if ( mReqId > 0 && mStatus != null && mStatus.equals(STAT_PASSENGER_CONFIRM) ) {
         	if ( mShowDialogStat == 0 ) {
-        		String[] info = new String[5];
-        		final DecimalFormat df = new DecimalFormat("#.##");
-	        	try {
-	        		info[1] = mConfirmObj.getString("driver_mobile");
-	        		info[0] = "ID"+mConfirmObj.getInt("id");
-	        		info[3] = df.format(mConfirmObj.getDouble("driver_lat"))+"/"+df.format(mConfirmObj.getDouble("driver_lng"));
-	        		info[2] = "晋C 68812";
-	        		info[4] = "天翼出租公司";
-	        	} catch (JSONException e) {
-	        		info[0] = "未知";
-	        		info[1] = "未知";
-	        		info[2] = "未知";
-	        		info[3] = "未知";
-	        		info[4] = "未知";
-	        	}
-	        	/*
-	        	ListShow showinfo = new ListShow(info, this);
-	        	
-	    		Log.e("KKK444444444444", "**************");
-
-	        	View.OnClickListener doOK = new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						mStatus = STAT_SUCCESS;
-						mShowDialogStat = 0;
-						
-						//指定你要拨打的号码
-						String mobile;
-						try {
-			        		mobile = mConfirmObj.getString("driver_mobile");
-			        	} catch (JSONException e) {
-			        		mobile = "";
-			        	}
-					    Uri uri = Uri.parse("tel:"+mobile);
-					    Intent incall = new Intent(Intent.ACTION_DIAL, uri);
-					    LocationOverlayDemo.this.startActivity(incall);
-					}
-	        	};
-	        	
-	        	showinfo.SetPositiveOnclick("电话司机", doOK);
-	        	showinfo.show();
-	        	ssss = showinfo;*/
+	            DemoApplication app = (DemoApplication)getApplicationContext();
+	            app.setCurrentShowTaxiRequest(app.getCurrentTaxiRequest(mConfirmObj));
 				Intent taxiRequestDetailIntent = new Intent(LocationOverlayDemo.this,TaxiRequestDetail.class);
 	        	LocationOverlayDemo.this.startActivity(taxiRequestDetailIntent);
-
 	        	mShowDialogStat = 1;
         	}
         } else if ( mReqId > 0 ) {

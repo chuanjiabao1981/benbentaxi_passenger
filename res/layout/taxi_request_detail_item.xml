@@ -3,38 +3,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/taxi_request_detail_item_divide" />
+
 	<ImageView android:id="@+id/taxi_request_detail_item_icon" 
  			   android:scaleType="fitXY" 
  			   android:layout_width="64dp" 
  			   android:layout_height="64dp"
  			   android:padding="8dp" 	
 	/>
-   	<View android:layout_width="1dp"
-   	      android:layout_height="match_parent"
-   	      android:background="#535353"
-   	/>
+
+   	<View
+   	    android:layout_width="1dp"
+   	    android:layout_height="match_parent"
+   	    android:background="@color/taxi_request_detail_item_divide" />
+
     <LinearLayout 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    	<TextView   
-			android:id="@+id/taxi_request_detail_item_title"  
-			android:layout_width="match_parent"  
-			android:layout_height="wrap_content"  
-			android:textColor="#3c91aa"
-			android:textSize="16sp"
-			android:textStyle="bold"  
-			android:paddingLeft="10dp"
-			android:layout_weight="1"  
-		/> 
-		<TextView   
-			android:id="@+id/tqxi_request_detail_item_content"  
-			android:layout_width="match_parent"  
-			android:layout_height="wrap_content" 
-			android:textColor="#ffffff" 
-			android:textStyle="bold|italic"  
-			android:paddingLeft="10dp"
-			android:layout_weight="1"  
-		/> 
+
+    	<TextView
+    	    android:id="@+id/taxi_request_detail_item_title"
+    	    android:layout_width="match_parent"
+    	    android:layout_height="wrap_content"
+    	    android:layout_weight="1"
+    	    android:paddingLeft="10dp"
+    	    android:textColor="@color/taxi_request_detail_item_title"
+    	    android:textSize="16sp"
+    	    android:textStyle="bold" />
+ 
+		<TextView
+		    android:id="@+id/tqxi_request_detail_item_content"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    android:paddingLeft="10dp"
+		    android:textColor="@color/taxi_request_detail_item_content"
+		    android:textStyle="bold|italic" />
+ 
     </LinearLayout>
 </LinearLayout>

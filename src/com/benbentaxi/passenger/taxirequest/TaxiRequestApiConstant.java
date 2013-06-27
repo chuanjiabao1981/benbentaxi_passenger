@@ -11,6 +11,8 @@ public class TaxiRequestApiConstant {
 	public final static String DRIVER_LNG		= "driver_lng";
 	public final static String PASSENGER_LAT	= "passenger_lat";
 	public final static String PASSENGER_LNG	= "passenger_lng";
+	public final static String PLATE		 	= "plate";
+	public final static String DISTANCE			= "distance";
 	public final static String STATE			= "state";
 	
 	public static Map<String,TaxiRequestState>  _s = null;
