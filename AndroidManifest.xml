@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.benbentaxi.passenger"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.benbentaxi.passenger"
     android:versionCode="1"
-    android:versionName="1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    android:versionName="1.0" >
 
     <uses-sdk
         android:minSdkVersion="7"
@@ -71,8 +72,10 @@
         android:theme="@android:style/Theme.NoTitleBar" >
         <activity
             android:name="com.benbentaxi.passenger.v1.LoginActivity"
+            android:excludeFromRecents="false"
             android:label="benbenTaxi"
-            android:windowSoftInputMode="stateAlwaysHidden" android:noHistory="true" android:excludeFromRecents="true">
+            android:noHistory="true"
+            android:windowSoftInputMode="stateAlwaysHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -107,7 +110,13 @@
         </activity>
         <activity
             android:name="com.benbentaxi.passenger.register.RegisterActivity"
-            android:label="@string/title_activity_register" android:noHistory="true" android:excludeFromRecents="true">
+            android:excludeFromRecents="true"
+            android:label="@string/title_activity_register"
+            android:noHistory="true" >
+        </activity>
+        <activity
+            android:name="com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail"
+            android:label="@string/title_activity_taxi_request_detail" >
         </activity>
     </application>
 

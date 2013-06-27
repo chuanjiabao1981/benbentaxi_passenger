@@ -8,11 +8,13 @@ import android.widget.Toast;
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.MKGeneralListener;
 import com.baidu.mapapi.map.MKEvent;
+import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 
 
 public class DemoApplication extends Application {
 	
     private static DemoApplication mInstance = null;
+    private static TaxiRequest mCurrentShowTaxiRequest = null;
     public boolean m_bKeyRight = true;
     BMapManager mBMapManager = null;
 
@@ -77,5 +79,15 @@ public class DemoApplication extends Application {
                 DemoApplication.getInstance().m_bKeyRight = false;
             }
         }
+    }
+
+
+    public static void setCurrentShowTaxiRequest(TaxiRequest t)
+    {
+    	mCurrentShowTaxiRequest = t;
+    }
+    public static TaxiRequest getCurrentShowTaxiRequest()
+    {
+    	return mCurrentShowTaxiRequest;
     }
 }

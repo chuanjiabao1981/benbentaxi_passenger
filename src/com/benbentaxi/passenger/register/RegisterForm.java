@@ -4,7 +4,6 @@ package com.benbentaxi.passenger.register;
 import com.benbentaxi.common.ApiConstant;
 import com.benbentaxi.common.api.ViewForm;
 import com.benbentaxi.passenger.R;
-import com.benbentaxi.passenger.v1.function.DataPreference;
 
 import android.app.Activity;
 import android.view.View;

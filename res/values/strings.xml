@@ -34,5 +34,6 @@
     <string name="password_confirm">密码确认</string>
     <string name="prompt_password_confirm">确认密码</string>
     <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_taxi_request_detail">TaxiRequestDetail</string>
 
 </resources>

@@ -4,6 +4,7 @@ import com.benbentaxi.passenger.R;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -40,10 +41,11 @@ public class ConfirmShow
 		mPosfunc = new View.OnClickListener() {		
 			@Override
 			public void onClick(View v) {
-				mf.onClick(v);
 				if ( mPop.isShowing() ) {
+					Log.e("ssdaadfasdfa","$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 					mPop.dismiss();
 				}
+				mf.onClick(v);
 			}
 		};
 	}

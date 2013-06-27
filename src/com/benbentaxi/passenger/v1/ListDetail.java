@@ -5,6 +5,7 @@ import com.benbentaxi.passenger.v1.function.CallAdapter;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;

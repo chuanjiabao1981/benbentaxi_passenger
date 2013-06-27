@@ -4,6 +4,7 @@ import com.benbentaxi.passenger.R;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -39,26 +40,32 @@ public class ListShow
 		mPosfunc = new View.OnClickListener() {		
 			@Override
 			public void onClick(View v) {
-				mf.onClick(v);
 				if ( mPop.isShowing() ) {
 					mPop.dismiss();
 				}
+				Log.e("dddddddddddddddd","xrrrr222xxxxxxxxxxxxxxxxxxxxxxxx");
+
+				mf.onClick(v);
 			}
 		};
 	}
-	
+	public void ppppp()
+	{
+		mPop.dismiss();
+	}
 	public void show()
 	{
 		mBtnPos.setText(tip_pos);
 		mBtnPos.setOnClickListener(mPosfunc);
 		
 		mPop.showAtLocation(mView, Gravity.CENTER, 0, 0);
+		
 	}
 	
 	private void init() {
 		mView = mAct.getLayoutInflater().inflate(R.layout.list_dialog, null);
     	mPop = new PopupWindow(mView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-
+    	
     	mList = (ListView)mView.findViewById(R.id.listView);
     	mBtnPos = (Button)mView.findViewById(R.id.btnListOk);
     	
@@ -69,8 +76,12 @@ public class ListShow
 			@Override
 			public void onClick(View v) {
 				if ( mPop.isShowing() ) {
+					Log.e("dddddddddd","xxxxxxxxxxxxxxxxxxxxxxxxx");
 					mPop.dismiss();
 				}
+				mPop.dismiss();
+				Log.e("dddddddddd","xxx@$%@#$%@#$%@$#%xxxxxxxxxxxxxxxxxxxxxx");
+
 			}
 		};
 	}

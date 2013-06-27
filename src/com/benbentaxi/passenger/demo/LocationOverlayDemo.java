@@ -25,6 +25,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -56,6 +57,7 @@ import com.baidu.mapapi.map.MyLocationOverlay;
 import com.baidu.mapapi.map.OverlayItem;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.benbentaxi.passenger.R;
+import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
 import com.benbentaxi.passenger.v1.function.ConfirmShow;
 import com.benbentaxi.passenger.v1.function.DataPreference;
 import com.benbentaxi.passenger.v1.function.GetInfoTask;
@@ -170,6 +172,8 @@ public class LocationOverlayDemo extends Activity {
 	
 	private static int mShowDialogStat = 0;
 	
+	private ListShow ssss =null;
+	
 	private OnClickListener mCallTaxiListener = new OnClickListener(){
 		public void onClick(View v) {
 			testUpdateClick();
@@ -193,6 +197,8 @@ public class LocationOverlayDemo extends Activity {
         mData = new DataPreference(this.getApplicationContext());
         mTokenKey = mData.LoadString("token_key");
         mTokenVal = mData.LoadString("token_value");
+        Log.d("xssssss",mTokenKey);
+        Log.d("xssssss",mTokenVal);
         mUserMobile = mData.LoadString("user");
         mIsDriver = mData.LoadBool("isdriver");
         
@@ -308,6 +314,9 @@ public class LocationOverlayDemo extends Activity {
             app.mBMapManager.destroy();
             app.mBMapManager = null;
         }
+        if (ssss != null){
+        	ssss.ppppp();
+        }
         super.onDestroy();
     }
     
@@ -388,13 +397,14 @@ public class LocationOverlayDemo extends Activity {
     	// 获取周边Taxi
         GetTaxiTask gtt = new GetTaxiTask();
         gtt.getTaxi(locData.longitude, locData.latitude);
-        
+
         if ( mReqId > 0 && mStatus != null && mStatus.equals(LocationOverlayDemo.STAT_WAITING_PAS_CONF) ) {
         // 确认司机请求，本次打车行为结束
         	if ( mShowDialogStat == 0 ) {
 	        	mShowDialogStat = 1;
 	        	
 				ConfirmShow confirm = new ConfirmShow("有司机响应，距离您约", mDistance+"公里", this);
+				Log.e("asdfasdfasdfasdfasdf", "232141234123412341234124121341");
 	        	View.OnClickListener doOK = new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -402,7 +412,11 @@ public class LocationOverlayDemo extends Activity {
 						mStatus = STAT_PASSENGER_TRY_CONFIRM;
 						mShowDialogStat = 0;
 	            		GetTaxiTask pass = new GetTaxiTask();
+	    				Log.e("asdfasdfasdfasdfasdf", "**************************");
+
 	            		pass.passengerResponse(mReqId, GetTaxiTask.PASS_CONFIRM);
+	    				Log.e("asdfasdfasdfasdfasdf", "111**************************");
+
 					}
 	        	};
 	        	
@@ -440,8 +454,11 @@ public class LocationOverlayDemo extends Activity {
 	        		info[3] = "未知";
 	        		info[4] = "未知";
 	        	}
-	        	
+	        	/*
 	        	ListShow showinfo = new ListShow(info, this);
+	        	
+	    		Log.e("KKK444444444444", "**************");
+
 	        	View.OnClickListener doOK = new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -463,6 +480,10 @@ public class LocationOverlayDemo extends Activity {
 	        	
 	        	showinfo.SetPositiveOnclick("电话司机", doOK);
 	        	showinfo.show();
+	        	ssss = showinfo;*/
+				Intent taxiRequestDetailIntent = new Intent(LocationOverlayDemo.this,TaxiRequestDetail.class);
+	        	LocationOverlayDemo.this.startActivity(taxiRequestDetailIntent);
+
 	        	mShowDialogStat = 1;
         	}
         } else if ( mReqId > 0 ) {
@@ -559,6 +580,7 @@ public class LocationOverlayDemo extends Activity {
 		}
 				
 		ListShow info = new ListShow(voiceUrl, this);
+		Log.e("444444444444", "**************");
     	View.OnClickListener doOK = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -582,6 +604,8 @@ public class LocationOverlayDemo extends Activity {
     	
     	info.SetPositiveOnclick("电话乘客", doOK);
     	info.show();
+		Log.e("555555555", "**************");
+
     }
 	
 	/**
@@ -705,8 +729,10 @@ public class LocationOverlayDemo extends Activity {
 			} catch (JSONException e) {
 				//_info.append("form json error: "+e.toString());
 			}
-			
+			Log.e("dddddd","xxxxxxxx111111");
 			doPOST(url);
+			Log.e("dddddd","xxxxxx****x111111");
+
 		}
 		
 		public void driverReport(double lng, double lat, double radius, String cootype) {
