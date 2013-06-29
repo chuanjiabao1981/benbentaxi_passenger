@@ -23,12 +23,12 @@ public class RegisterForm extends ViewForm{
 		addControl(RegisterApiConstant.NAME,R.id.register_name);
 	}
 	@Override
-	protected View getProgressStatusView() {
-		return this.findViewById(R.id.register_progress);
+	protected int getProgressStatusView() {
+		return R.id.register_progress;
 	}
 	@Override
-	protected View getFormView() {
-		return this.findViewById(R.id.register_form);
+	protected int getFormView() {
+		return R.id.register_form;
 	}
 	 
 }

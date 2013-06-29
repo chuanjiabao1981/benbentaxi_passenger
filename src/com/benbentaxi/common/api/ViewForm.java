@@ -29,8 +29,8 @@ public abstract class ViewForm {
 		mActivity = activity;
 		mControls   = new HashMap< String, Integer >();
 		init();
-		mProgressStatusView = getProgressStatusView();
-		mFormView 			= getFormView();
+		mProgressStatusView = this.mActivity.findViewById(getProgressStatusView());
+		mFormView 			= this.mActivity.findViewById(getFormView());
 	}
 	
 	public String getControlVal(String name)
@@ -105,8 +105,8 @@ public abstract class ViewForm {
 	}
 	
 	protected abstract void init();
-	protected abstract View getProgressStatusView();
-	protected abstract View getFormView();
+	protected abstract int getProgressStatusView();
+	protected abstract int getFormView();
 	protected int getControlViewId(String name)
 	{
 		return mControls.get(name);

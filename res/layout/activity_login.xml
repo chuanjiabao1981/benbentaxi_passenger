@@ -7,7 +7,7 @@
     <!-- Login progress -->
 
     <LinearLayout
-        android:id="@+id/login_status"
+        android:id="@+id/login_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -32,23 +32,24 @@
 
     <!-- Login form -->
 
-   <ScrollView
+    <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:fillViewport="true" >
 
-       <LinearLayout
-           style="@style/LoginFormContainer"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="vertical" >
+        <LinearLayout
+            style="@style/LoginFormContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
             <LinearLayout
-		android:layout_width="match_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:padding="8dp"
-                android:orientation="horizontal" >
+                android:orientation="horizontal"
+                android:padding="8dp" >
 
                 <TextView
                     android:id="@+id/textTitle1"
@@ -70,112 +71,130 @@
                     android:gravity="left"
                     android:paddingLeft="5dp"
                     android:text="@string/app_name2"
-                    android:textSize="30sp"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-			</LinearLayout>
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="30sp" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/textTitle3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right|center_vertical"
-                android:text="@string/sub_app_name"
-                android:paddingRight="30dp"
                 android:paddingBottom="20dp"
+                android:paddingRight="30dp"
+                android:text="@string/sub_app_name"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/red" />
 
-           <LinearLayout
-           style="@style/LoginFormContainer"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="vertical" >
-           
-            <EditText
-                android:id="@+id/email"
+            <LinearLayout
+                style="@style/LoginFormContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_email"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:singleLine="true" />
+                android:orientation="vertical" >
 
-            <EditText
-                android:id="@+id/password"
+                <EditText
+                    android:id="@+id/login_mobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+
+                <EditText
+                    android:id="@+id/login_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_password"
+                    android:imeActionId="@+id/login"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+
+                <View
+                    android:id="@+id/View01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp" />
+
+                <RelativeLayout
+                    android:id="@+id/RelativeLayout1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" >
+
+                    <Button
+                        android:id="@+id/sign_in_button"
+                        style="@style/loginButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="16dp"
+                        android:paddingLeft="32dp"
+                        android:paddingRight="32dp"
+                        android:text="@string/action_sign_in_register" />
+
+                    <Button
+                        android:id="@+id/create_button"
+                        style="@style/loginButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:paddingLeft="32dp"
+                        android:paddingRight="32dp"
+                        android:text="@string/action_create_register" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.8" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_password"
-                android:imeActionId="@+id/login"
-                android:imeActionLabel="@string/action_sign_in_short"
-                android:imeOptions="actionUnspecified"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:singleLine="true" />
+                android:layout_marginTop="20dp"
+                android:orientation="vertical" >
 
-            <Button
-                android:id="@+id/sign_in_button"
-                style="@style/loginButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp"
-                android:text="@string/action_sign_in_register" />
+                <TextView
+                    android:id="@+id/tv_fill"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-			<Button
-			    android:id="@+id/create_button"
-			    style="@style/loginButton"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:layout_gravity="center"
-			    android:paddingLeft="32dp"
-			    android:paddingRight="32dp"
-			    android:text="@string/action_create_register" />
-			</LinearLayout>
+                <TextView
+                    android:id="@+id/textfoot1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dip"
+                    android:layout_weight="5"
+                    android:gravity="center"
+                    android:text="@string/company_name"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
 
-			<LinearLayout
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:layout_marginTop="20dp"
-			    android:layout_weight="1.0"
-			    android:orientation="vertical" >
-						
-			<TextView
-			    android:id="@+id/tv_fill"
-			    android:layout_width="match_parent"
-			    android:layout_height="match_parent"
-			/>
-			<TextView
-			    android:id="@+id/textfoot1"
-			    android:layout_width="match_parent"
-			    android:layout_height="0dip"
-			    android:layout_weight="5"
-			    android:gravity="center"
-			    android:text="@string/company_name"
-			    android:textAppearance="?android:attr/textAppearanceSmall" />
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="5"
+                    android:contentDescription="@string/company_name"
+                    android:src="@drawable/login_bar" />
 
-			<ImageView
-			    android:id="@+id/imageView1"
-			    android:layout_width="wrap_content"
-			    android:layout_height="0dp"
-			    android:layout_gravity="center"
-			    android:layout_weight="5"
-			    android:contentDescription="@string/company_name"
-			    android:src="@drawable/login_bar" />
-			
-			<TextView
-			    android:id="@+id/textfoot2"
-			    android:layout_width="match_parent"
-			    android:layout_height="0dip"
-			    android:layout_weight="5"
-			    android:gravity="center"
-			    android:text="@string/foot_name"
-			    android:textAppearance="?android:attr/textAppearanceMedium"
-			    android:textColor="@color/gray" />
-
-		</LinearLayout>
+                <TextView
+                    android:id="@+id/textfoot2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dip"
+                    android:layout_weight="5"
+                    android:gravity="center"
+                    android:text="@string/foot_name"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/gray" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

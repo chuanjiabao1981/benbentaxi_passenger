@@ -75,10 +75,10 @@ public class LoginActivity extends Activity {
 
 		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
-		mEmailView = (EditText) findViewById(R.id.email);
+		mEmailView = (EditText) findViewById(R.id.login_mobile);
 		mEmailView.setText(mEmail);
 		
-		mPasswordView = (EditText) findViewById(R.id.password);
+		mPasswordView = (EditText) findViewById(R.id.login_password);
 		mPasswordView
 				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 					public boolean onEditorAction(TextView textView, int id,
@@ -92,7 +92,7 @@ public class LoginActivity extends Activity {
 				});
 
 		mLoginFormView = findViewById(R.id.login_form);
-		mLoginStatusView = findViewById(R.id.login_status);
+		mLoginStatusView = findViewById(R.id.login_progress);
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 
 		mSignInBtn = (Button)findViewById(R.id.sign_in_button);
@@ -119,7 +119,7 @@ public class LoginActivity extends Activity {
 		if ( this.getIntent().getExtras() != null ) {
 			String getClass = this.getIntent().getExtras().getString("class");
 			if ( getClass != null ) {
-				Toast.makeText(this, "�ٰ�һ�η����˳�����", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "aaaaaa�ٰ�һ�η����˳�����", Toast.LENGTH_SHORT).show();
 			}
 		}
 		
@@ -143,7 +143,6 @@ public class LoginActivity extends Activity {
 		}
 		
 		mData = new DataPreference(this.getApplicationContext());
-		Toast.makeText(this, "����˵�����в�������", Toast.LENGTH_SHORT).show();
 	}
 
 	//@Override
