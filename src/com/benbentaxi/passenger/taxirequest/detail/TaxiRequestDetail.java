@@ -7,15 +7,23 @@ import java.util.Map;
 
 import com.benbentaxi.passenger.R;
 import com.benbentaxi.passenger.demo.DemoApplication;
+import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestApiConstant;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 public class TaxiRequestDetail extends Activity {
+	
+	
+	private TaxiRequest mTaxiRequest = null;
 
 	private static Object DetailTable[][]=
 		{
@@ -25,12 +33,20 @@ public class TaxiRequestDetail extends Activity {
 			{R.drawable.location,"距离约为(公里)",TaxiRequestApiConstant.DISTANCE}
 		};
 	
+	@SuppressWarnings("static-access")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		DemoApplication app = (DemoApplication)getApplicationContext();
+		mTaxiRequest	    = app.getCurrentShowTaxiRequest(); 
+		
 		setContentView(R.layout.activity_taxi_request_detail);
 		
 		setContentView(R.layout.activity_taxi_request_detail);
+		
+		bindButton();
+		
         ListView lv= (ListView)findViewById(R.id.detail_info_list);
         lv.setAdapter(new SimpleAdapter(this, getData(), R.layout.taxi_request_detail_item,   
                 new String[]{"taxi_request_detail_item_icon", "taxi_request_detail_item_title", "tqxi_request_detail_item_content"},   
@@ -43,21 +59,29 @@ public class TaxiRequestDetail extends Activity {
 		getMenuInflater().inflate(R.menu.activity_taxi_request_detail, menu);
 		return true;
 	}
-	@SuppressWarnings("static-access")
 	private List<Map<String, Object>> getData() {  
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();        
-        DemoApplication app = (DemoApplication)getApplicationContext();
-        if (app.getCurrentShowTaxiRequest() == null){
-        	return list;
-        }
         for(int i =0;i<DetailTable.length;i++ ){
             Map<String, Object> map = new HashMap<String, Object>();  
             map.put("taxi_request_detail_item_icon",DetailTable[i][0]);
             map.put("taxi_request_detail_item_title",DetailTable[i][1]);
-            map.put("tqxi_request_detail_item_content", app.getCurrentShowTaxiRequest().getField((String) (DetailTable[i][2])));
+            map.put("tqxi_request_detail_item_content", mTaxiRequest.getField((String) (DetailTable[i][2])));
             list.add(map);  
         } 
         return list;  
     }  
+	private void bindButton()
+	{
+		Button button = (Button)findViewById(R.id.taxi_request_detail_call_driver);
+		button.setOnClickListener(
+				new View.OnClickListener() {
+					public void onClick(View view) {
+						Uri uri = Uri.parse("tel:"+TaxiRequestDetail.this.mTaxiRequest.getDriverMobile());
+					    Intent call = new Intent(Intent.ACTION_DIAL, uri);
+					    TaxiRequestDetail.this.startActivity(call);
+					}
+		});
+
+	}
 
 }

@@ -1,19 +1,38 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/taxi_request_detail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ff303030"
+    android:orientation="vertical"
     tools:context=".TaxiRequestDetail" >
 
-    
     <ListView
         android:id="@+id/detail_info_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_height="0dp"
+        android:background="#303030"
         android:divider="#535353"
-        android:dividerHeight="1dp"
-        android:background="#303030">
+        android:dividerHeight="1dp" 
+        android:layout_weight="0.7">
     </ListView>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" 
+        android:layout_weight="0.3">
+
+        <Button
+            android:id="@+id/taxi_request_detail_call_driver"
+            style="@style/loginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/call_driver" />
+
+    </LinearLayout>
+   
+        
+
+
+</LinearLayout>

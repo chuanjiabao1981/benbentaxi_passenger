@@ -135,11 +135,11 @@
 			    android:text="@string/action_create_register" />
 			</LinearLayout>
 
-			
 			<LinearLayout
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    android:layout_marginTop="20dp"
+			    android:layout_weight="1.0"
 			    android:orientation="vertical" >
 						
 			<TextView

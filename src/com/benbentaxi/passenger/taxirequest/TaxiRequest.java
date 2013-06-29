@@ -36,6 +36,10 @@ public class TaxiRequest {
 		}
 		return JsonHelper.getString(this.mTaxiRequestJson, key);
 	}
+	public String getDriverMobile()
+	{
+		return this.mDriverMobile;
+	}
 	private void init(JSONObject obj)
 	{
 		mId 				= JsonHelper.getLong(obj, TaxiRequestApiConstant.ID);
