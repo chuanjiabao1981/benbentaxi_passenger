@@ -1,11 +1,17 @@
 package com.benbentaxi.passenger.v1;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.benbentaxi.Configure;
-import com.benbentaxi.passenger.v1.function.GetInfoTask;
+import com.benbentaxi.Passenger;
+import com.benbentaxi.Session;
+import com.benbentaxi.api.PostTask;
+import com.benbentaxi.lib.session.SessionResponse;
+import com.benbentaxi.passenger.demo.DemoApplication;
+import com.benbentaxi.passenger.demo.LocationOverlayDemo;
 
-public class LoginTask extends GetInfoTask{
+public class LoginTask extends PostTask{
 	private final String API1 			="/api/v1/sessions/passenger_signin";
 
 	private LoginForm 			mLoginForm;
@@ -23,22 +29,44 @@ public class LoginTask extends GetInfoTask{
 	
 	public void go()
 	{
-		initHeaders("Content-Type", "application/json");
 		this.mLoginForm.showProgress(true);
-		execute(getApiUrl(), "11111111", GetInfoTask.TYPE_POST);
+		execute();
 	}
 	
-	
-	private String getApiUrl()
+	@SuppressWarnings("static-access")
+	protected void onPostExecute(final Boolean succ) 
+	{
+		SessionResponse sessionResponse = new SessionResponse(mLoginForm,this.getResult());
+		this.mLoginForm.showProgress(false);
+		if (!succ){
+			sessionResponse.setSysErrorMessage(this.getErrorMsg());
+		}
+		if (!sessionResponse.hasError()){
+			
+			DemoApplication app = (DemoApplication)this.mLoginForm.getActivity().getApplicationContext();
+
+			Session session = new Session(sessionResponse.getTokenKey(),sessionResponse.getTokenVal());
+			app.setCurrentSession(session);
+			Passenger passenger = new Passenger(this.mLoginForm.getMobile());
+			app.setCurrentPassenger(passenger);
+
+			Intent intent = new Intent(this.mLoginForm.getActivity(),LocationOverlayDemo.class);
+			this.mLoginForm.getActivity().startActivity(intent);
+		}
+	}
+	protected String getApiUrl()
 	{
 		return "http://"+mConfigure.getHost()+API1;
 	}
 	
-	protected void initPostValues() {
+	@Override
+	protected String getPostParams() {
 		if ( mLoginRequest != null ) {
-			post_param = mLoginRequest.toJson().toString();
-			Log.d(TAG, mLoginRequest.toJson().toString());
-		}
+			String k = mLoginRequest.toJson().toString();
+			Log.d(TAG,k);
+			return k;
+		}		
+		return "";
 	}
 
 

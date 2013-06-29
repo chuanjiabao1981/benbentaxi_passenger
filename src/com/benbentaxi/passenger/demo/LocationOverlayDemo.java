@@ -11,7 +11,6 @@ import org.json.JSONTokener;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -28,7 +27,6 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -182,7 +180,8 @@ public class LocationOverlayDemo extends Activity {
 		}
     };
     
-    @Override
+    @SuppressWarnings("static-access")
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DemoApplication app = (DemoApplication)this.getApplication();
@@ -195,13 +194,14 @@ public class LocationOverlayDemo extends Activity {
         mMapController = mMapView.getController();
         
         mData = new DataPreference(this.getApplicationContext());
-        mTokenKey = mData.LoadString("token_key");
-        mTokenVal = mData.LoadString("token_value");
-        Log.d("xssssss",mTokenKey);
-        Log.d("xssssss",mTokenVal);
-        mUserMobile = mData.LoadString("user");
-        mIsDriver = mData.LoadBool("isdriver");
+        //mTokenKey = mData.LoadString("token_key");
+        //mTokenVal = mData.LoadString("token_value");
+        //mUserMobile = mData.LoadString("user");
+        mIsDriver = false;
         
+        mTokenKey 		= (app.getCurrentSession()!=null)? app.getCurrentSession().getTokenKey():"";
+        mTokenVal 		= (app.getCurrentSession()!=null)? app.getCurrentSession().getTokenValue():"";
+        mUserMobile		= (app.getCurrentPassenger()!=null)? app.getCurrentPassenger().getMobile():"";
         initMapView();
         
         mLocClient = new LocationClient( this );

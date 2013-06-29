@@ -30,5 +30,10 @@ public class RegisterForm extends ViewForm{
 	protected int getFormView() {
 		return R.id.register_form;
 	}
+	
+	public String getMobile()
+	{
+		return this.getControlVal(RegisterApiConstant.MOBILE);
+	}
 	 
 }

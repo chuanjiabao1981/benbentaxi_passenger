@@ -10,14 +10,18 @@ import android.widget.Toast;
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.MKGeneralListener;
 import com.baidu.mapapi.map.MKEvent;
+import com.benbentaxi.Passenger;
+import com.benbentaxi.Session;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 
 
 public class DemoApplication extends Application {
 	
-    private static DemoApplication mInstance = null;
-    private static TaxiRequest CurrentShowTaxiRequest = null;
-    private static TaxiRequest CurrentTaxiRequest = null;
+    private static DemoApplication mInstance 			= null;
+    private static TaxiRequest CurrentShowTaxiRequest 	= null;
+    private static TaxiRequest CurrentTaxiRequest 		= null;
+    private static Session 	   CurrentSession			= null;
+    private static Passenger   CurrentPassenger			= null;
     public boolean m_bKeyRight = true;
     BMapManager mBMapManager = null;
 
@@ -84,6 +88,24 @@ public class DemoApplication extends Application {
         }
     }
     
+    public static void setCurrentPassenger(Passenger passenger)
+    {
+    	CurrentPassenger = passenger;
+    }
+    public static Passenger getCurrentPassenger()
+    {
+    	return CurrentPassenger;
+    }
+    
+    public static Session getCurrentSession()
+    {
+    	return CurrentSession;
+    }
+    
+    public static void setCurrentSession(Session session)
+    {
+    	CurrentSession = session;
+    }
     public static TaxiRequest getCurrentTaxiRequest(JSONObject o)
     {
     	if (CurrentTaxiRequest == null){

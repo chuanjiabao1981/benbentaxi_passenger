@@ -32,7 +32,7 @@ public class SessionResponse extends FormResponse{
 				mTokenVal = ((JSONObject)getJsonResult()).getString(SessionApiConstant.TOKEN_VALUE);
 			}
 		} catch (JSONException e) {
-			Log.d(TAG, "解析注册信息结果出错！");
+			Log.d(TAG, "结果出错！");
 		}
 	}
 	

@@ -39,6 +39,7 @@ public abstract class FormResponse {
 			dealError();
 			return true;
 		}
+		parser();
 		return false;
 	}
 	protected Object getJsonResult()
@@ -55,6 +56,8 @@ public abstract class FormResponse {
 	}
 	private void init()
 	{
+		if (mRStr  == null)
+			return;
 		JSONTokener jsParser = new JSONTokener(mRStr);
 		try {
 			if (mRStr.startsWith("[")){
@@ -70,11 +73,11 @@ public abstract class FormResponse {
 			setSysErrorMessage(SysErrorMessage.ERROR_NET_WORK);
 		}
 	}
-	private void setSysErrorMessage(String m)
+	public void setSysErrorMessage(String m)
 	{
 		this.mSysErrorMessage = m;
 	}
-	private String getSysErrorMesssage()
+	public String getSysErrorMesssage()
 	{
 		return this.mSysErrorMessage;
 	}
@@ -87,8 +90,10 @@ public abstract class FormResponse {
 	}
 	private boolean hasAppError()
 	{
-		if (getResponseJsonType() == RESULT_JSON_TYPE.JSONObject && ((JSONObject)getJsonResult()).has(ApiConstant.ERROR))
+		if (getResponseJsonType() == RESULT_JSON_TYPE.JSONObject && ((JSONObject)getJsonResult()).has(ApiConstant.ERROR)){
+			Log.d(TAG,"has app error!");
 			return true;
+		}
 		return false;
 	}
 	private void dealError()
@@ -109,6 +114,7 @@ public abstract class FormResponse {
 					if (getViewForm() != null){
 						getViewForm().setControlFieldError(k, v);
 					}
+					Log.d(TAG,k+":"+v);
 				}
 			} catch (JSONException e) {
 				Log.e(TAG, "解析应用层错误数据出错(JSON)!");

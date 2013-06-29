@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.benbentaxi.Configure;
-import com.benbentaxi.lib.session.SessionApiConstant;
+import com.benbentaxi.Passenger;
+import com.benbentaxi.Session;
+import com.benbentaxi.api.PostTask;
 import com.benbentaxi.lib.session.SessionResponse;
+import com.benbentaxi.passenger.demo.DemoApplication;
 import com.benbentaxi.passenger.demo.LocationOverlayDemo;
-import com.benbentaxi.passenger.v1.function.DataPreference;
-import com.benbentaxi.passenger.v1.function.GetInfoTask;
 
-public class RegisterTask extends GetInfoTask{
+public class RegisterTask extends PostTask{
 	private final String API1 			="/api/v1/users/create_passenger";
 	private RegisterRequest 	mRegisterRequest;
 	private Configure       mConfigure;
@@ -25,20 +26,37 @@ public class RegisterTask extends GetInfoTask{
 	}
 	public void go()
 	{
-		initHeaders("Content-Type", "application/json");
-		
-        
 		this.mRegisterForm.showProgress(true);
-		execute(getApiUrl(), "11111111", GetInfoTask.TYPE_POST);
+		execute();
 	}
-	private String getApiUrl()
+	protected String getApiUrl()
 	{
 		return "http://"+mConfigure.getHost()+API1;
 	}
 	
 	
-	protected void onPostExecPost(Boolean succ) 
+	@SuppressWarnings("static-access")
+	protected void onPostExecute(Boolean succ) 
 	{
+		
+		SessionResponse sessionResponse = new SessionResponse(mRegisterForm,this.getResult());
+		this.mRegisterForm.showProgress(false);
+		if (!succ){
+			sessionResponse.setSysErrorMessage(this.getErrorMsg());
+		}
+		if (!sessionResponse.hasError()){
+			
+			DemoApplication app = (DemoApplication)this.mRegisterForm.getActivity().getApplicationContext();
+
+			Session session = new Session(sessionResponse.getTokenKey(),sessionResponse.getTokenVal());
+			app.setCurrentSession(session);
+			Passenger passenger = new Passenger(this.mRegisterForm.getMobile());
+			app.setCurrentPassenger(passenger);
+
+			Intent intent = new Intent(this.mRegisterForm.getActivity(),LocationOverlayDemo.class);
+			this.mRegisterForm.getActivity().startActivity(intent);
+		}
+		/*
 		SessionResponse registerResponse = new SessionResponse(mRegisterForm,this.getResult());
 		this.mRegisterForm.showProgress(false);
 		if (registerResponse.hasError()){
@@ -57,12 +75,15 @@ public class RegisterTask extends GetInfoTask{
 			Intent locationOverlayIntent = new Intent(this.mRegisterForm.getActivity(),LocationOverlayDemo.class);
 			
 			this.mRegisterForm.getActivity().startActivity(locationOverlayIntent);
-		}
+		}*/
 	}
-	protected void initPostValues() {
+	@Override
+	protected String getPostParams() {
 		if ( mRegisterRequest != null ) {
-			post_param = mRegisterRequest.toJson().toString();
-			Log.d(TAG, mRegisterRequest.toJson().toString());
+			String k = mRegisterRequest.toJson().toString();
+			Log.d(TAG, k);
+			return k;
 		}
+		return "";
 	}
 }

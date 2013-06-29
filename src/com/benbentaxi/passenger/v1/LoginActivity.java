@@ -7,6 +7,8 @@ import org.json.JSONTokener;
 import com.benbentaxi.passenger.R;
 import com.benbentaxi.passenger.demo.LocationOverlayDemo;
 import com.benbentaxi.passenger.register.RegisterActivity;
+import com.benbentaxi.passenger.register.RegisterForm;
+import com.benbentaxi.passenger.register.RegisterTask;
 import com.benbentaxi.passenger.v1.function.DataPreference;
 import com.benbentaxi.passenger.v1.function.EquipmentId;
 import com.benbentaxi.passenger.v1.function.GetInfoTask;
@@ -43,7 +45,7 @@ public class LoginActivity extends Activity {
 	/**
 	 * Keep track of the login task to ensure we can cancel it if requested.
 	 */
-	private UserLoginTask mAuthTask = null;
+	//private UserLoginTask mAuthTask = null;
 
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
@@ -84,7 +86,7 @@ public class LoginActivity extends Activity {
 					public boolean onEditorAction(TextView textView, int id,
 							KeyEvent keyEvent) {
 						if (id == R.id.login || id == EditorInfo.IME_NULL) {
-							attemptLogin(mIsSave, mIsDriver, UserLoginTask.LOGINTYPE_LOGIN);
+							//attemptLogin(mIsSave, mIsDriver, UserLoginTask.LOGINTYPE_LOGIN);
 							return true;
 						}
 						return false;
@@ -99,7 +101,11 @@ public class LoginActivity extends Activity {
 		mSignInBtn.setOnClickListener(
 				new View.OnClickListener() {
 					public void onClick(View view) {
-						attemptLogin(mIsSave, mIsDriver, UserLoginTask.LOGINTYPE_LOGIN);
+						//attemptLogin(mIsSave, mIsDriver, UserLoginTask.LOGINTYPE_LOGIN);
+						
+						LoginForm loginForm = new LoginForm(LoginActivity.this);
+						LoginTask loginTask = new LoginTask(loginForm);
+						loginTask.go();
 					}
 				});
 		
@@ -194,6 +200,7 @@ public class LoginActivity extends Activity {
 	 * If there are form errors (invalid email, missing fields, etc.), the
 	 * errors are presented and no actual login attempt is made.
 	 */
+	/*
 	public void attemptLogin(boolean saveFlag, boolean isDriver, int type) {
 		if (mAuthTask != null) {
 			return;
@@ -261,52 +268,16 @@ public class LoginActivity extends Activity {
 			}
 		}
 	}
+	*/
 
-	/**
-	 * Shows the progress UI and hides the login form.
-	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	private void showProgress(final boolean show) {
-		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-		// for very easy animations. If available, use these APIs to fade-in
-		// the progress spinner.
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			int shortAnimTime = getResources().getInteger(
-					android.R.integer.config_shortAnimTime);
-			mLoginStatusView.setVisibility(View.VISIBLE);
-			mLoginStatusView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 1 : 0)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mLoginStatusView.setVisibility(show ? View.VISIBLE
-									: View.GONE);
-						}
-					});
-
-			mLoginFormView.setVisibility(View.VISIBLE);
-			mLoginFormView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 0 : 1)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-
-							mLoginFormView.setVisibility(show ? View.GONE
-									: View.VISIBLE);
-						}
-					});
-		} else {
-			// The ViewPropertyAnimator APIs are not available, so simply show
-			// and hide the relevant UI components.
-			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
-	}
+	
 
 	/**
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
+	
+	/*
 	private class UserLoginTask extends GetInfoTask {
 		public static final int LOGINTYPE_LOGIN = 0;
 		//public static final int LOGINTYPE_CREATE = 1;
@@ -439,24 +410,10 @@ public class LoginActivity extends Activity {
 				mEmailView.requestFocus();
 			}
 		}
-	}
+	}*/
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		/*
-		switch ( item.getItemId() ) {
-		case R.id.menu_setup:
-			new SysSetting(this,null).getSettingDialog().show();
-			break;
-		case R.id.menu_about:
-		default:
-			// show about dialog
-			String content = this.getString(R.string.app_name)+"@"+this.getString(R.string.author_name);
-			content += "\n"+this.getString(R.string.app_ver);
-			new IdShow(this.getString(R.string.menu_about), content, this).getIdDialog().show();
-			break;
-		}
-		*/
 		return super.onOptionsItemSelected(item);
 	}
 }
