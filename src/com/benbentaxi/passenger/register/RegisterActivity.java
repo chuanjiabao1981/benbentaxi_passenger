@@ -1,7 +1,7 @@
 package com.benbentaxi.passenger.register;
 
 import com.benbentaxi.passenger.R;
-import com.benbentaxi.passenger.v1.LoginActivity;
+import com.benbentaxi.passenger.login.LoginActivity;
 
 import android.os.Bundle;
 import android.app.Activity;

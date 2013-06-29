@@ -36,7 +36,7 @@ import com.baidu.mapapi.map.PopupOverlay;
 import com.baidu.mapapi.utils.CoordinateConvert;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.benbentaxi.passenger.R;
-import com.benbentaxi.passenger.v1.function.IdShow;
+import com.benbentaxi.passenger.login.function.IdShow;
 /**
  *  在一个圆周上添加自定义overlay. 
  */

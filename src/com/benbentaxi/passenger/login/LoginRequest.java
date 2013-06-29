@@ -1,4 +1,4 @@
-package com.benbentaxi.passenger.v1;
+package com.benbentaxi.passenger.login;
 
 import org.json.JSONException;
 import org.json.JSONObject;

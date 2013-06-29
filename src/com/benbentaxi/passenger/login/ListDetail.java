@@ -1,7 +1,7 @@
-package com.benbentaxi.passenger.v1;
+package com.benbentaxi.passenger.login;
 
 import com.benbentaxi.passenger.R;
-import com.benbentaxi.passenger.v1.function.CallAdapter;
+import com.benbentaxi.passenger.login.function.CallAdapter;
 
 import android.app.Activity;
 import android.os.Bundle;

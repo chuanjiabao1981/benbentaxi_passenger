@@ -55,12 +55,12 @@ import com.baidu.mapapi.map.MyLocationOverlay;
 import com.baidu.mapapi.map.OverlayItem;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.benbentaxi.passenger.R;
+import com.benbentaxi.passenger.login.function.ConfirmShow;
+import com.benbentaxi.passenger.login.function.DataPreference;
+import com.benbentaxi.passenger.login.function.GetInfoTask;
+import com.benbentaxi.passenger.login.function.IdShow;
+import com.benbentaxi.passenger.login.function.ListShow;
 import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
-import com.benbentaxi.passenger.v1.function.ConfirmShow;
-import com.benbentaxi.passenger.v1.function.DataPreference;
-import com.benbentaxi.passenger.v1.function.GetInfoTask;
-import com.benbentaxi.passenger.v1.function.IdShow;
-import com.benbentaxi.passenger.v1.function.ListShow;
 public class LocationOverlayDemo extends Activity {
 	
 	static MapView mMapView = null;
