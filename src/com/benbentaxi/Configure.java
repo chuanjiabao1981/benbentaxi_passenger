@@ -1,4 +1,4 @@
-package com.benbentaxi.common;
+package com.benbentaxi;
 
 public class Configure {
 

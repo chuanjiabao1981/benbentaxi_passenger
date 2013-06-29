@@ -5,8 +5,8 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-import com.benbentaxi.common.api.FormRequest;
-import com.benbentaxi.common.api.ViewForm;
+import com.benbentaxi.api.FormRequest;
+import com.benbentaxi.api.ViewForm;
 
 public class LoginRequest extends FormRequest{
 	private final String TAG			     = LoginRequest.class.getName();

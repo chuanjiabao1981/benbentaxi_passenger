@@ -5,8 +5,8 @@ package com.benbentaxi.lib.session;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.benbentaxi.common.api.FormResponse;
-import com.benbentaxi.common.api.ViewForm;
+import com.benbentaxi.api.FormResponse;
+import com.benbentaxi.api.ViewForm;
 
 import android.util.Log;
 

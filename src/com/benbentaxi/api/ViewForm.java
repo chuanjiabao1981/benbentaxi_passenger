@@ -1,4 +1,4 @@
-package com.benbentaxi.common.api;
+package com.benbentaxi.api;
 
 import java.util.HashMap;
 import java.util.Map;

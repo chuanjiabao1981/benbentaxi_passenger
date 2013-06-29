@@ -1,4 +1,4 @@
-package com.benbentaxi.common.api;
+package com.benbentaxi.api;
 
 import java.util.Iterator;
 
@@ -8,8 +8,8 @@ import org.json.JSONTokener;
 
 import android.util.Log;
 
-import com.benbentaxi.common.ApiConstant;
-import com.benbentaxi.common.SysErrorMessage;
+import com.benbentaxi.ApiConstant;
+import com.benbentaxi.SysErrorMessage;
 
 
 public abstract class FormResponse {

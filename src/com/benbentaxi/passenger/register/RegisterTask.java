@@ -3,7 +3,7 @@ package com.benbentaxi.passenger.register;
 import android.content.Intent;
 import android.util.Log;
 
-import com.benbentaxi.common.Configure;
+import com.benbentaxi.Configure;
 import com.benbentaxi.lib.session.SessionApiConstant;
 import com.benbentaxi.lib.session.SessionResponse;
 import com.benbentaxi.passenger.demo.LocationOverlayDemo;

@@ -1,4 +1,4 @@
-package com.benbentaxi.common.api;
+package com.benbentaxi.api;
 
 import org.json.JSONException;
 import org.json.JSONObject;

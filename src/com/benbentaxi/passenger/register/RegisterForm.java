@@ -1,8 +1,8 @@
 package com.benbentaxi.passenger.register;
 
 
-import com.benbentaxi.common.ApiConstant;
-import com.benbentaxi.common.api.ViewForm;
+import com.benbentaxi.ApiConstant;
+import com.benbentaxi.api.ViewForm;
 import com.benbentaxi.passenger.R;
 
 import android.app.Activity;

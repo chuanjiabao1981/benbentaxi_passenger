@@ -1,12 +1,10 @@
 package com.benbentaxi.passenger.v1;
 
 import android.app.Activity;
-import android.view.View;
 
-import com.benbentaxi.common.ApiConstant;
-import com.benbentaxi.common.api.ViewForm;
+import com.benbentaxi.ApiConstant;
+import com.benbentaxi.api.ViewForm;
 import com.benbentaxi.passenger.R;
-import com.benbentaxi.passenger.register.RegisterApiConstant;
 
 public class LoginForm extends ViewForm{
 

@@ -3,7 +3,8 @@ package com.benbentaxi.passenger.register;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.benbentaxi.common.api.FormRequest;
+import com.benbentaxi.api.FormRequest;
+
 import android.util.Log;
 
 public class RegisterRequest extends FormRequest
