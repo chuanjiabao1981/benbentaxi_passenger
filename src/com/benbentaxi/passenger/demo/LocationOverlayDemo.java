@@ -200,7 +200,7 @@ public class LocationOverlayDemo extends Activity {
         mIsDriver = false;
         
         mTokenKey 		= (app.getCurrentSession()!=null)? app.getCurrentSession().getTokenKey():"";
-        mTokenVal 		= (app.getCurrentSession()!=null)? app.getCurrentSession().getTokenValue():"";
+        mTokenVal 		= (app.getCurrentSession()!=null)? app.getCurrentSession().getTokenVal():"";
         mUserMobile		= (app.getCurrentPassenger()!=null)? app.getCurrentPassenger().getMobile():"";
         initMapView();
         

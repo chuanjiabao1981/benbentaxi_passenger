@@ -1,4 +1,4 @@
-package com.benbentaxi.lib.session;
+package com.benbentaxi.session;
 
 public class SessionApiConstant {
 	public final static String TOKEN_KEY			= "token_key";

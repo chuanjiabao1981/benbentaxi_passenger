@@ -1,17 +1,18 @@
-package com.benbentaxi.lib.session;
+package com.benbentaxi.session;
 
 
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.benbentaxi.Session;
 import com.benbentaxi.api.FormResponse;
 import com.benbentaxi.api.ViewForm;
 
 import android.util.Log;
 
 
-public class SessionResponse extends FormResponse{
+public class SessionResponse extends FormResponse implements Session{
 	private String mTokenKey;
 	private String mTokenVal;
 	private final String TAG			     = SessionResponse.class.getName();
@@ -44,5 +45,5 @@ public class SessionResponse extends FormResponse{
 	{
 		return this.mTokenVal;
 	}
-	
+
 }

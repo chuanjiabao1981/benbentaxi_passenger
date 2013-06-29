@@ -7,9 +7,9 @@ import com.benbentaxi.Configure;
 import com.benbentaxi.Passenger;
 import com.benbentaxi.Session;
 import com.benbentaxi.api.PostTask;
-import com.benbentaxi.lib.session.SessionResponse;
 import com.benbentaxi.passenger.demo.DemoApplication;
 import com.benbentaxi.passenger.demo.LocationOverlayDemo;
+import com.benbentaxi.session.SessionResponse;
 
 public class LoginTask extends PostTask{
 	private final String API1 			="/api/v1/sessions/passenger_signin";
@@ -45,8 +45,7 @@ public class LoginTask extends PostTask{
 			
 			DemoApplication app = (DemoApplication)this.mLoginForm.getActivity().getApplicationContext();
 
-			Session session = new Session(sessionResponse.getTokenKey(),sessionResponse.getTokenVal());
-			app.setCurrentSession(session);
+			app.setCurrentSession(sessionResponse);
 			Passenger passenger = new Passenger(this.mLoginForm.getMobile());
 			app.setCurrentPassenger(passenger);
 
