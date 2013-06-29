@@ -39,5 +39,6 @@
     <color name="taxi_request_detail_item_title">#3c91aa</color>
     <color name="taxi_request_detail_item_content">#ffffff</color>
     <string name="call_driver">电话司机</string>
+    <string name="passenger_version">乘客版</string>
 
 </resources>

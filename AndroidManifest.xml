@@ -111,7 +111,8 @@
             android:name="com.benbentaxi.passenger.register.RegisterActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_register"
-            android:noHistory="true" >
+            android:noHistory="true" 
+            android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen" >
         </activity>
         <activity
             android:name="com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail"

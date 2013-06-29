@@ -349,6 +349,7 @@ public class LocationOverlayDemo extends Activity {
         	mAudioBufSize = AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT);
     	}
 
+
     	mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 44100, 
     			AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, mAudioBufSize);
     	

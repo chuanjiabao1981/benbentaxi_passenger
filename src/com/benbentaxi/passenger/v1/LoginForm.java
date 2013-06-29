@@ -2,7 +2,7 @@ package com.benbentaxi.passenger.v1;
 
 import android.app.Activity;
 
-import com.benbentaxi.ApiConstant;
+import com.benbentaxi.api.ApiConstant;
 import com.benbentaxi.api.ViewForm;
 import com.benbentaxi.passenger.R;
 

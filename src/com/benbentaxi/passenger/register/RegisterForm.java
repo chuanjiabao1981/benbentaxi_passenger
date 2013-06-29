@@ -1,7 +1,7 @@
 package com.benbentaxi.passenger.register;
 
 
-import com.benbentaxi.ApiConstant;
+import com.benbentaxi.api.ApiConstant;
 import com.benbentaxi.api.ViewForm;
 import com.benbentaxi.passenger.R;
 
