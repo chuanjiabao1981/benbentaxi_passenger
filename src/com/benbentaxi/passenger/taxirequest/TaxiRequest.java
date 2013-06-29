@@ -36,9 +36,17 @@ public class TaxiRequest {
 		}
 		return JsonHelper.getString(this.mTaxiRequestJson, key);
 	}
+	public String getState()
+	{
+		return this.mTaxiRequestState.toString();
+	}
 	public String getDriverMobile()
 	{
 		return this.mDriverMobile;
+	}
+	public Float getDistance()
+	{
+		return 0.2f ;
 	}
 	private void init(JSONObject obj)
 	{

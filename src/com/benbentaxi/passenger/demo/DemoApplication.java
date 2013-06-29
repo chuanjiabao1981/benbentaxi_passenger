@@ -106,15 +106,15 @@ public class DemoApplication extends Application {
     {
     	CurrentSession = session;
     }
-    public static TaxiRequest getCurrentTaxiRequest(JSONObject o)
+    public static void setCurrentTaxiRequest(JSONObject o)
     {
-    	if (CurrentTaxiRequest == null){
-    			CurrentTaxiRequest = new TaxiRequest(o);
-    	}
+		CurrentTaxiRequest = new TaxiRequest(o);
+	}
+    public static TaxiRequest getCurrentTaxiRequest()
+    {
     	return CurrentTaxiRequest;
-    	
     }
-
+    
     public static void setCurrentShowTaxiRequest(TaxiRequest t)
     {
     	CurrentShowTaxiRequest = t;

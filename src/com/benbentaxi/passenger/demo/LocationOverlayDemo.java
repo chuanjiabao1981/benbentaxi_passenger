@@ -55,6 +55,7 @@ import com.baidu.mapapi.map.MyLocationOverlay;
 import com.baidu.mapapi.map.OverlayItem;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.benbentaxi.passenger.R;
+import com.benbentaxi.passenger.confirm.ConfirmPopupWindow;
 import com.benbentaxi.passenger.login.function.ConfirmShow;
 import com.benbentaxi.passenger.login.function.DataPreference;
 import com.benbentaxi.passenger.login.function.GetInfoTask;
@@ -62,6 +63,9 @@ import com.benbentaxi.passenger.login.function.IdShow;
 import com.benbentaxi.passenger.login.function.ListShow;
 import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
 public class LocationOverlayDemo extends Activity {
+	
+	private String TAG = LocationOverlayDemo.class.getName();
+
 	
 	static MapView mMapView = null;
 	
@@ -394,18 +398,21 @@ public class LocationOverlayDemo extends Activity {
     	}
     }
     
-    private void doPassenger() {
+    @SuppressWarnings("static-access")
+	private void doPassenger() {
     	// 获取周边Taxi
         GetTaxiTask gtt = new GetTaxiTask();
         gtt.getTaxi(locData.longitude, locData.latitude);
+        DemoApplication app = (DemoApplication)getApplicationContext();
 
         if ( mReqId > 0 && mStatus != null && mStatus.equals(LocationOverlayDemo.STAT_WAITING_PAS_CONF) ) {
         // 确认司机请求，本次打车行为结束
         	if ( mShowDialogStat == 0 ) {
 	        	mShowDialogStat = 1;
-	        	
+	        	/*ConfirmPopupWindow confirmPopupWindow = new ConfirmPopupWindow(this);
+	        	confirmPopupWindow.show();
+	        	*/
 				ConfirmShow confirm = new ConfirmShow("有司机响应，距离您约", mDistance+"公里", this);
-				Log.e("asdfasdfasdfasdfasdf", "232141234123412341234124121341");
 	        	View.OnClickListener doOK = new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -440,8 +447,8 @@ public class LocationOverlayDemo extends Activity {
         	}
         } else if ( mReqId > 0 && mStatus != null && mStatus.equals(STAT_PASSENGER_CONFIRM) ) {
         	if ( mShowDialogStat == 0 ) {
-	            DemoApplication app = (DemoApplication)getApplicationContext();
-	            app.setCurrentShowTaxiRequest(app.getCurrentTaxiRequest(mConfirmObj));
+	            app.setCurrentShowTaxiRequest(app.getCurrentTaxiRequest());
+	            Log.d(TAG,app.getCurrentShowTaxiRequest().getState());
 				Intent taxiRequestDetailIntent = new Intent(LocationOverlayDemo.this,TaxiRequestDetail.class);
 	        	LocationOverlayDemo.this.startActivity(taxiRequestDetailIntent);
 	        	mShowDialogStat = 1;
@@ -931,10 +938,15 @@ public class LocationOverlayDemo extends Activity {
 		    }
 		}
 		
+		@SuppressWarnings("static-access")
 		private void doGetRequest(JSONTokener jsParser) throws JSONException {
 			// {"id":28,"state":"Waiting_Driver_Response","passenger_lat":8.0,"passenger_lng":8.0,"passenger_voice_url":"/uploads/taxi_request/voice/2013-05-31/03bd766e8ecc2e2429f1610c7bf6c3ec.m4a"}
 			// 用户只要处理state即可
-			mStatus = ((JSONObject)jsParser.nextValue()).getString("state");
+			JSONObject k = (JSONObject) jsParser.nextValue();
+			DemoApplication app = (DemoApplication)getApplicationContext();
+			app.setCurrentTaxiRequest(k);
+
+			mStatus = k.getString("state");
 			String msg = null;
 			if ( mStatus.equals("Waiting_Driver_Response") ) {
 				// 继续等待

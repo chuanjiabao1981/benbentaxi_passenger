@@ -42,7 +42,6 @@ public class ConfirmShow
 			@Override
 			public void onClick(View v) {
 				if ( mPop.isShowing() ) {
-					Log.e("ssdaadfasdfa","$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 					mPop.dismiss();
 				}
 				mf.onClick(v);
