@@ -36,7 +36,7 @@ public class ConfirmTask extends PostTask{
 			Log.e(TAG,"获取taxi request 出错!");
 		}
 		if (this.mSession != null){
-			initCookies(mSession.getTokenKey(), mSession.getTokenVal(),"42.121.55.211");//TODO::测试这个加端口
+			initCookies(mSession.getTokenKey(), mSession.getTokenVal(),mConfigure.getHost());//TODO::测试这个加端口
 			Log.d(TAG,mSession.getTokenKey()+":"+mSession.getTokenVal());
 		}else{
 			Log.e(TAG,"Session 获取出错!");
@@ -51,9 +51,9 @@ public class ConfirmTask extends PostTask{
 	@Override
 	protected String getApiUrl() {
 		if (this.mIsConfirm)
-			return "http://"+mConfigure.getHost()+"/api/v1/taxi_requests/"+this.mTaxiRequestId+"/confirm";
+			return "http://"+mConfigure.getService()+"/api/v1/taxi_requests/"+this.mTaxiRequestId+"/confirm";
 		else
-			return "http://"+mConfigure.getHost()+"/api/v1/taxi_requests/"+this.mTaxiRequestId+"/cancel";
+			return "http://"+mConfigure.getService()+"/api/v1/taxi_requests/"+this.mTaxiRequestId+"/cancel";
 	}
 
 	@Override
@@ -71,7 +71,6 @@ public class ConfirmTask extends PostTask{
 		TaxiRequestResponse taxiRequestResponse = new TaxiRequestResponse(this.getResult());
 		if (!succ){
 			taxiRequestResponse.setSysErrorMessage(this.getErrorMsg());
-			Log.d(TAG,"xxxxxxxxxxxxxxxxx");
 		}
 		if (!taxiRequestResponse.hasError()){
 					this.mTaxiRequest.refresh((JSONObject) taxiRequestResponse.getJsonResult());

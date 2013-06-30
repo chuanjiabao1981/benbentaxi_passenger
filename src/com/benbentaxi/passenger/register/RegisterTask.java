@@ -30,7 +30,7 @@ public class RegisterTask extends PostTask{
 	}
 	protected String getApiUrl()
 	{
-		return "http://"+mConfigure.getHost()+API1;
+		return "http://"+mConfigure.getService()+API1;
 	}
 	
 	

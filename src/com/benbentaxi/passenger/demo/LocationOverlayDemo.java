@@ -61,7 +61,6 @@ import com.benbentaxi.passenger.login.function.GetInfoTask;
 import com.benbentaxi.passenger.login.function.IdShow;
 import com.benbentaxi.passenger.login.function.ListShow;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
-import com.benbentaxi.passenger.taxirequest.confirm.ConfirmPopupWindow;
 import com.benbentaxi.passenger.taxirequest.confirm.ConfirmTask;
 import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
 public class LocationOverlayDemo extends Activity {
