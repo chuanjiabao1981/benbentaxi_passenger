@@ -2,6 +2,7 @@ package com.benbentaxi.passenger.taxirequest;
 
 import org.json.JSONObject;
 
+
 import android.util.Log;
 
 import com.benbentaxi.util.JsonHelper;
@@ -24,7 +25,16 @@ public class TaxiRequest {
 		init(obj);
 	}
 	
-	
+	public void refresh(JSONObject obj)
+	{
+		//TODO::时间戳判断
+		if (JsonHelper.getLong(obj, TaxiRequestApiConstant.ID) == this.mId){
+			init(obj);
+		}else{
+			Log.e(TAG,"Old Id["+this.mId+"] New Id ["+JsonHelper.getLong(obj, TaxiRequestApiConstant.ID)+"]");
+		}
+		Log.d(TAG,"Refresh State To:"+this.getState().toString());
+	}
 	public String getField(String key)
 	{
 		if (TaxiRequestApiConstant.DISTANCE.equals(key)){
@@ -47,6 +57,18 @@ public class TaxiRequest {
 	public Float getDistance()
 	{
 		return 0.2f ;
+	}
+	public long getId()
+	{
+		return this.mId;
+	}
+	
+	public boolean isWaitingPassengerConfirm()
+	{
+		if (this.mTaxiRequestState  == TaxiRequestState.Waiting_Passenger_Confirm){
+			return true;
+		}
+		return false;
 	}
 	private void init(JSONObject obj)
 	{

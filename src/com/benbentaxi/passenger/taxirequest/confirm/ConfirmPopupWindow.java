@@ -1,4 +1,4 @@
-package com.benbentaxi.passenger.confirm;
+package com.benbentaxi.passenger.taxirequest.confirm;
 
 import com.benbentaxi.passenger.R;
 import com.benbentaxi.passenger.demo.DemoApplication;

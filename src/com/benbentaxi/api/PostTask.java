@@ -109,6 +109,7 @@ public abstract class PostTask extends AsyncTask<String, Integer, Boolean> {
 			publishProgress(REQUEST_DONE);
 
 		} catch ( Exception e ) {
+			e.printStackTrace();
 			_errmsg = "网络错误，请检查网络是否正常"; //"stage 3: "+e.toString();
 			return false;
 		}

@@ -55,12 +55,14 @@ import com.baidu.mapapi.map.MyLocationOverlay;
 import com.baidu.mapapi.map.OverlayItem;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.benbentaxi.passenger.R;
-import com.benbentaxi.passenger.confirm.ConfirmPopupWindow;
 import com.benbentaxi.passenger.login.function.ConfirmShow;
 import com.benbentaxi.passenger.login.function.DataPreference;
 import com.benbentaxi.passenger.login.function.GetInfoTask;
 import com.benbentaxi.passenger.login.function.IdShow;
 import com.benbentaxi.passenger.login.function.ListShow;
+import com.benbentaxi.passenger.taxirequest.TaxiRequest;
+import com.benbentaxi.passenger.taxirequest.confirm.ConfirmPopupWindow;
+import com.benbentaxi.passenger.taxirequest.confirm.ConfirmTask;
 import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
 public class LocationOverlayDemo extends Activity {
 	
@@ -175,6 +177,7 @@ public class LocationOverlayDemo extends Activity {
 	private static int mShowDialogStat = 0;
 	
 	private ListShow ssss =null;
+	private DemoApplication mApp = null;
 	
 	private OnClickListener mCallTaxiListener = new OnClickListener(){
 		public void onClick(View v) {
@@ -202,10 +205,10 @@ public class LocationOverlayDemo extends Activity {
         //mTokenVal = mData.LoadString("token_value");
         //mUserMobile = mData.LoadString("user");
         mIsDriver = false;
-        
-        mTokenKey 		= (app.getCurrentSession()!=null)? app.getCurrentSession().getTokenKey():"";
-        mTokenVal 		= (app.getCurrentSession()!=null)? app.getCurrentSession().getTokenVal():"";
-        mUserMobile		= (app.getCurrentPassenger()!=null)? app.getCurrentPassenger().getMobile():"";
+        mApp			= app;
+        mTokenKey 		= (mApp.getCurrentSession()!=null)? mApp.getCurrentSession().getTokenKey():"";
+        mTokenVal 		= (mApp.getCurrentSession()!=null)? mApp.getCurrentSession().getTokenVal():"";
+        mUserMobile		= (mApp.getCurrentPassenger()!=null)? mApp.getCurrentPassenger().getMobile():"";
         initMapView();
         
         mLocClient = new LocationClient( this );
@@ -292,7 +295,7 @@ public class LocationOverlayDemo extends Activity {
     	mDialogView = getLayoutInflater().inflate(R.layout.record_dialog, null);
     	mPopCallTaxi = new PopupWindow(mDialogView, 600, 600);
 	    
-	    Toast.makeText(this.getApplicationContext(), mTokenKey+": "+mTokenVal, Toast.LENGTH_SHORT).show();
+	    Log.d(TAG, mTokenKey+": "+mTokenVal);
     }
     
     @Override
@@ -404,8 +407,9 @@ public class LocationOverlayDemo extends Activity {
         GetTaxiTask gtt = new GetTaxiTask();
         gtt.getTaxi(locData.longitude, locData.latitude);
         DemoApplication app = (DemoApplication)getApplicationContext();
-
-        if ( mReqId > 0 && mStatus != null && mStatus.equals(LocationOverlayDemo.STAT_WAITING_PAS_CONF) ) {
+        TaxiRequest taxiRequest = app.getCurrentTaxiRequest();
+        //if ( mReqId > 0 && taxiRequest != null && mStatus.equals(LocationOverlayDemo.STAT_WAITING_PAS_CONF) ) {
+        if (taxiRequest != null && taxiRequest.isWaitingPassengerConfirm()){
         // 确认司机请求，本次打车行为结束
         	if ( mShowDialogStat == 0 ) {
 	        	mShowDialogStat = 1;
@@ -419,11 +423,12 @@ public class LocationOverlayDemo extends Activity {
 						// 确认打车
 						mStatus = STAT_PASSENGER_TRY_CONFIRM;
 						mShowDialogStat = 0;
+						/*
 	            		GetTaxiTask pass = new GetTaxiTask();
-	    				Log.e("asdfasdfasdfasdfasdf", "**************************");
-
 	            		pass.passengerResponse(mReqId, GetTaxiTask.PASS_CONFIRM);
-	    				Log.e("asdfasdfasdfasdfasdf", "111**************************");
+	            		*/
+						ConfirmTask confirmRequest = new ConfirmTask(mApp,true);
+						confirmRequest.go();
 
 					}
 	        	};
@@ -434,9 +439,12 @@ public class LocationOverlayDemo extends Activity {
 						// 取消打车
 	        			mStatus = STAT_PASSENGER_TRY_CANCEL;
 	        			mShowDialogStat = 0;
+	        			/*
 	            		GetTaxiTask pass = new GetTaxiTask();
 	            		pass.passengerResponse(mReqId, GetTaxiTask.PASS_CANCEL);
-	            		
+	            		*/
+						ConfirmTask confirmRequest = new ConfirmTask(mApp,false);
+						confirmRequest.go();
 	            		resetStatus();
 					}
 	        	};
@@ -943,9 +951,9 @@ public class LocationOverlayDemo extends Activity {
 			// {"id":28,"state":"Waiting_Driver_Response","passenger_lat":8.0,"passenger_lng":8.0,"passenger_voice_url":"/uploads/taxi_request/voice/2013-05-31/03bd766e8ecc2e2429f1610c7bf6c3ec.m4a"}
 			// 用户只要处理state即可
 			JSONObject k = (JSONObject) jsParser.nextValue();
-			DemoApplication app = (DemoApplication)getApplicationContext();
-			app.setCurrentTaxiRequest(k);
-
+			Log.d(TAG,"Old State is :"+mApp.getCurrentTaxiRequest().getState());
+			mApp.getCurrentTaxiRequest().refresh(k);
+			Log.d(TAG,"New State is :"+mApp.getCurrentTaxiRequest().getState());
 			mStatus = k.getString("state");
 			String msg = null;
 			if ( mStatus.equals("Waiting_Driver_Response") ) {
@@ -1008,8 +1016,10 @@ public class LocationOverlayDemo extends Activity {
 			}
 		}
 		
+		@SuppressWarnings("static-access")
 		private void doCreateRequest(JSONTokener jsParser) throws JSONException {
 			JSONObject ret = (JSONObject)jsParser.nextValue();
+			mApp.setCurrentTaxiRequest(ret);
 			mReqId = ret.getInt("id");
 		}
 		
@@ -1017,6 +1027,7 @@ public class LocationOverlayDemo extends Activity {
 			// 保存并显示司机信息
 			// {"id":53,"state":"Success","passenger_mobile":"15910676326","driver_mobile":"15910676326","passenger_lat":8.0,"passenger_lng":8.0,"passenger_voice_url":"/uploads/taxi_request/voice/2013-06-01/e6d709e0158d6b312e0a30e24a656347.m4a","driver_lat":8.0,"driver_lng":8.0}
 			mConfirmObj = (JSONObject)jsParser.nextValue();
+			mApp.getCurrentTaxiRequest().refresh(mConfirmObj);
 			mStatus = STAT_PASSENGER_CONFIRM;
 		}
 		
