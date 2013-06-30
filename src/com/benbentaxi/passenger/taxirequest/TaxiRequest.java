@@ -30,10 +30,13 @@ public class TaxiRequest {
 		//TODO::时间戳判断
 		if (JsonHelper.getLong(obj, TaxiRequestApiConstant.ID) == this.mId){
 			init(obj);
+			this.mTaxiRequestJson = obj;
 		}else{
 			Log.e(TAG,"Old Id["+this.mId+"] New Id ["+JsonHelper.getLong(obj, TaxiRequestApiConstant.ID)+"]");
 		}
-		Log.d(TAG,"Refresh State To:"+this.getState().toString());
+		//Log.d(TAG,"Refresh State To:"+this.getState().toString());
+		//Log.d(TAG,"Refresh Json is:"+this.mTaxiRequestJson.toString());
+
 	}
 	public String getField(String key)
 	{
@@ -44,6 +47,7 @@ public class TaxiRequest {
 									  )/1000.0
 									);
 		}
+		Log.d(TAG,this.mTaxiRequestJson.toString());
 		return JsonHelper.getString(this.mTaxiRequestJson, key);
 	}
 	public String getState()
@@ -66,6 +70,13 @@ public class TaxiRequest {
 	public boolean isWaitingPassengerConfirm()
 	{
 		if (this.mTaxiRequestState  == TaxiRequestState.Waiting_Passenger_Confirm){
+			return true;
+		}
+		return false;
+	}
+	public boolean isTaxiRequestSuccess()
+	{
+		if(this.mTaxiRequestState == TaxiRequestState.Success){
 			return true;
 		}
 		return false;

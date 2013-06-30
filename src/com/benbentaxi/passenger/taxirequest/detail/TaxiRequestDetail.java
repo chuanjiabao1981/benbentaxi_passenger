@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.benbentaxi.api.FormRequest;
 import com.benbentaxi.passenger.R;
 import com.benbentaxi.passenger.demo.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
@@ -14,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +23,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 public class TaxiRequestDetail extends Activity {
-	
+	private final String TAG			     = TaxiRequestDetail.class.getName();
+
 	
 	private TaxiRequest mTaxiRequest = null;
 
@@ -46,6 +49,8 @@ public class TaxiRequestDetail extends Activity {
 		setContentView(R.layout.activity_taxi_request_detail);
 		
 		bindButton();
+        Log.d(TAG,app.getCurrentShowTaxiRequest().getDriverMobile());
+
 		
         ListView lv= (ListView)findViewById(R.id.detail_info_list);
         lv.setAdapter(new SimpleAdapter(this, getData(), R.layout.taxi_request_detail_item,   

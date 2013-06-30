@@ -453,10 +453,10 @@ public class LocationOverlayDemo extends Activity {
 	        	confirm.SetPositiveOnclick("确认", doOK);
 	        	confirm.show();
         	}
-        } else if ( mReqId > 0 && mStatus != null && mStatus.equals(STAT_PASSENGER_CONFIRM) ) {
+        } else if (taxiRequest != null && taxiRequest.isTaxiRequestSuccess()){
+        	//if ( mReqId > 0 && mStatus != null && mStatus.equals(STAT_PASSENGER_CONFIRM) ) {
         	if ( mShowDialogStat == 0 ) {
 	            app.setCurrentShowTaxiRequest(app.getCurrentTaxiRequest());
-	            Log.d(TAG,app.getCurrentShowTaxiRequest().getState());
 				Intent taxiRequestDetailIntent = new Intent(LocationOverlayDemo.this,TaxiRequestDetail.class);
 	        	LocationOverlayDemo.this.startActivity(taxiRequestDetailIntent);
 	        	mShowDialogStat = 1;
