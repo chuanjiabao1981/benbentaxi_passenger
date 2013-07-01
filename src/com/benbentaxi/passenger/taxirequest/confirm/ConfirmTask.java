@@ -7,7 +7,7 @@ import android.util.Log;
 import com.benbentaxi.Configure;
 import com.benbentaxi.Session;
 import com.benbentaxi.api.PostTask;
-import com.benbentaxi.passenger.demo.DemoApplication;
+import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestResponse;
 

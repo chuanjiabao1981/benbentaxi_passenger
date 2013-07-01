@@ -6,8 +6,8 @@ import android.util.Log;
 import com.benbentaxi.Configure;
 import com.benbentaxi.Passenger;
 import com.benbentaxi.api.PostTask;
-import com.benbentaxi.passenger.demo.DemoApplication;
-import com.benbentaxi.passenger.demo.LocationOverlayDemo;
+import com.benbentaxi.passenger.location.DemoApplication;
+import com.benbentaxi.passenger.location.LocationOverlayDemo;
 import com.benbentaxi.session.SessionResponse;
 
 public class LoginTask extends PostTask{

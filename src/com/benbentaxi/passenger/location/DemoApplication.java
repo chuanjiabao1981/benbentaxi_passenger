@@ -1,4 +1,4 @@
-﻿package com.benbentaxi.passenger.demo;
+﻿package com.benbentaxi.passenger.location;
 
 
 import org.json.JSONObject;

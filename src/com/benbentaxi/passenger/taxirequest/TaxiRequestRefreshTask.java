@@ -7,7 +7,7 @@ import android.util.Log;
 import com.benbentaxi.Configure;
 import com.benbentaxi.Session;
 import com.benbentaxi.api.GetTask;
-import com.benbentaxi.passenger.demo.DemoApplication;
+import com.benbentaxi.passenger.location.DemoApplication;
 
 public class TaxiRequestRefreshTask extends GetTask{
 	private final String TAG			     = TaxiRequestRefreshTask.class.getName();

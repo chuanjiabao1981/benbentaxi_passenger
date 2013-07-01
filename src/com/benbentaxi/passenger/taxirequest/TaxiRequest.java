@@ -7,7 +7,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.benbentaxi.passenger.demo.DemoApplication;
+import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.state.DefaultStateChangeHandler;
 import com.benbentaxi.passenger.taxirequest.state.FinalStateHandler;
 import com.benbentaxi.passenger.taxirequest.state.SimpleStateMachine;

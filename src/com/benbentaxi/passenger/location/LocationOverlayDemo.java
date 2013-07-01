@@ -1,4 +1,4 @@
-package com.benbentaxi.passenger.demo;
+package com.benbentaxi.passenger.location;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -407,7 +407,6 @@ public class LocationOverlayDemo extends Activity {
     	// 获取周边Taxi
         GetTaxiTask gtt = new GetTaxiTask();
         gtt.getTaxi(locData.longitude, locData.latitude);
-        Log.e(TAG,"xxxxxxxxxxxxxxxxxxxxxxx");
         DemoApplication app = (DemoApplication)getApplicationContext();
         TaxiRequest taxiRequest = app.getCurrentTaxiRequest();
         if (taxiRequest != null) {

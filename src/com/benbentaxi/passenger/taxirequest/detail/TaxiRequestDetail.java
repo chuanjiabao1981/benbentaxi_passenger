@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.benbentaxi.api.FormRequest;
 import com.benbentaxi.passenger.R;
-import com.benbentaxi.passenger.demo.DemoApplication;
+import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestApiConstant;
 

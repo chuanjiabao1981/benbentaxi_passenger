@@ -1,7 +1,7 @@
 package com.benbentaxi.passenger.taxirequest.confirm;
 
 import com.benbentaxi.passenger.R;
-import com.benbentaxi.passenger.demo.DemoApplication;
+import com.benbentaxi.passenger.location.DemoApplication;
 
 import android.app.Activity;
 import android.content.Context;

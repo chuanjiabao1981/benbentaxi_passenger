@@ -65,7 +65,7 @@
         android:smallScreens="true" />
 
     <application
-        android:name="com.benbentaxi.passenger.demo.DemoApplication"
+        android:name="com.benbentaxi.passenger.location.DemoApplication"
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name">
@@ -82,7 +82,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.benbentaxi.passenger.demo.LocationOverlayDemo"
+            android:name="com.benbentaxi.passenger.location.LocationOverlayDemo"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="sensor" >
         </activity>
