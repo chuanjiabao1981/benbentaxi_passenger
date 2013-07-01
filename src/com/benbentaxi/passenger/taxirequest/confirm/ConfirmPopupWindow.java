@@ -6,6 +6,7 @@ import com.benbentaxi.passenger.demo.DemoApplication;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +15,7 @@ import android.widget.TextView;
 
 public class ConfirmPopupWindow extends PopupWindow{
 	
-	
+	private final static String TAG = ConfirmPopupWindow.class.getName();
 	private final static String BTN_POS_TEXT= "确认";
 	private final static String BTN_NEG_TEXT= "重新打车";
 
@@ -42,7 +43,10 @@ public class ConfirmPopupWindow extends PopupWindow{
 		DemoApplication mApp = (DemoApplication)activity.getApplicationContext();
 		
 		mView = this.getContentView();
-
+		Display display = activity.getWindowManager().getDefaultDisplay();
+		Log.e(TAG,"----------------------");
+		Log.e(TAG,""+display.getHeight());
+		Log.e(TAG,""+display.getWidth());
 		mTitle = (TextView)mView.findViewById(R.id.tvConfirmTitle);
     	mContent = (TextView)mView.findViewById(R.id.tvConfirmContent);
     	mBtnPos = (Button)mView.findViewById(R.id.btnConfirmOk);

@@ -105,7 +105,7 @@
 
         <activity
             android:name="com.benbentaxi.passenger.login.ListDetail"
-            android:label="@string/detail_title" >
+            android:label="打车详情" >
         </activity>
         <activity
             android:name="com.benbentaxi.passenger.register.RegisterActivity"
@@ -116,7 +116,7 @@
         </activity>
         <activity
             android:name="com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail"
-            android:label="@string/title_activity_taxi_request_detail" >
+            android:label="详细信息" >
         </activity>
     </application>
 

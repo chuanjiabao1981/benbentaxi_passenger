@@ -61,6 +61,7 @@ import com.benbentaxi.passenger.login.function.GetInfoTask;
 import com.benbentaxi.passenger.login.function.IdShow;
 import com.benbentaxi.passenger.login.function.ListShow;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
+import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
 import com.benbentaxi.passenger.taxirequest.confirm.ConfirmTask;
 import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
 public class LocationOverlayDemo extends Activity {
@@ -407,6 +408,9 @@ public class LocationOverlayDemo extends Activity {
         gtt.getTaxi(locData.longitude, locData.latitude);
         DemoApplication app = (DemoApplication)getApplicationContext();
         TaxiRequest taxiRequest = app.getCurrentTaxiRequest();
+        if (taxiRequest != null){
+        	
+        }
         //if ( mReqId > 0 && taxiRequest != null && mStatus.equals(LocationOverlayDemo.STAT_WAITING_PAS_CONF) ) {
         if (taxiRequest != null && taxiRequest.isWaitingPassengerConfirm()){
         // 确认司机请求，本次打车行为结束
@@ -414,8 +418,10 @@ public class LocationOverlayDemo extends Activity {
 	        	mShowDialogStat = 1;
 	        	/*ConfirmPopupWindow confirmPopupWindow = new ConfirmPopupWindow(this);
 	        	confirmPopupWindow.show();
+	        	
+	        	
 	        	*/
-				ConfirmShow confirm = new ConfirmShow("有司机响应，距离您约", mDistance+"公里", this);
+				ConfirmShow confirm = new ConfirmShow("有司机响应，距离您约", "0.2公里", this);
 	        	View.OnClickListener doOK = new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -460,10 +466,13 @@ public class LocationOverlayDemo extends Activity {
 	        	LocationOverlayDemo.this.startActivity(taxiRequestDetailIntent);
 	        	mShowDialogStat = 1;
         	}
-        } else if ( mReqId > 0 ) {
+        }else if (taxiRequest != null) {
+        //else if ( mReqId > 0 ) {
         // 发起轮询
-        	GetTaxiTask getrr = new GetTaxiTask();
-        	getrr.getRequest(mReqId);
+//        	GetTaxiTask getrr = new GetTaxiTask();
+//        	getrr.getRequest(mReqId);
+        	TaxiRequestRefreshTask refreshTask = new TaxiRequestRefreshTask(this.mApp);
+        	refreshTask.go();
         }
     }
     

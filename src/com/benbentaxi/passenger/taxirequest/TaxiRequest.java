@@ -27,6 +27,7 @@ public class TaxiRequest {
 	
 	public void refresh(JSONObject obj)
 	{
+		//TODO::Lock
 		//TODO::时间戳判断
 		if (JsonHelper.getLong(obj, TaxiRequestApiConstant.ID) == this.mId){
 			init(obj);
@@ -34,6 +35,7 @@ public class TaxiRequest {
 		}else{
 			Log.e(TAG,"Old Id["+this.mId+"] New Id ["+JsonHelper.getLong(obj, TaxiRequestApiConstant.ID)+"]");
 		}
+		Log.d(TAG,this.mId+":"+this.mTaxiRequestState.getHumanText());
 		//Log.d(TAG,"Refresh State To:"+this.getState().toString());
 		//Log.d(TAG,"Refresh Json is:"+this.mTaxiRequestJson.toString());
 
@@ -41,13 +43,18 @@ public class TaxiRequest {
 	public String getField(String key)
 	{
 		if (TaxiRequestApiConstant.DISTANCE.equals(key)){
+			return "0.2";
+			/*
 			return   String.valueOf(
 							Math.sqrt(
 										((mDriverLat - mPassengerLat)*(mDriverLat - mPassengerLat) + (mDriverLng-mPassengerLng) *  (mDriverLng-mPassengerLng))
 									  )/1000.0
-									);
+									);*/
 		}
-		Log.d(TAG,this.mTaxiRequestJson.toString());
+		if (TaxiRequestApiConstant.PLATE.equals(key)){
+			return "晋C13452";
+		}
+//		Log.d(TAG,this.mTaxiRequestJson.toString());
 		return JsonHelper.getString(this.mTaxiRequestJson, key);
 	}
 	public String getState()
@@ -81,16 +88,20 @@ public class TaxiRequest {
 		}
 		return false;
 	}
-	private void init(JSONObject obj)
+	public void init(JSONObject obj)
 	{
-		mId 				= JsonHelper.getLong(obj, TaxiRequestApiConstant.ID);
-		mPassengerMobile	= JsonHelper.getString(obj, TaxiRequestApiConstant.PASSENGER_MOBILE);
-		mDriverMobile		= JsonHelper.getString(obj, TaxiRequestApiConstant.DRIVER_MOBILE);
-		mDriverLat 			= JsonHelper.getFloat(obj, TaxiRequestApiConstant.DRIVER_LAT);
-		mDriverLng			= JsonHelper.getFloat(obj, TaxiRequestApiConstant.DRIVER_LNG);
-		mPassengerLat		= JsonHelper.getFloat(obj, TaxiRequestApiConstant.PASSENGER_LAT);
-		mPassengerLng		= JsonHelper.getFloat(obj, TaxiRequestApiConstant.PASSENGER_LNG);
-		mTaxiRequestState   = TaxiRequestApiConstant.getState(JsonHelper.getString(obj,TaxiRequestApiConstant.STATE));
+		this.mTaxiRequestJson 	= obj;
+		mTaxiRequestState 		= TaxiRequestApiConstant.getState(JsonHelper.getString(obj, TaxiRequestApiConstant.STATE));
+		mId 				 	= JsonHelper.getLong(obj, TaxiRequestApiConstant.ID);
+		mPassengerMobile		= JsonHelper.getString(obj, TaxiRequestApiConstant.PASSENGER_MOBILE);
+		mDriverMobile			= JsonHelper.getString(obj, TaxiRequestApiConstant.DRIVER_MOBILE);
+		mDriverLat 				= JsonHelper.getFloat(obj, TaxiRequestApiConstant.DRIVER_LAT);
+		mDriverLng				= JsonHelper.getFloat(obj, TaxiRequestApiConstant.DRIVER_LNG);
+		mPassengerLat			= JsonHelper.getFloat(obj, TaxiRequestApiConstant.PASSENGER_LAT);
+		mPassengerLng			= JsonHelper.getFloat(obj, TaxiRequestApiConstant.PASSENGER_LNG);
 	}
+	
+	
+	
 	
 }

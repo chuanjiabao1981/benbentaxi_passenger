@@ -57,5 +57,10 @@ public abstract class GetTask extends JsonHttpTask{
 		return true;
 
 	}
+	
+	public String getResult()
+	{
+		return new String(result);
+	}
 
 }
