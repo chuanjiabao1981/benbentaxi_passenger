@@ -1,7 +1,6 @@
 package com.benbentaxi.passenger.taxirequest.confirm;
 
 
-import org.json.JSONObject;
 
 import android.util.Log;
 
@@ -59,8 +58,7 @@ public class ConfirmTask extends PostTask{
 	@Override
 	public void go() {
 		if (this.mTaxiRequestId > 0){
-			Log.d(TAG,"id is ["+this.mTaxiRequestId+"]");
-
+			Log.i(TAG,String.format("Send taxi request["+this.mTaxiRequestId+"] is %s Message!",this.mIsConfirm ? "[Confirmed]" : "[Canceled]"));
 			execute();
 		}else{
 			Log.e(TAG,"id is not illagle ["+this.mTaxiRequestId+"]");
@@ -73,7 +71,7 @@ public class ConfirmTask extends PostTask{
 			taxiRequestResponse.setSysErrorMessage(this.getErrorMsg());
 		}
 		if (!taxiRequestResponse.hasError()){
-					this.mTaxiRequest.refresh((JSONObject) taxiRequestResponse.getJsonResult());
+					this.mTaxiRequest.refresh(taxiRequestResponse);
 		}
 	}
 

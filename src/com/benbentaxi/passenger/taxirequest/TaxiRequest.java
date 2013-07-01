@@ -3,13 +3,23 @@ package com.benbentaxi.passenger.taxirequest;
 import org.json.JSONObject;
 
 
+import android.app.Activity;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.benbentaxi.passenger.demo.DemoApplication;
+import com.benbentaxi.passenger.taxirequest.state.DefaultStateChangeHandler;
+import com.benbentaxi.passenger.taxirequest.state.FinalStateHandler;
+import com.benbentaxi.passenger.taxirequest.state.SimpleStateMachine;
+import com.benbentaxi.passenger.taxirequest.state.StateChangeHandler;
+import com.benbentaxi.passenger.taxirequest.state.SuccessStateHandler;
+import com.benbentaxi.passenger.taxirequest.state.TaxiRequestState;
+import com.benbentaxi.passenger.taxirequest.state.WaitingConfirmStateHandler;
 import com.benbentaxi.util.JsonHelper;
 
 public class TaxiRequest {
+	private static SimpleStateMachine mSimpleStateMachine;
 	private String TAG = TaxiRequest.class.getName();
-
 	private long   mId;
 	private String mPassengerMobile;
 	private String mDriverMobile;
@@ -18,27 +28,69 @@ public class TaxiRequest {
 	private float  mPassengerLat = -1;
 	private float  mPassengerLng = -1;
 	private JSONObject mTaxiRequestJson = null;
+	private Activity mActivity 			= null;
 	private TaxiRequestState mTaxiRequestState = TaxiRequestState.Waiting_Driver_Response;
 	
-	public TaxiRequest(JSONObject obj)
+	private static FinalStateHandler FINAL_STATE_HANDLER = new FinalStateHandler();
+	
+	static {
+		mSimpleStateMachine = new SimpleStateMachine(new DefaultStateChangeHandler());
+		mSimpleStateMachine.addHandler(TaxiRequestState.Canceled_By_Passenger, FINAL_STATE_HANDLER);
+		mSimpleStateMachine.addHandler(TaxiRequestState.Success, new SuccessStateHandler());
+		mSimpleStateMachine.addHandler(TaxiRequestState.Waiting_Passenger_Confirm, new WaitingConfirmStateHandler());
+		mSimpleStateMachine.addHandler(TaxiRequestState.TimeOut, FINAL_STATE_HANDLER);
+	}
+	
+	
+	
+	public TaxiRequest(Activity activity,JSONObject obj)
 	{	this.mTaxiRequestJson = obj;
+		this.mActivity 		  = activity;
 		init(obj);
 	}
 	
-	public void refresh(JSONObject obj)
+	public void refresh(TaxiRequestResponse newState)
 	{
+		if (newState == null){
+			Log.e(TAG,"newState is null");
+			return;
+		}
+		if (newState.getJsonResult() == null){
+			Log.e(TAG,"newState has no resualt");
+			return;
+		}
+		long newId = JsonHelper.getLong((JSONObject) newState.getJsonResult(), TaxiRequestApiConstant.ID);
+		if (newId != this.mId){
+			Log.e(TAG,"Old Id["+this.mId+"] New Id ["+newId+"]");
+			return;
+		}
+		TaxiRequestState oldTaxiRequestState = this.mTaxiRequestState;
+		TaxiRequestState newTaxiRequestState = TaxiRequestApiConstant.getState(JsonHelper.getString((JSONObject) newState.getJsonResult(), TaxiRequestApiConstant.STATE));
+		StateChangeHandler handler 			 = TaxiRequest.mSimpleStateMachine.findHandler(this.mTaxiRequestState, newTaxiRequestState);
+		if (handler == null){
+			Log.e(TAG,"from " + this.mTaxiRequestState.toString() +" to "+newTaxiRequestState.toString() +" not find any handler!");
+			return;
+		}
 		//TODO::Lock
 		//TODO::时间戳判断
-		if (JsonHelper.getLong(obj, TaxiRequestApiConstant.ID) == this.mId){
-			init(obj);
-			this.mTaxiRequestJson = obj;
-		}else{
-			Log.e(TAG,"Old Id["+this.mId+"] New Id ["+JsonHelper.getLong(obj, TaxiRequestApiConstant.ID)+"]");
+
+		handler.handler(this,newState);
+		Log.i(TAG,"From [" + oldTaxiRequestState.toString() +"] to ["+newTaxiRequestState.toString() +"] done!");
+
+		if (this.mActivity != null){
+			Toast.makeText(this.mActivity, "请求"+this.mId+","+this.mTaxiRequestState.getHumanText(), Toast.LENGTH_LONG).show();
 		}
-		Log.d(TAG,this.mId+":"+this.mTaxiRequestState.getHumanText());
 		//Log.d(TAG,"Refresh State To:"+this.getState().toString());
 		//Log.d(TAG,"Refresh Json is:"+this.mTaxiRequestJson.toString());
 
+	}
+	public DemoApplication getApp()
+	{
+		return (DemoApplication) this.mActivity.getApplication();
+	}
+	public Activity getActivity()
+	{
+		return this.mActivity;
 	}
 	public String getField(String key)
 	{

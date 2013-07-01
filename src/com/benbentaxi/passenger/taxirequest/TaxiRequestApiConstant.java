@@ -3,6 +3,8 @@ package com.benbentaxi.passenger.taxirequest;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.benbentaxi.passenger.taxirequest.state.TaxiRequestState;
+
 public class TaxiRequestApiConstant {
 	public final static String ID 				= "id";
 	public final static String PASSENGER_MOBILE = "passenger_mobile";

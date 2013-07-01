@@ -62,7 +62,7 @@ public class TaxiRequestRefreshTask extends GetTask{
 			taxiRequestResponse.setSysErrorMessage(this.getErrorMsg());
 		}
 		if (!taxiRequestResponse.hasError()){
-					this.mTaxiRequest.refresh((JSONObject) taxiRequestResponse.getJsonResult());
+					this.mTaxiRequest.refresh(taxiRequestResponse);
 		}
 	}
 

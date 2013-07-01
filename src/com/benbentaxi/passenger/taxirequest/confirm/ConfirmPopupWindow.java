@@ -43,10 +43,10 @@ public class ConfirmPopupWindow extends PopupWindow{
 		DemoApplication mApp = (DemoApplication)activity.getApplicationContext();
 		
 		mView = this.getContentView();
-		Display display = activity.getWindowManager().getDefaultDisplay();
-		Log.e(TAG,"----------------------");
-		Log.e(TAG,""+display.getHeight());
-		Log.e(TAG,""+display.getWidth());
+//		Display display = activity.getWindowManager().getDefaultDisplay();
+//		Log.e(TAG,"----------------------");
+//		Log.e(TAG,""+display.getHeight());
+//		Log.e(TAG,""+display.getWidth());
 		mTitle = (TextView)mView.findViewById(R.id.tvConfirmTitle);
     	mContent = (TextView)mView.findViewById(R.id.tvConfirmContent);
     	mBtnPos = (Button)mView.findViewById(R.id.btnConfirmOk);
@@ -71,8 +71,30 @@ public class ConfirmPopupWindow extends PopupWindow{
 	{
 		mBtnPos.setOnClickListener(mPosfunc);
 		mBtnNeg.setOnClickListener(mNegfunc);
+		mBtnPos.setOnClickListener(
+				new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						ConfirmTask confirmRequest = new ConfirmTask(mApp,true);
+						confirmRequest.go();
+						ConfirmPopupWindow.this.dismiss();
 
+					}
+	        	}
+		);
+		mBtnNeg.setOnClickListener(
+				new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						ConfirmTask confirmRequest = new ConfirmTask(mApp,false);
+						confirmRequest.go();
+						ConfirmPopupWindow.this.dismiss();
+
+					}
+	        	}
+		);
 		showAtLocation(mView, Gravity.CENTER, 0, 0);
+		
 	}
 
 	

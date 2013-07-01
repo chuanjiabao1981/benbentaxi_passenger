@@ -1,7 +1,8 @@
-package com.benbentaxi.passenger.taxirequest;
+package com.benbentaxi.passenger.taxirequest.state;
 
 import java.util.HashMap;
 import java.util.Map;
+
 
 public class SimpleStateMachine {
 	public Map<String,StateChangeHandler> mStateHandlerSets = null;
@@ -17,7 +18,7 @@ public class SimpleStateMachine {
 		mStateHandlerSets.put( from.toString() + to.toString(),handler);
 	}
 	//设置从（非）s状态，装哈u到s状态，要调用的handler
-	public void addHandler(TaxiRequest s,StateChangeHandler handler)
+	public void addHandler(TaxiRequestState s,StateChangeHandler handler)
 	{
 		mStateHandlerSets.put(s.toString(), handler);
 	}
