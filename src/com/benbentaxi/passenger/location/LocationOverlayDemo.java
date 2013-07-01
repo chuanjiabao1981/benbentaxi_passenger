@@ -893,76 +893,7 @@ public class LocationOverlayDemo extends Activity {
 		    }
 		}
 		
-		@SuppressWarnings("static-access")
-		private void doGetRequest(JSONTokener jsParser) throws JSONException {
-			// {"id":28,"state":"Waiting_Driver_Response","passenger_lat":8.0,"passenger_lng":8.0,"passenger_voice_url":"/uploads/taxi_request/voice/2013-05-31/03bd766e8ecc2e2429f1610c7bf6c3ec.m4a"}
-			// 用户只要处理state即可
-			Log.e(TAG,"If See me  it is terrible fail![1]");
-			JSONObject k = (JSONObject) jsParser.nextValue();
-			Log.d(TAG,"Old State is :"+mApp.getCurrentTaxiRequest().getState());
-			//mApp.getCurrentTaxiRequest().refresh(k);
-			Log.d(TAG,"New State is :"+mApp.getCurrentTaxiRequest().getState());
-			mStatus = k.getString("state");
-			String msg = null;
-			if ( mStatus.equals("Waiting_Driver_Response") ) {
-				// 继续等待
-				if ( _type == TYPE_ASK_REQ ) {
-					// 乘客态
-					msg = "请求["+mReqId+"]等待司机响应, 附近"+mGeoList.size()+"辆";
-				} else {
-					// 司机态
-					msg = "乘客请求["+mReqId+"]等待您接受, 附近有"+mGeoList.size()+"个乘客";
-				}
-				
-			} else if ( mStatus.equals("Waiting_Passenger_Confirm") ) {
-				// 司机已应答，等待用户确认
-				if ( _type == TYPE_ASK_REQ ) {
-					// 乘客态
-					msg = "请求["+mReqId+"]已有司机应答, 附近"+mGeoList.size()+"辆";
-				} else {
-					// 司机态
-					msg = "乘客请求["+mReqId+"]您已接受, 附近有"+mGeoList.size()+"个乘客";
-				}
-				
-			} else if ( mStatus.equals("TimeOut") ) {
-				// 超时
-				if ( _type == TYPE_ASK_REQ ) {
-					// 乘客态
-					msg = "请求["+mReqId+"]已超时, 附近"+mGeoList.size()+"辆";
-				} else {
-					// 司机态
-					msg = "乘客请求["+mReqId+"]已超时, 附近有"+mGeoList.size()+"个乘客";
-				}
-				LocationOverlayDemo.this.resetStatus();
-				
-			} else if ( mStatus.equals("Canceled_By_Passenger") ) {
-				// 用户取消
-				if ( _type == TYPE_ASK_REQ ) {
-					// 乘客态
-					msg = "请求["+mReqId+"]已被乘客取消, 附近"+mGeoList.size()+"辆";
-				} else {
-					// 司机态
-					msg = "乘客请求["+mReqId+"]已被取消, 附近有"+mGeoList.size()+"个乘客";
-				}
-				LocationOverlayDemo.this.resetStatus();
-				
-			} else if ( mStatus.equals("Success") ) {
-				// 用户确认，本次打车成功
-				if ( _type == TYPE_ASK_REQ ) {
-					// 乘客态
-					msg = "请求["+mReqId+"]打车成功！";
-				} else {
-					// 司机态
-					msg = "乘客请求["+mReqId+"]已确认，请前往乘客所在地！";
-				}
-				LocationOverlayDemo.this.resetStatus();
-			}
-			
-			if ( msg != null ) {
-				Toast.makeText(LocationOverlayDemo.this.getApplicationContext(), msg,
-						Toast.LENGTH_SHORT).show();
-			}
-		}
+		
 		
 		@SuppressWarnings("static-access")
 		private void doCreateRequest(JSONTokener jsParser) throws JSONException {
