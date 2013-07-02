@@ -11,7 +11,6 @@ import org.json.JSONTokener;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.AudioFormat;
@@ -19,7 +18,6 @@ import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,16 +53,12 @@ import com.baidu.mapapi.map.MyLocationOverlay;
 import com.baidu.mapapi.map.OverlayItem;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.benbentaxi.passenger.R;
-import com.benbentaxi.passenger.login.function.ConfirmShow;
 import com.benbentaxi.passenger.login.function.DataPreference;
 import com.benbentaxi.passenger.login.function.GetInfoTask;
 import com.benbentaxi.passenger.login.function.IdShow;
 import com.benbentaxi.passenger.login.function.ListShow;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
-import com.benbentaxi.passenger.taxirequest.confirm.ConfirmPopupWindow;
-import com.benbentaxi.passenger.taxirequest.confirm.ConfirmTask;
-import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
 public class LocationOverlayDemo extends Activity {
 	
 	private String TAG = LocationOverlayDemo.class.getName();
@@ -99,26 +93,16 @@ public class LocationOverlayDemo extends Activity {
         	case MSG_HANDLE_MAP_MOVE:
         		break;
         	case MSG_HANDLE_POS_REFRESH:
-                if ( LocationOverlayDemo.this.mIsDriver ) {
-                	doDriver();
-                } else {
-                	doPassenger();
-                }
+                doPassenger();
         		break;
         	default:
         		if ( msg.what >= MSG_HANDLE_ITEM_TOUCH ) {
         			int idx = msg.what-MSG_HANDLE_ITEM_TOUCH;
             		try {
-						if ( mIsDriver ) {
-							mConfirmObj = mReqInfo.getJSONObject(idx);
-							mReqId = mConfirmObj.getInt("id");
-							showPassengerRequestInfo(mReqId, mConfirmObj);
-						} else {
-							// 乘客态，显示司机信息
+													// 乘客态，显示司机信息
 							JSONObject obj = mReqInfo.getJSONObject(idx);
 							int drvid = obj.getInt("driver_id");
 							showDriverInfo(drvid, obj);
-						}
 					} catch (JSONException e) {
 						resetStatus();
 						// 下标异常
@@ -145,12 +129,10 @@ public class LocationOverlayDemo extends Activity {
 	public List<Drawable>  res = new ArrayList<Drawable>();
 	private Drawable mDrvMarker;
 	
-	private DataPreference mData;
 	private String mUserMobile;
 	private int mReqId = -1; // 乘客发起的请求id
 	private boolean mIsGetLocation = false; // 判断是否成功获取地理位置
 	private String mStatus;
-	private boolean mIsDriver = false; // 是否是司机
 	//private boolean mDrvConfirm = false; // 司机是否确认了请求
 	private double mDistance = 0.0; // 乘客/司机间距离
 	
@@ -162,20 +144,13 @@ public class LocationOverlayDemo extends Activity {
 	private View mDialogView; // 录音对话框的view
 	private PopupWindow mPopCallTaxi; // 录音的弹出窗口
 	
-	private final static String STAT_DRV_TRY_GET_REQUEST = "Driver_Try_Get_Request";
-	private final static String STAT_WAITING_DRV_RESP = "Waiting_Driver_Response";
-	private final static String STAT_WAITING_PAS_CONF = "Waiting_Passenger_Confirm";
 	private final static String STAT_PASSENGER_CONFIRM = "Passenger_Confirm";
-	private final static String STAT_PASSENGER_TRY_CONFIRM = "Passenger_Try_Confirm";
-	private final static String STAT_SUCCESS = "Success";
 	private final static String STAT_PASSENGER_CANCEL = "Passenger_Cancel";
-	private final static String STAT_PASSENGER_TRY_CANCEL = "Passenger_Try_cancel";
 	
 	public final static int MSG_HANDLE_MAP_MOVE = 1;
 	public final static int MSG_HANDLE_POS_REFRESH = 2;
 	public final static int MSG_HANDLE_ITEM_TOUCH = 10000;
 	
-	private static int mShowDialogStat = 0;
 	
 	private ListShow ssss =null;
 	private DemoApplication mApp = null;
@@ -201,11 +176,6 @@ public class LocationOverlayDemo extends Activity {
         mMapView = (MapView)findViewById(R.id.bmapView);
         mMapController = mMapView.getController();
         
-        mData = new DataPreference(this.getApplicationContext());
-        //mTokenKey = mData.LoadString("token_key");
-        //mTokenVal = mData.LoadString("token_value");
-        //mUserMobile = mData.LoadString("user");
-        mIsDriver = false;
         mApp			= app;
         mTokenKey 		= (mApp.getCurrentSession()!=null)? mApp.getCurrentSession().getTokenKey():"";
         mTokenVal 		= (mApp.getCurrentSession()!=null)? mApp.getCurrentSession().getTokenVal():"";
@@ -256,23 +226,8 @@ public class LocationOverlayDemo extends Activity {
 		};
 		mMapView.regMapViewListener(DemoApplication.getInstance().mBMapManager, mMapListener);
 		
-	    // 初始化出租车/乘客位置列表
-		if ( mIsDriver ) {
-			mDrvMarker = this.getResources().getDrawable(R.drawable.icon_marka);
-			res.add(getResources().getDrawable(R.drawable.icon_marka));
-			res.add(getResources().getDrawable(R.drawable.icon_markb));
-			res.add(getResources().getDrawable(R.drawable.icon_markc));
-			res.add(getResources().getDrawable(R.drawable.icon_markd));
-			res.add(getResources().getDrawable(R.drawable.icon_marke));
-			res.add(getResources().getDrawable(R.drawable.icon_markf));
-			res.add(getResources().getDrawable(R.drawable.icon_markg));
-			res.add(getResources().getDrawable(R.drawable.icon_markh));
-			res.add(getResources().getDrawable(R.drawable.icon_marki));
-			res.add(getResources().getDrawable(R.drawable.icon_markj));
-		} else {
-			mDrvMarker = this.getResources().getDrawable(R.drawable.steering);
-			res.add(getResources().getDrawable(R.drawable.steering));
-		}
+		mDrvMarker = this.getResources().getDrawable(R.drawable.steering);
+		res.add(getResources().getDrawable(R.drawable.steering));
 	    ov = new OverlayTest(mDrvMarker, this,mMapView, MsgHandler); 
 	    mMapView.getOverlays().add(ov);
 	    
@@ -289,9 +244,6 @@ public class LocationOverlayDemo extends Activity {
 	    // 初始化声音组件
 	    initAudio();
 	    
-	    if ( mIsDriver ) {
-	    	testUpdateButton.setVisibility(View.GONE);
-	    }
 	    
     	mDialogView = getLayoutInflater().inflate(R.layout.record_dialog, null);
     	mPopCallTaxi = new PopupWindow(mDialogView, 600, 600);
@@ -351,11 +303,7 @@ public class LocationOverlayDemo extends Activity {
     }
     
     private void initAudio() {
-    	if ( mIsDriver ) {
-        	mAudioBufSize = AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT);
-    	} else {
         	mAudioBufSize = AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT);
-    	}
 
 
     	mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 44100, 
@@ -386,21 +334,6 @@ public class LocationOverlayDemo extends Activity {
     }
 
     
-    private void doDriver() {
-    	// 上报司机位置
-    	GetTaxiTask dtt = new GetTaxiTask();
-    	dtt.driverReport(locData.longitude, locData.latitude, locData.accuracy, "gsm");
-    	
-    	// 获取taxirequest
-    	if ( mReqId < 0 ) {
-    		GetTaxiTask drvreq = new GetTaxiTask();
-    		drvreq.driverGetRequest(locData.longitude, locData.latitude, locData.accuracy);       	
-    	} else {
-    	// 轮询request
-    		GetTaxiTask drvask = new GetTaxiTask();
-    		drvask.driverAskRequest(mReqId);
-    	}
-    }
     
     @SuppressWarnings("static-access")
 	private void doPassenger() {
@@ -482,53 +415,7 @@ public class LocationOverlayDemo extends Activity {
     	confirm.getIdDialog().show();
     }
     
-    private void showPassengerRequestInfo(int idx, final JSONObject obj) throws JSONException {
-    	String[] voiceUrl = new String[5];
-    	final DecimalFormat df = new DecimalFormat("#.##");
-		try {
-			voiceUrl[0] = "ID"+obj.getInt("id");
-			voiceUrl[1] = "12345";
-			voiceUrl[2] = df.format(obj.getDouble("passenger_lat"))+"/"+df.format(obj.getDouble("passenger_lng"));
-			voiceUrl[3] = "大连西路120号";
-			voiceUrl[4] = "2013-06-25 00:44:22";
-			//voiceUrl[3] = obj.getString("passenger_voice_url");
-		} catch (JSONException e) {
-			voiceUrl[0] = "未知";
-			voiceUrl[1] = "未知";
-			voiceUrl[2] = "未知";
-			voiceUrl[3] = "未知";
-			voiceUrl[4] = "未知";
-			//voiceUrl[3] = "乘客信息获取错误: "+e.toString();
-		}
-				
-		ListShow info = new ListShow(voiceUrl, this);
-		Log.e("444444444444", "**************");
-    	View.OnClickListener doOK = new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// 确认request
-	    		mStatus = STAT_DRV_TRY_GET_REQUEST;
-	    		GetTaxiTask drvcon = new GetTaxiTask();
-	    		drvcon.driverConfirm(locData.longitude, locData.latitude, mReqId);
-	    		
-	    		String mobile;
-	    		try {
-	    			mobile = "86"+obj.getInt("id");
-	    			//mobile = "12345";
-	    		} catch (JSONException e) {
-	    			mobile = "000000";
-	    		}
-	    		Uri uri = Uri.parse("tel:"+mobile);
-			    Intent incall = new Intent(Intent.ACTION_DIAL, uri);
-			    LocationOverlayDemo.this.startActivity(incall);
-			}
-    	};
-    	
-    	info.SetPositiveOnclick("电话乘客", doOK);
-    	info.show();
-		Log.e("555555555", "**************");
 
-    }
 	
 	/**
      * 监听函数，又新位置的时候，格式化成字符串，输出到屏幕中
@@ -580,15 +467,9 @@ public class LocationOverlayDemo extends Activity {
 		private static final int TYPE_GET_TAXI = 0;
 		private static final int TYPE_REQ_TAXI = 1;
 		private static final int TYPE_ASK_REQ = 2;
-		private static final int TYPE_PAS_CON = 3;
-		private static final int TYPE_PAS_CAN = 4;
-		private static final int TYPE_DRV_REP = 5;
-		private static final int TYPE_DRV_REQ = 6;
-		private static final int TYPE_DRV_CON = 7;
-		private static final int TYPE_DRV_ASK = 8;
-		
-		public static final String PASS_CONFIRM = "confirm";
-		public static final String PASS_CANCEL = "cancel";
+//		private static final int TYPE_PAS_CON = 3;
+//		private static final int TYPE_PAS_CAN = 4;
+				
 		
 		private String _useragent = "ning@benbentaxi";
 		private JSONObject _json_data;
@@ -634,83 +515,9 @@ public class LocationOverlayDemo extends Activity {
 			doPOST(url);
 		}
 		
-		public void passengerResponse(int id, String type) {
-			String url = "http://"+mTestHost+"/api/v1/taxi_requests/"+id+"/"+type;
-			if ( type.equals(PASS_CONFIRM) ) {
-				_type = TYPE_PAS_CON;
-			} else {
-				_type = TYPE_PAS_CAN;
-			}
-			
-			_json_data = new JSONObject();
-			try {
-				//{\"taxi_request\":{\"passenger_mobile\":\"15910676326\",\"passenger_lng\":\"8\",\"passenger_lat\":\"8\",\"waiting_time_range\":30}}" 
-				JSONObject sess = new JSONObject();
-				sess.put("id", id);
-				//_json_data.put("taxi_request", sess);
-			} catch (JSONException e) {
-				//_info.append("form json error: "+e.toString());
-			}
-			Log.e("dddddd","xxxxxxxx111111");
-			doPOST(url);
-			Log.e("dddddd","xxxxxx****x111111");
+				
 
-		}
 		
-		public void driverReport(double lng, double lat, double radius, String cootype) {
-			String url = "http://"+mTestHost+"/api/v1/driver_track_points";
-			_type = TYPE_DRV_REP;
-			
-			_json_data = new JSONObject();
-			try {
-				//{"driver_track_point":{"mobile":"15910676326", "lat":"8", "png":"8", "radius":100, "coortype":"gsm"}} 
-				JSONObject sess = new JSONObject();
-				sess.put("mobile", mUserMobile);
-				sess.put("lng", lng);
-				sess.put("lat", lat);
-				sess.put("radius", radius);
-				sess.put("coortype", cootype);
-				_json_data.put("driver_track_point", sess);
-			} catch (JSONException e) {
-				
-			}
-			
-			doPOST(url);
-		}
-		
-		public void driverGetRequest(double lng, double lat, double radius) {
-			// /api/v1/taxi_requests?lat=8&lng=8&radius=10
-			_type = TYPE_DRV_REQ;
-			String url =  "http://"+mTestHost+"/api/v1/taxi_requests/nearby?lat="+lat+"&lng="+lng+"&radius=5000";
-			super.initCookies(mTokenKey, mTokenVal, "42.121.55.211");
-			execute(url, _useragent, GetInfoTask.TYPE_GET);
-		}
-		
-		public void driverConfirm(double lng, double lat, int id) {
-			_type = TYPE_DRV_CON;
-			String url = "http://"+mTestHost+"/api/v1/taxi_requests/"+id+"/response";
-			
-			_json_data = new JSONObject();
-			try {
-				JSONObject sess = new JSONObject();
-				sess.put("driver_mobile", mUserMobile);
-				sess.put("driver_lat", lat);
-				sess.put("driver_lng", lng);
-				_json_data.put("taxi_response", sess);
-			} catch (JSONException e) {
-				
-			}
-			
-			doPOST(url);
-		}
-		
-		public void driverAskRequest(int id) {
-			_type = TYPE_DRV_ASK;
-			
-			String url = "http://"+mTestHost+"/api/v1/taxi_requests/"+id;
-			super.initCookies(mTokenKey, mTokenVal, "42.121.55.211");
-			execute(url, _useragent, GetInfoTask.TYPE_GET);
-		}
 		
 		private void doPOST(String url) {
 			// 一定要初始化cookie和content-type!!!!!
@@ -749,11 +556,10 @@ public class LocationOverlayDemo extends Activity {
 				try {
 					switch ( _type ) {
 					case TYPE_GET_TAXI:
-					case TYPE_DRV_REQ:
 						doGetList(data);
 						break;
 					case TYPE_ASK_REQ:
-					case TYPE_DRV_ASK:
+					//case TYPE_DRV_ASK:
 						//doGetRequest(jsParser);
 						break;
 					default:
@@ -792,18 +598,10 @@ public class LocationOverlayDemo extends Activity {
 					case TYPE_REQ_TAXI:
 						doCreateRequest(jsParser);
 						break;
-					case TYPE_PAS_CON:
-						doPassengerConfirm(jsParser);
-						break;
-					case TYPE_PAS_CAN:
-						doPassengerCancel(jsParser);
-						break;
-					case TYPE_DRV_CON:
-						doDriverConfirm(jsParser);
-						break;
-					case TYPE_DRV_REP:
-						doDriverReport(jsParser);
-						break;
+
+//					case TYPE_PAS_CAN:
+//						doPassengerCancel(jsParser);
+//						break;
 					default:
 						break;
 					}
@@ -859,12 +657,7 @@ public class LocationOverlayDemo extends Activity {
 	        		item= new OverlayItem(new GeoPoint(lat, lng),
 			        		"司机"+pos.getInt("driver_id"),"创建时间: "+pos.getString("created_at"));		
 	        		break;
-	        	case TYPE_DRV_REQ:
-		        	lat = (int)(pos.getDouble("passenger_lat")*1e6);
-		        	lng = (int)(pos.getDouble("passenger_lng")*1e6);
-	        		item= new OverlayItem(new GeoPoint(lat, lng),
-			        		"乘客"+pos.getInt("id"),"声音: "+pos.getString("passenger_voice_url"));
-	        		break;
+
 	        	default:
 	        		break;
 	        		
@@ -886,11 +679,6 @@ public class LocationOverlayDemo extends Activity {
 						Toast.LENGTH_SHORT).show();
 		    }
 		    
-		    if ( _type == TYPE_DRV_REQ && mReqId < 0 ) {
-		    	mStatus = STAT_WAITING_DRV_RESP;
-		    	Toast.makeText(LocationOverlayDemo.this.getApplicationContext(), "附近有"+mReqInfo.length()+"个乘客请求",
-						Toast.LENGTH_SHORT).show();
-		    }
 		}
 		
 		
@@ -918,18 +706,7 @@ public class LocationOverlayDemo extends Activity {
 			mStatus = STAT_PASSENGER_CANCEL;
 		}
 		
-		private void doDriverConfirm(JSONTokener jsParser) throws JSONException {
-			JSONObject ret = (JSONObject) jsParser.nextValue();
-			mStatus = ret.getString("state");
-		}
 		
-		private void doDriverReport(JSONTokener jsParser) throws JSONException {
-			JSONObject ret = (JSONObject) jsParser.nextValue();
-			if ( ! ret.getString("response").equals("ok") ) {
-				Toast.makeText(LocationOverlayDemo.this.getApplicationContext(), "司机上报失败: "+jsParser.toString(),
-						Toast.LENGTH_SHORT).show();
-			}
-		}
 	}
 	
 	private class DelayTask extends AsyncTask<Integer, Integer, Boolean> {
@@ -966,21 +743,6 @@ public class LocationOverlayDemo extends Activity {
 	
 	@Override
 	public boolean onKeyDown( int keyCode, KeyEvent event ) {
-		/*
-		if(keyCode == KeyEvent.KEYCODE_BACK && 
-				event.getAction() == KeyEvent.ACTION_DOWN) {
-			// 这里不需要再按两次，一次退出
-			if( exitTime == 0 ) {
-	            Toast.makeText(getApplicationContext(), "再按一次返回键退出", Toast.LENGTH_SHORT).show();
-	            exitTime = System.currentTimeMillis();
-			} else {
-				Toast.makeText(getApplicationContext(), "退出中...", Toast.LENGTH_SHORT).show();
-				exitTime = System.currentTimeMillis();
-				finish();
-			}
-	        return true;   
-	    }
-	    */
 	    return super.onKeyDown(keyCode, event);
 	}
 }
