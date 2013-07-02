@@ -38,4 +38,27 @@ public class JsonHelper {
 			return -1;
 		}
 	}
+	public static int getInt(JSONObject o,String k)
+	{
+		if (o == null)
+			return -1;
+		try {
+			return o.getInt(k);
+		} catch (JSONException e) {
+			return -1;
+		}
+	}
+	public static double getDouble(JSONObject o,String k)
+	{
+		if (o == null)
+			return -1f;
+		
+		try {
+			return  o.getDouble(k);
+		} catch (JSONException e) {
+			return -1f;
+		}
+	}
+
+
 }

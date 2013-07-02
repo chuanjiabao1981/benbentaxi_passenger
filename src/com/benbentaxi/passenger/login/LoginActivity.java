@@ -2,8 +2,8 @@ package com.benbentaxi.passenger.login;
 
 
 import com.benbentaxi.passenger.R;
-import com.benbentaxi.passenger.login.function.DataPreference;
 import com.benbentaxi.passenger.register.RegisterActivity;
+import com.benbentaxi.util.DataPreference;
 
 import android.app.Activity;
 import android.content.Intent;

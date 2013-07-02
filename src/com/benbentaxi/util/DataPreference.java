@@ -1,4 +1,4 @@
-package com.benbentaxi.passenger.login.function;
+package com.benbentaxi.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

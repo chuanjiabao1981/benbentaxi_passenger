@@ -1,7 +1,6 @@
 ﻿package com.benbentaxi.passenger.location;
 
 
-import org.json.JSONObject;
 
 import android.app.Application;
 import android.content.Context;
@@ -9,9 +8,11 @@ import android.widget.Toast;
 
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.MKGeneralListener;
+import com.baidu.mapapi.map.LocationData;
 import com.baidu.mapapi.map.MKEvent;
 import com.benbentaxi.Passenger;
 import com.benbentaxi.Session;
+import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 
 
@@ -22,6 +23,8 @@ public class DemoApplication extends Application {
     private static TaxiRequest CurrentTaxiRequest 		= null;
     private static Session 	   CurrentSession			= null;
     private static Passenger   CurrentPassenger			= null;
+    private static LocationData CurrentPassengerLocation 		= null;
+    private static NearByDriverTrackResponse CurrentNearbyDrivers = null;
     public boolean m_bKeyRight = true;
     BMapManager mBMapManager = null;
 
@@ -122,5 +125,22 @@ public class DemoApplication extends Application {
     public static TaxiRequest getCurrentShowTaxiRequest()
     {
     	return CurrentShowTaxiRequest;
+    }
+    
+    public static LocationData getCurrentPassengerLocation()
+    {
+    	return CurrentPassengerLocation;
+    }
+    public static void setCurrentPassengerLocation(LocationData locationData)
+    {
+    	CurrentPassengerLocation = locationData;
+    }
+    public static NearByDriverTrackResponse getCurrentNearByDriverTrack()
+    {
+    	return CurrentNearbyDrivers;
+    }
+    public static void setCurrentNearByDrivers(NearByDriverTrackResponse nearByDriverTrackResponse)
+    {
+    	CurrentNearbyDrivers = nearByDriverTrackResponse;
     }
 }

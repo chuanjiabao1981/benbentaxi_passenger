@@ -1,6 +1,5 @@
 package com.benbentaxi.passenger.taxirequest;
 
-import org.json.JSONObject;
 
 import android.util.Log;
 

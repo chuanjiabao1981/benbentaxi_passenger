@@ -1,4 +1,4 @@
-package com.benbentaxi.passenger.login.function;
+package com.benbentaxi.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

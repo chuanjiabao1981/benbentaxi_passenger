@@ -1,6 +1,6 @@
-package com.benbentaxi.passenger.login.function;
+package com.benbentaxi.util;
 
-import com.benbentaxi.passenger.login.function.EquipmentId;
+import com.benbentaxi.util.EquipmentId;
 
 import android.app.Activity;
 import android.app.AlertDialog;

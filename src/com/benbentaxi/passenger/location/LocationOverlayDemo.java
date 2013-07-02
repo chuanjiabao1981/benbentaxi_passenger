@@ -1,6 +1,5 @@
 package com.benbentaxi.passenger.location;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,12 +52,12 @@ import com.baidu.mapapi.map.MyLocationOverlay;
 import com.baidu.mapapi.map.OverlayItem;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.benbentaxi.passenger.R;
-import com.benbentaxi.passenger.login.function.DataPreference;
-import com.benbentaxi.passenger.login.function.GetInfoTask;
-import com.benbentaxi.passenger.login.function.IdShow;
-import com.benbentaxi.passenger.login.function.ListShow;
+import com.benbentaxi.passenger.nearbydriver.NearByDriverTask;
+import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
+import com.benbentaxi.util.GetInfoTask;
+import com.benbentaxi.util.IdShow;
 public class LocationOverlayDemo extends Activity {
 	
 	private String TAG = LocationOverlayDemo.class.getName();
@@ -83,7 +82,6 @@ public class LocationOverlayDemo extends Activity {
 	int index =0;
 	LocationData locData = null;
 	
-	//private long exitTime = 0;
 	
 	
 	Handler MsgHandler = new Handler() {
@@ -99,12 +97,12 @@ public class LocationOverlayDemo extends Activity {
         		if ( msg.what >= MSG_HANDLE_ITEM_TOUCH ) {
         			int idx = msg.what-MSG_HANDLE_ITEM_TOUCH;
             		try {
-													// 乘客态，显示司机信息
+						// 乘客态，显示司机信息
 							JSONObject obj = mReqInfo.getJSONObject(idx);
 							int drvid = obj.getInt("driver_id");
 							showDriverInfo(drvid, obj);
 					} catch (JSONException e) {
-						resetStatus();
+//						resetStatus();
 						// 下标异常
 		        		Toast.makeText(LocationOverlayDemo.this.getApplicationContext(), "请求状态异常: "+idx+"/"+mReqInfo.length(),
 								Toast.LENGTH_SHORT).show();
@@ -130,11 +128,7 @@ public class LocationOverlayDemo extends Activity {
 	private Drawable mDrvMarker;
 	
 	private String mUserMobile;
-	private int mReqId = -1; // 乘客发起的请求id
 	private boolean mIsGetLocation = false; // 判断是否成功获取地理位置
-	private String mStatus;
-	//private boolean mDrvConfirm = false; // 司机是否确认了请求
-	private double mDistance = 0.0; // 乘客/司机间距离
 	
 	private AudioRecord mAudioRecord; //  乘客声音
 	private AudioTrack mAudioTrack; // 播放乘客声音
@@ -144,15 +138,12 @@ public class LocationOverlayDemo extends Activity {
 	private View mDialogView; // 录音对话框的view
 	private PopupWindow mPopCallTaxi; // 录音的弹出窗口
 	
-	private final static String STAT_PASSENGER_CONFIRM = "Passenger_Confirm";
-	private final static String STAT_PASSENGER_CANCEL = "Passenger_Cancel";
 	
 	public final static int MSG_HANDLE_MAP_MOVE = 1;
 	public final static int MSG_HANDLE_POS_REFRESH = 2;
 	public final static int MSG_HANDLE_ITEM_TOUCH = 10000;
 	
 	
-	private ListShow ssss =null;
 	private DemoApplication mApp = null;
 	
 	private OnClickListener mCallTaxiListener = new OnClickListener(){
@@ -233,6 +224,7 @@ public class LocationOverlayDemo extends Activity {
 	    
 		myLocationOverlay = new MyLocationOverlay(mMapView);
 		locData = new LocationData();
+		mApp.setCurrentPassengerLocation(locData);
 	    myLocationOverlay.setData(locData);
 		mMapView.getOverlays().add(myLocationOverlay);
 		myLocationOverlay.enableCompass();
@@ -273,9 +265,6 @@ public class LocationOverlayDemo extends Activity {
         if (app.mBMapManager != null) {
             app.mBMapManager.destroy();
             app.mBMapManager = null;
-        }
-        if (ssss != null){
-        	ssss.ppppp();
         }
         super.onDestroy();
     }
@@ -338,14 +327,15 @@ public class LocationOverlayDemo extends Activity {
     @SuppressWarnings("static-access")
 	private void doPassenger() {
     	// 获取周边Taxi
-        GetTaxiTask gtt = new GetTaxiTask();
-        gtt.getTaxi(locData.longitude, locData.latitude);
-        DemoApplication app = (DemoApplication)getApplicationContext();
-        TaxiRequest taxiRequest = app.getCurrentTaxiRequest();
+        TaxiRequest taxiRequest = mApp.getCurrentTaxiRequest();
+        NearByDriverTask nearyByDriverTask = new NearByDriverTask(this.mApp);
+        nearyByDriverTask.go();
         if (taxiRequest != null) {
         	TaxiRequestRefreshTask refreshTask = new TaxiRequestRefreshTask(this.mApp);
         	refreshTask.go();
         }
+        //展示周边Taxi
+        ShowCurrentNearByDrivers();
     }
     
     private void showCalltaxi() {
@@ -453,46 +443,17 @@ public class LocationOverlayDemo extends Activity {
         }
     }
     
-    private void resetStatus() {
-    	this.mReqId = -1;
-    	//this.mDrvConfirm = false;
-    	this.mConfirmObj = null;
-    	this.mStatus = "";
-    	
-    	testUpdateButton.setText(this.getResources().getString(R.string.call_taxi));
-    }
 
     
 	private class GetTaxiTask extends GetInfoTask {
-		private static final int TYPE_GET_TAXI = 0;
 		private static final int TYPE_REQ_TAXI = 1;
-		private static final int TYPE_ASK_REQ = 2;
-//		private static final int TYPE_PAS_CON = 3;
-//		private static final int TYPE_PAS_CAN = 4;
 				
 		
 		private String _useragent = "ning@benbentaxi";
 		private JSONObject _json_data;
 		private int _type = -1;
 		
-		public void getTaxi(double lng, double lat) {
-			_type = TYPE_GET_TAXI;
-			String url =  "http://"+mTestHost+"/api/v1/users/nearby_driver?lat="+lat+"&lng="+lng;
-			super.initCookies(mTokenKey, mTokenVal, "42.121.55.211");
-			execute(url, _useragent, GetInfoTask.TYPE_GET);
-		}
-		
-		public void CancelTaxi() {
-			// TODO: 取消打车
-		}
-		
-		public void getRequest(int id) {
-			_type = TYPE_ASK_REQ;
-			String url = "http://"+mTestHost+"/api/v1/taxi_requests/"+id;
-			super.initCookies(mTokenKey, mTokenVal, "42.121.55.211");
-			execute(url, _useragent, GetInfoTask.TYPE_GET);
-		}
-		
+				
 		public void requireTaxi(double lng, double lat) {
 			_type = TYPE_REQ_TAXI;
 			String url = "http://"+mTestHost+"/api/v1/taxi_requests";
@@ -538,60 +499,16 @@ public class LocationOverlayDemo extends Activity {
 
 		@Override
 		protected void initPostValues() {
-			//sess_params.add(new BasicNameValuePair("","{\"session\":{\"name\":\"ceshi001\",\"password\":\"8\"}}"));
-			//post_param = "{\"session\":{\"name\":\"ceshi_ning\",\"password\":\"8\"}}";
 			if ( _json_data != null ) {
 				post_param = _json_data.toString();
 			}
 		}
 		
 		@Override
-		protected void onPostExecGet(Boolean succ) {
-			//_info.setText("Get "+this.getHttpCode()+"\n");
-			if ( succ ) {
-				String data = this.toString();
-				//_info.append("get result: \n"+data);
-				JSONTokener jsParser = new JSONTokener(data);
-				
-				try {
-					switch ( _type ) {
-					case TYPE_GET_TAXI:
-						doGetList(data);
-						break;
-					case TYPE_ASK_REQ:
-					//case TYPE_DRV_ASK:
-						//doGetRequest(jsParser);
-						break;
-					default:
-						break;
-					} 
-				} catch (JSONException e) {
-					//e.printStackTrace();
-					try {
-						JSONObject retobj = (JSONObject)jsParser.nextValue();
-						JSONObject err = retobj.getJSONObject("errors");
-						Toast.makeText(LocationOverlayDemo.this.getApplicationContext(), "返回: "+retobj.toString(), Toast.LENGTH_LONG).show();
-						//_info.append("errmsg \""+err.getJSONArray("base").getString(0)+"\"");
-						//_info.append("\ncookies: "+_sess_key.getName()+" "+_sess_key.getValue()+"\n");
-					} catch (JSONException ee) {
-						//_info.append("json error: "+ee.toString()+"\n"+"ret: "+data);
-					}
-				} catch (Exception e) {
-					Toast.makeText(LocationOverlayDemo.this.getApplicationContext(), "错误返回: "+data, Toast.LENGTH_LONG).show();
-				}
-			} else {
-				//_info.append("get errmsg: \n"+_errmsg);
-			}
-		}
-		
-		@Override
 		protected void onPostExecPost(Boolean succ) {
 			String data = this.toString();
-			//_info.setText("Post "+this.getHttpCode()+"\n");
 			if ( succ ) {
-				//_info.append("result: "+this.getHttpCode()+"\n"+this.toString());
 				JSONTokener jsParser = new JSONTokener(data);
-
 				try {
 					
 					switch ( _type ) {
@@ -599,15 +516,10 @@ public class LocationOverlayDemo extends Activity {
 						doCreateRequest(jsParser);
 						break;
 
-//					case TYPE_PAS_CAN:
-//						doPassengerCancel(jsParser);
-//						break;
 					default:
 						break;
 					}
 					
-					//_info.append("result \n"+ret.getString("token_key")+": "+ret.getString("token_value"));
-					//_sess_key = new BasicNameValuePair(ret.getString("token_key"), ret.getString("token_value"));
 				} catch (JSONException e) {
 					//e.printStackTrace();
 					try {
@@ -636,77 +548,55 @@ public class LocationOverlayDemo extends Activity {
 			}
 		}
 		
-		private void doGetList(String data) throws JSONException {
-			mReqInfo = new JSONArray(data);
-				
-			//清除所有添加的Overlay
-	        ov.removeAll();
-	        mGeoList.clear();
-	        
-			//添加一个item
-	    	//当要添加的item较多时，可以使用addItem(List<OverlayItem> items) 接口
-	        for( int i=0; i<mReqInfo.length(); ++i ) {
-	        	JSONObject pos = mReqInfo.getJSONObject(i);
-	        	int lat = 0, lng = 0;
-	        	
-	        	OverlayItem item = null;
-	        	switch (_type) {
-	        	case TYPE_GET_TAXI:
-		        	lat = (int)(pos.getDouble("lat")*1e6);
-		        	lng = (int)(pos.getDouble("lng")*1e6);
-	        		item= new OverlayItem(new GeoPoint(lat, lng),
-			        		"司机"+pos.getInt("driver_id"),"创建时间: "+pos.getString("created_at"));		
-	        		break;
-
-	        	default:
-	        		break;
-	        		
-	        	}
-		        
-	        	if ( item != null ) {
-				   	item.setMarker(res.get(i%res.size()));
-				   	mGeoList.add(item);
-	        	}
-	        }
-	    	if ( ov.size() < mGeoList.size()){
-	    		//ov.addItem(mGeoList.get(ov.size() ));
-	    		ov.addItem(mGeoList);
-	    	}
-		    mMapView.refresh();
-		    
-		    if ( _type == TYPE_GET_TAXI && mApp.getCurrentTaxiRequest() == null ) {
-		    	Toast.makeText(LocationOverlayDemo.this.getApplicationContext(), "附近有"+mReqInfo.length()+"辆出租车",
-						Toast.LENGTH_SHORT).show();
-		    }
-		    
-		}
-		
-		
-		
 		@SuppressWarnings("static-access")
 		private void doCreateRequest(JSONTokener jsParser) throws JSONException {
 			JSONObject ret = (JSONObject)jsParser.nextValue();
 			TaxiRequest taxiRequest = new TaxiRequest(LocationOverlayDemo.this,ret);
 			mApp.setCurrentTaxiRequest(taxiRequest);
-			mReqId = ret.getInt("id");
 		}
 		
-		private void doPassengerConfirm(JSONTokener jsParser) throws JSONException {
-			// 保存并显示司机信息
-			// {"id":53,"state":"Success","passenger_mobile":"15910676326","driver_mobile":"15910676326","passenger_lat":8.0,"passenger_lng":8.0,"passenger_voice_url":"/uploads/taxi_request/voice/2013-06-01/e6d709e0158d6b312e0a30e24a656347.m4a","driver_lat":8.0,"driver_lng":8.0}
-			mConfirmObj = (JSONObject)jsParser.nextValue();
-			//mApp.getCurrentTaxiRequest().refresh(mConfirmObj);
-			Log.e(TAG,"If See me  it is terrible fail![2]");
-
-			mStatus = STAT_PASSENGER_CONFIRM;
+	}
+	
+	@SuppressWarnings("static-access")
+	private void ShowCurrentNearByDrivers() 
+	{
+		NearByDriverTrackResponse nearByDriverTrackResponse = this.mApp.getCurrentNearByDriverTrack();
+		if (nearByDriverTrackResponse  == null){
+			return;
 		}
-		
-		private void doPassengerCancel(JSONTokener jsParser) throws JSONException {
-			// 不需处理，由doGetRequest轮询得到
-			mStatus = STAT_PASSENGER_CANCEL;
-		}
-		
-		
+			
+		//清除所有添加的Overlay
+        ov.removeAll();
+        mGeoList.clear();
+        
+		//添加一个item
+    	//当要添加的item较多时，可以使用addItem(List<OverlayItem> items) 接口
+        for( int i=0; i< nearByDriverTrackResponse.getSize(); ++i ) {
+        	int lat = 0, lng = 0;
+        	
+        	OverlayItem item = null;
+	        lat = (int)(nearByDriverTrackResponse.getLat(i)*1e6);
+	        lng = (int)(nearByDriverTrackResponse.getLng(i)*1e6);
+        	item= new OverlayItem(new GeoPoint(lat, lng),
+		        		"司机"+nearByDriverTrackResponse.getId(i),"创建时间: "+nearByDriverTrackResponse.getCreatedAt(i));		
+        		
+	        
+        	if ( item != null ) {
+			   	item.setMarker(res.get(i%res.size()));
+			   	mGeoList.add(item);
+        	}
+        }
+    	if ( ov.size() < mGeoList.size()){
+    		//ov.addItem(mGeoList.get(ov.size() ));
+    		ov.addItem(mGeoList);
+    	}
+	    mMapView.refresh();
+	    
+	    if (mApp.getCurrentTaxiRequest() == null ) {
+	    	Toast.makeText(LocationOverlayDemo.this.getApplicationContext(), "附近有"+nearByDriverTrackResponse.getSize()+"辆出租车",
+					Toast.LENGTH_SHORT).show();
+	    }
+	    
 	}
 	
 	private class DelayTask extends AsyncTask<Integer, Integer, Boolean> {

@@ -3,7 +3,7 @@ package com.benbentaxi.api;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.benbentaxi.passenger.login.function.DataPreference;
+import com.benbentaxi.util.DataPreference;
 
 
 
