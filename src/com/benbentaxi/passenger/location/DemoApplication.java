@@ -14,10 +14,12 @@ import com.benbentaxi.Passenger;
 import com.benbentaxi.Session;
 import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
+import com.benbentaxi.util.DataPreference;
 
 
 public class DemoApplication extends Application {
-	
+	private static final String LOGIN_MOBILE					= "login_mobile";
+	private static final String LOGIN_PASS						= "login_pass";
     private static DemoApplication mInstance 			= null;
     private static TaxiRequest CurrentShowTaxiRequest 	= null;
     private static TaxiRequest CurrentTaxiRequest 		= null;
@@ -25,7 +27,9 @@ public class DemoApplication extends Application {
     private static Passenger   CurrentPassenger			= null;
     private static LocationData CurrentPassengerLocation 		= null;
     private static NearByDriverTrackResponse CurrentNearbyDrivers = null;
+    private DataPreference 					mDataPreference 	  = null;
     public boolean m_bKeyRight = true;
+    
     BMapManager mBMapManager = null;
 
     public static final String strKey = "1BE33CC3A1DEBDC8FF3A8A3F23A5E208C27E5C83";
@@ -34,6 +38,7 @@ public class DemoApplication extends Application {
     public void onCreate() {
 	    super.onCreate();
 		mInstance = this;
+		mDataPreference = new DataPreference(this.getApplicationContext()); 
 		initEngineManager(this);
 	}
 	
@@ -143,4 +148,22 @@ public class DemoApplication extends Application {
     {
     	CurrentNearbyDrivers = nearByDriverTrackResponse;
     }
+    
+    public void setLoginMobile(String mobile)
+    {
+    	mDataPreference.SaveData(LOGIN_MOBILE, mobile);
+    }
+    public String getLoginMobile()
+    {
+    	return mDataPreference.LoadString(LOGIN_MOBILE);
+    }
+    public void setLoginPass(String pass)
+    {
+    	mDataPreference.SaveData(LOGIN_PASS, pass);
+    }
+    public String getLoginPass()
+    {
+    	return mDataPreference.LoadString(LOGIN_PASS);
+    }
+    
 }

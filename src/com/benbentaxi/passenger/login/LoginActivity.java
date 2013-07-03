@@ -2,8 +2,8 @@ package com.benbentaxi.passenger.login;
 
 
 import com.benbentaxi.passenger.R;
+import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.register.RegisterActivity;
-import com.benbentaxi.util.DataPreference;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 public class LoginActivity extends Activity {
 	/**
@@ -21,24 +22,23 @@ public class LoginActivity extends Activity {
 	public static final String EXTRA_EMAIL = "com.example.android.authenticatordemo.extra.EMAIL";
 	
 	private long exitTime;
-	private DataPreference mData;
 	
-
+	private EditText mMobileView;
+	private EditText mPasswordView;
+	private DemoApplication mApp; 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_login);
 		bindButton();
-
+		mMobileView 			= (EditText) findViewById(R.id.login_mobile);
+		mPasswordView 		= (EditText) findViewById(R.id.login_password);
+		mApp				= (DemoApplication) this.getApplication();
 		//mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 
-		
-		
-		
 		exitTime = 0;
 		
-		mData = new DataPreference(this.getApplicationContext());
 	}
 
 	//@Override
@@ -50,8 +50,8 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		//mEmailView.setText(mData.LoadString("user"));
-		//mPasswordView.setText(mData.LoadString("pass"));
+		mMobileView.setText(this.mApp.getLoginMobile());
+		mPasswordView.setText(this.mApp.getLoginPass());
 	}
 	
 	@Override

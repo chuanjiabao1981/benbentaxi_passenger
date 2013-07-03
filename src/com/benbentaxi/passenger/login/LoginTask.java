@@ -16,6 +16,7 @@ public class LoginTask extends PostTask{
 	private LoginForm 			mLoginForm;
 	private LoginRequest		mLoginRequest;
 	private Configure       	mConfigure;
+	private DemoApplication 	mApp;
 
 	private final String TAG			     = LoginTask.class.getName();
 	
@@ -24,11 +25,14 @@ public class LoginTask extends PostTask{
 		this.mLoginForm 			= loginForm;
 		this.mLoginRequest			= new LoginRequest(mLoginForm);
 		this.mConfigure 			= new Configure();
+		this.mApp 					= (DemoApplication) loginForm.getActivity().getApplication();
 	}
 	
 	public void go()
 	{
 		this.mLoginForm.showProgress(true);
+		this.mApp.setLoginMobile(this.mLoginForm.getMobile());
+		this.mApp.setLoginPass(this.mLoginForm.getPass());
 		execute();
 	}
 	

@@ -33,5 +33,9 @@ public class LoginForm extends ViewForm{
 	{
 		return getControlVal(LoginApiConstant.MOBILE);
 	}
+	public String getPass()
+	{
+		return getControlVal(LoginApiConstant.PASSWORD);
+	}
 
 }
