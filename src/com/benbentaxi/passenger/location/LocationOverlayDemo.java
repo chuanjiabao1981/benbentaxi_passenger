@@ -10,6 +10,7 @@ import org.json.JSONTokener;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.AudioFormat;
@@ -56,6 +57,7 @@ import com.benbentaxi.passenger.nearbydriver.NearByDriverTask;
 import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
+import com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity;
 import com.benbentaxi.util.GetInfoTask;
 import com.benbentaxi.util.IdShow;
 public class LocationOverlayDemo extends Activity {
@@ -150,7 +152,18 @@ public class LocationOverlayDemo extends Activity {
 		public void onClick(View v) {
 			testUpdateClick();
 			testUpdateButton.setText(LocationOverlayDemo.this.getResources().getString(R.string.recall_taxi));
-			showCalltaxi();
+			
+			//add by wsj
+			//Log.d(TAG, "------------------: intent");
+			Intent createIntent = new Intent(LocationOverlayDemo.this,CreateTaxiRequestActivity.class);
+			//locData.longitude, locData.latitude);
+			String strX=Double.toString(locData.longitude);
+			String strY=Double.toString(locData.latitude);
+			createIntent.putExtra("location", strX+"|"+strY);  
+			startActivity(createIntent);
+			//Log.d(TAG, "------------------: end start intent");
+			onPause();
+			//showCalltaxi();
 		}
     };
     
@@ -233,12 +246,13 @@ public class LocationOverlayDemo extends Activity {
 		testUpdateButton = (Button)findViewById(R.id.btn_callTaxi);
 	    testUpdateButton.setOnClickListener(mCallTaxiListener);
 	    
+	    //remark by wsj
 	    // 初始化声音组件
-	    initAudio();
+	    //initAudio();
 	    
 	    
-    	mDialogView = getLayoutInflater().inflate(R.layout.record_dialog, null);
-    	mPopCallTaxi = new PopupWindow(mDialogView, 600, 600);
+    	//mDialogView = getLayoutInflater().inflate(R.layout.record_dialog, null);
+    	//mPopCallTaxi = new PopupWindow(mDialogView, 600, 600);
 	    
 	    Log.d(TAG, mTokenKey+": "+mTokenVal);
     }
@@ -633,6 +647,11 @@ public class LocationOverlayDemo extends Activity {
 	
 	@Override
 	public boolean onKeyDown( int keyCode, KeyEvent event ) {
+		//add by wsj
+		if(keyCode == KeyEvent.KEYCODE_BACK && 
+				event.getAction() == KeyEvent.ACTION_DOWN) {
+			finish();
+		}
 	    return super.onKeyDown(keyCode, event);
 	}
 }
