@@ -14,6 +14,7 @@ import com.benbentaxi.Session;
 import com.benbentaxi.api.PostTask;
 import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.location.LocationOverlayDemo;
+import com.benbentaxi.passenger.taxirequest.TaxiRequestResponse;
 import com.benbentaxi.session.SessionResponse;
 
 
@@ -60,17 +61,17 @@ public class CeateTaxiRequestTask extends PostTask{
 	protected void onPostExecute(Boolean succ) 
 	{
 		Log.i("res : ","onPostExecute");
-		SessionResponse sessionResponse = new SessionResponse(mCeateTaxiRequestForm,this.getResult());
+		TaxiRequestResponse taxiRequestResponse = new TaxiRequestResponse(this.getResult());
 		
 		Log.i("res : ",this.getResult());
 		
 		this.mCeateTaxiRequestForm.showProgress(false);
 		if (!succ){
-			sessionResponse.setSysErrorMessage(this.getErrorMsg());
+			taxiRequestResponse.setSysErrorMessage(this.getErrorMsg());
 		}
-		Log.i("sessionResponse.hasError() : ", String.valueOf(sessionResponse.hasError()));// sessionResponse.hasError()==false?"0":"1");
+		Log.i("sessionResponse.hasError() : ", String.valueOf(taxiRequestResponse.hasError()));// sessionResponse.hasError()==false?"0":"1");
 		
-		if (!sessionResponse.hasError()){
+		if (!taxiRequestResponse.hasError()){
 			Log.i("res : ",this.getResult());
 			//DemoApplication app = (DemoApplication)this.mCeateTaxiRequestForm.getActivity().getApplicationContext();
 			//app.setCurrentSession(sessionResponse);

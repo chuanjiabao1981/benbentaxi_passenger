@@ -17,10 +17,9 @@ public class CreateTaxiRequestApiConstant {
 	public final static String DISTANCE			= "distance";
 	public final static String STATE			= "state";
 	
-	public final static String START_FROM="start_from";
-	public final static String WANT_TO="want_to";
-	public final AudioRecord mAudioRecord= null;
-	public final int mAudioBufSize = 0;
+	public final static String SOURCE="source";
+	public final static String DESTINATION="destination";
+	public final static String VOICE="want_to";
 	public final static String TAXI_REQUEST_CREATE = "taxi_request";
 	
 	

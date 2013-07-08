@@ -6,7 +6,7 @@
     tools:context=".RegisterActivity" >
 	
 <LinearLayout
-        android:id="@+id/deal_progress"
+        android:id="@+id/deal_taxirequest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -56,7 +56,7 @@
 	
           
                <EditText
-                   android:id="@+id/start_from"
+                   android:id="@+id/source"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:ems="10"
@@ -70,7 +70,7 @@
                </EditText>
 
                <EditText
-                   android:id="@+id/want_to"
+                   android:id="@+id/destination"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:hint="@string/want_to"

@@ -150,20 +150,23 @@ public class LocationOverlayDemo extends Activity {
 	
 	private OnClickListener mCallTaxiListener = new OnClickListener(){
 		public void onClick(View v) {
-			testUpdateClick();
-			testUpdateButton.setText(LocationOverlayDemo.this.getResources().getString(R.string.recall_taxi));
 			
-			//add by wsj
-			//Log.d(TAG, "------------------: intent");
-			Intent createIntent = new Intent(LocationOverlayDemo.this,CreateTaxiRequestActivity.class);
-			//locData.longitude, locData.latitude);
+			LocationData curloc=mApp.getCurrentPassengerLocation();
+			if(curloc==null)
+			{
+				Toast.makeText(LocationOverlayDemo.this, getString(R.string.no_location).toString(), Toast.LENGTH_SHORT).show();
+				return;
+			}
+			
+			testUpdateClick();
+			testUpdateButton.setText(LocationOverlayDemo.this.getResources().getString(R.string.recall_taxi));			
+			//add by wsj			
+			Intent createIntent = new Intent(LocationOverlayDemo.this,CreateTaxiRequestActivity.class);			
 			String strX=Double.toString(locData.longitude);
 			String strY=Double.toString(locData.latitude);
 			createIntent.putExtra("location", strX+"|"+strY);  
-			startActivity(createIntent);
-			//Log.d(TAG, "------------------: end start intent");
-			onPause();
-			//showCalltaxi();
+			startActivity(createIntent);			
+			onPause();			
 		}
     };
     
@@ -646,12 +649,7 @@ public class LocationOverlayDemo extends Activity {
 	}
 	
 	@Override
-	public boolean onKeyDown( int keyCode, KeyEvent event ) {
-		//add by wsj
-		if(keyCode == KeyEvent.KEYCODE_BACK && 
-				event.getAction() == KeyEvent.ACTION_DOWN) {
-			finish();
-		}
+	public boolean onKeyDown( int keyCode, KeyEvent event ) {		
 	    return super.onKeyDown(keyCode, event);
 	}
 }

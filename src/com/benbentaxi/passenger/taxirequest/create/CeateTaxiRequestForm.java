@@ -1,45 +1,56 @@
 package com.benbentaxi.passenger.taxirequest.create;
 
 
+import com.baidu.mapapi.map.LocationData;
 import com.benbentaxi.api.ApiConstant;
 import com.benbentaxi.api.ViewForm;
 import com.benbentaxi.passenger.R;
+import com.benbentaxi.passenger.location.DemoApplication;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 
 public class CeateTaxiRequestForm extends ViewForm{
 	//private final String TAG			     = RegisterForm.class.getName();
-	private String strXY="";
+	private String strLatAndLng="";
 	private String strAudio="";
+	private String strMobile="";
 	
-	public CeateTaxiRequestForm(Activity activity) {
+	public CeateTaxiRequestForm(Activity activity) {			
 		super(activity);		
+		DemoApplication app = (DemoApplication)activity.getApplication();
+		
+		LocationData curloc=app.getCurrentPassengerLocation();
+		String strLat=Double.toString(curloc.longitude);
+		String strLng=Double.toString(curloc.latitude);
+		strLatAndLng= strLat+"|"+strLng;
+		
+		strMobile= (app.getCurrentPassenger()!=null)? app.getCurrentPassenger().getMobile():"";
+		
+		strAudio=((CreateTaxiRequestActivity)activity).getAudioFile2String();
 	}
 	protected void init()
 	{
-		addControl(ApiConstant.BASE,R.id.want_to);
-		addControl(CreateTaxiRequestApiConstant.WANT_TO,R.id.want_to);
-		addControl(CreateTaxiRequestApiConstant.START_FROM,R.id.start_from);		
-		
+		addControl(ApiConstant.BASE,R.id.destination);
+		addControl(CreateTaxiRequestApiConstant.DESTINATION,R.id.destination);
+		addControl(CreateTaxiRequestApiConstant.SOURCE,R.id.source);		
+		addControl(CreateTaxiRequestApiConstant.PASSENGER_MOBILE,R.id.destination);
+		addControl(CreateTaxiRequestApiConstant.VOICE,R.id.destination);
 	}
 	@Override
 	protected int getProgressStatusView() {
-		return R.id.deal_progress;
+		return R.id.deal_taxirequest;
 	}
 	@Override
 	protected int getFormView() {
 		return R.id.create_form;
 	}
 	
-	public void setXY(String strxy)
-	{
-		strXY=strxy;
-	}
 	
-	public String getXY()
+	public String getLatAndLng()
 	{
-		return strXY;
+		return strLatAndLng;
 	}
 	
 	public void setAudio(String strAudioString)
@@ -54,7 +65,7 @@ public class CeateTaxiRequestForm extends ViewForm{
 	
 	public String getMobile()
 	{
-		return "13570888761";//this.getControlVal(CreateTaxiRequestApiConstant.DRIVER_MOBILE);
+		return strMobile;		
 	}
 	 
 }
