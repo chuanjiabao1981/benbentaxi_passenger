@@ -10,6 +10,7 @@ import org.json.JSONTokener;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.AudioFormat;
@@ -56,6 +57,7 @@ import com.benbentaxi.passenger.nearbydriver.NearByDriverTask;
 import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
+import com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity;
 import com.benbentaxi.util.GetInfoTask;
 import com.benbentaxi.util.IdShow;
 public class LocationOverlayDemo extends Activity {
@@ -130,13 +132,7 @@ public class LocationOverlayDemo extends Activity {
 	private String mUserMobile;
 	private boolean mIsGetLocation = false; // 判断是否成功获取地理位置
 	
-	private AudioRecord mAudioRecord; //  乘客声音
-	private AudioTrack mAudioTrack; // 播放乘客声音
-	private int mAudioBufSize = 0;
-	private byte[] mAudioBuffer;
-	private long mRecTime; // 判断录音时间是否过短
-	private View mDialogView; // 录音对话框的view
-	private PopupWindow mPopCallTaxi; // 录音的弹出窗口
+	
 	
 	
 	public final static int MSG_HANDLE_MAP_MOVE = 1;
@@ -148,9 +144,21 @@ public class LocationOverlayDemo extends Activity {
 	
 	private OnClickListener mCallTaxiListener = new OnClickListener(){
 		public void onClick(View v) {
+			
+			LocationData curloc=mApp.getCurrentPassengerLocation();
+			if(curloc==null)
+			{
+				Toast.makeText(LocationOverlayDemo.this, getString(R.string.no_location).toString(), Toast.LENGTH_SHORT).show();
+				return;
+			}
+			
 			testUpdateClick();
-			testUpdateButton.setText(LocationOverlayDemo.this.getResources().getString(R.string.recall_taxi));
-			showCalltaxi();
+			testUpdateButton.setText(LocationOverlayDemo.this.getResources().getString(R.string.recall_taxi));			
+			//add by wsj			
+			Intent createIntent = new Intent(LocationOverlayDemo.this,CreateTaxiRequestActivity.class);			
+			
+			startActivity(createIntent);			
+			onPause();			
 		}
     };
     
@@ -233,12 +241,6 @@ public class LocationOverlayDemo extends Activity {
 		testUpdateButton = (Button)findViewById(R.id.btn_callTaxi);
 	    testUpdateButton.setOnClickListener(mCallTaxiListener);
 	    
-	    // 初始化声音组件
-	    initAudio();
-	    
-	    
-    	mDialogView = getLayoutInflater().inflate(R.layout.record_dialog, null);
-    	mPopCallTaxi = new PopupWindow(mDialogView, 600, 600);
 	    
 	    Log.d(TAG, mTokenKey+": "+mTokenVal);
     }
@@ -291,31 +293,8 @@ public class LocationOverlayDemo extends Activity {
         //mMapView.setSatellite(false);
     }
     
-    private void initAudio() {
-        	mAudioBufSize = AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT);
-
-
-    	mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 44100, 
-    			AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, mAudioBufSize);
-    	
-    	mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, 
-    			AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, mAudioBufSize, AudioTrack.MODE_STREAM);    	
-    	
-    	mAudioBuffer = new byte[mAudioBufSize];
-    }
-    
-    private void doRecordAudio() {
-    	mAudioRecord.startRecording();
-    	mAudioRecord.read(mAudioBuffer, 0, mAudioBufSize);
-    	mAudioRecord.stop();
-    }
-
-    private void doPlayAudio() {
-    	mAudioTrack.play();
-    	mAudioTrack.write(mAudioBuffer, 0, mAudioBufSize);
-    	mAudioTrack.stop();
-    }
-    
+   
+  
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -338,60 +317,7 @@ public class LocationOverlayDemo extends Activity {
         ShowCurrentNearByDrivers();
     }
     
-    private void showCalltaxi() {
-    	// 显示打车请求录音界面    	
-    	ImageButton imgBtn = (ImageButton)mDialogView.findViewById(R.id.imgBtnRec);
-    	imgBtn.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				Application app = LocationOverlayDemo.this.getApplication();
-				TextView tv = (TextView)mDialogView.findViewById(R.id.tvRec);
-				
-				// 按下录音，释放发送
-				if (v.getId() == R.id.imgBtnRec) {
-					boolean dismiss = true;
-					
-					if (event.getAction() == MotionEvent.ACTION_DOWN) {
-						// TODO 录音或播放
-						tv.setText(app.getResources().getString(R.string.rec_ing));
-						mRecTime = System.currentTimeMillis();
-					}
-					
-					if (event.getAction() == MotionEvent.ACTION_UP) {
-						if ( (System.currentTimeMillis()-mRecTime) < 1000 ) {
-							// 时间太短
-							//Toast.makeText(LocationOverlayDemo.this, "录音时间太短，请重新录制", Toast.LENGTH_SHORT).show();
-							tv.setText(app.getResources().getString(R.string.rec_short));
-							
-						} else if (mIsGetLocation == true ) {
-							// 发起打车请求
-							GetTaxiTask reqtt = new GetTaxiTask();
-				            reqtt.requireTaxi(locData.longitude, locData.latitude);
-				    		//Toast.makeText(LocationOverlayDemo.this, "发送数据", Toast.LENGTH_SHORT).show();
-				            tv.setText(app.getResources().getString(R.string.rec_send));
-				            dismiss = false;
-
-						} else {
-				    		//Toast.makeText(LocationOverlayDemo.this, "正在为您定位，请稍后再试", Toast.LENGTH_SHORT).show();
-							tv.setText(app.getResources().getString(R.string.rec_retry));
-						}
-						
-						if ( dismiss ) {
-							// 延迟退出
-							DelayTask dt = new DelayTask(DelayTask.TYPE_CLOSE_POPUP);
-							dt.execute(1000);
-						}
-					}
-				}
-				return false;
-			}
-    	});
-    	
-    	Application app1 = LocationOverlayDemo.this.getApplication();
-		TextView tvv = (TextView)mDialogView.findViewById(R.id.tvRec);
-		tvv.setText(app1.getResources().getString(R.string.rec_info));
-    	mPopCallTaxi.showAtLocation(mDialogView, Gravity.CENTER, 0, 0);
-    }
+    
     
     private void showDriverInfo(int idx, JSONObject obj) throws JSONException {
 		int drvid = obj.getInt("driver_id");
@@ -632,7 +558,7 @@ public class LocationOverlayDemo extends Activity {
 	}
 	
 	@Override
-	public boolean onKeyDown( int keyCode, KeyEvent event ) {
+	public boolean onKeyDown( int keyCode, KeyEvent event ) {		
 	    return super.onKeyDown(keyCode, event);
 	}
 }

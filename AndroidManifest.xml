@@ -4,6 +4,9 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    
     <uses-sdk
         android:minSdkVersion="7"
         android:targetSdkVersion="17" />
@@ -45,9 +48,7 @@
     <uses-permission android:name="android.permission.CAMERA" >
     </uses-permission>
     <uses-permission android:name="android.permission.RECORD_AUDIO" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
-    </uses-permission>
+    </uses-permission>    
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
@@ -117,6 +118,8 @@
         <activity
             android:name="com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail"
             android:label="详细信息" >
+        </activity>
+        <activity android:name="com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity" android:label="@string/title_create_request"> 
         </activity>
     </application>
 
