@@ -23,6 +23,7 @@ public class RegisterRequest extends FormRequest
 			setJsonKVFromControl(sess,RegisterApiConstant.MOBILE);
 			setJsonKVFromControl(sess,RegisterApiConstant.PASSWORD);
 			setJsonKVFromControl(sess,RegisterApiConstant.PAWWWORD_CONFIRM);
+			setJsonKVFromControl(sess,RegisterApiConstant.TENAT);
 			_json_data.put(RegisterApiConstant.USER, sess);
 		} catch (JSONException e) {
 			Log.e(TAG,"获取(设置)数据出错["+RegisterApiConstant.USER+"]");

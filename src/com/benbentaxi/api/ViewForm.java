@@ -14,10 +14,9 @@ import android.app.Activity;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 
 public abstract class ViewForm {
-	private Map< String, Integer > mControls = null;	// 在html规范中中每个input都叫做control，沿用此名称
+	private Map< String, ViewControl > mControls = null;	// 在html规范中中每个input都叫做control，沿用此名称
 	private Activity mActivity 				 = null;
 	private final String TAG			     = ViewForm.class.getName();
 	
@@ -27,7 +26,7 @@ public abstract class ViewForm {
 	public ViewForm(Activity activity)
 	{
 		mActivity = activity;
-		mControls   = new HashMap< String, Integer >();
+		mControls   = new HashMap< String, ViewControl >();
 		init();
 		mProgressStatusView = this.mActivity.findViewById(getProgressStatusView());
 		mFormView 			= this.mActivity.findViewById(getFormView());
@@ -36,24 +35,22 @@ public abstract class ViewForm {
 	public String getControlVal(String name)
 	{
 		if (mControls.containsKey(name)){
-			return ((EditText) this.mActivity.findViewById(getControlViewId(name))).getText().toString();
+			return mControls.get(name).getValue();
 		}else{
 			Log.e(TAG, "不存在此control " + name);
 			return "";
 		}
 	}
 	
-	public void setControlFieldError(String name,String erromsg)
+	public void setControlFieldError(String name,String errmsg)
 	{
-		EditText e;
 		if (mControls.containsKey(name)){
-			e = (EditText) this.mActivity.findViewById(getControlViewId(name));
+			Log.d(TAG,"xxxxxxxxxxxxxxxxxxxx"+errmsg);
+			mControls.get(name).setError(errmsg);
 		}else{
 			Log.e(TAG, "不存在此control " + name);
 			return;
 		}
-		e.setError(erromsg);
-		e.requestFocus();
 	}
 	@Deprecated
 	public DataPreference getDataPreference()
@@ -109,7 +106,7 @@ public abstract class ViewForm {
 	protected abstract int getFormView();
 	protected int getControlViewId(String name)
 	{
-		return mControls.get(name);
+		return mControls.get(name).getResourceId();
 	}
 	
 	protected View findViewById(int id)
@@ -119,13 +116,12 @@ public abstract class ViewForm {
 
 	protected void addControl(String name,int id)
 	{
-		mControls.put(name, id);
-		clearError(id);
+		mControls.put(name, new TextInputControl(this.mActivity,id));
+		mControls.get(name).clearError();
 	}
-	private void clearError(int id)
+	protected void addSpinnerControl(String name,int id)
 	{
-		EditText e;
-		e = (EditText) this.mActivity.findViewById(id);
-		e.setError(null);
+		mControls.put(name, new SpinnerInputControl(this.mActivity,id));
+		mControls.get(name).clearError();
 	}
 }

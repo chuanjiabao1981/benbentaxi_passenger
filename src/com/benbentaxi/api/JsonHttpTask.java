@@ -15,9 +15,11 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 public abstract class JsonHttpTask extends AsyncTask<String, Integer, Boolean> {
 
+	public final static String TAG = JsonHttpTask.class.getCanonicalName();
 	public final static int REQUEST_SEND = 10;
 	public final static int REQUEST_DONE = 100;
 	
@@ -37,6 +39,11 @@ public abstract class JsonHttpTask extends AsyncTask<String, Integer, Boolean> {
 
 	}
 	protected void initCookies(String key, String val, String domain) {
+		
+		if (key == null || val == null){
+			Log.e(TAG,"初始化Cookie出错");
+			return;
+		}
 		BasicClientCookie bc1 = new BasicClientCookie(key, val);
 		bc1.setVersion(0);
         bc1.setDomain(domain);

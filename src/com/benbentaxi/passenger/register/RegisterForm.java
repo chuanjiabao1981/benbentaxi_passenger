@@ -6,7 +6,6 @@ import com.benbentaxi.api.ViewForm;
 import com.benbentaxi.passenger.R;
 
 import android.app.Activity;
-import android.view.View;
 
 public class RegisterForm extends ViewForm{
 	//private final String TAG			     = RegisterForm.class.getName();
@@ -21,6 +20,7 @@ public class RegisterForm extends ViewForm{
 		addControl(RegisterApiConstant.PASSWORD,R.id.register_password);
 		addControl(RegisterApiConstant.PAWWWORD_CONFIRM,R.id.register_password_confirm);
 		addControl(RegisterApiConstant.NAME,R.id.register_name);
+		addSpinnerControl(RegisterApiConstant.TENAT, R.id.tenant_item);
 	}
 	@Override
 	protected int getProgressStatusView() {

@@ -14,9 +14,11 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
+import android.util.Log;
+
 
 public abstract class PostTask extends JsonHttpTask {
-	
+	public static final String TAG = PostTask.class.getCanonicalName();
 	
 	protected String post_param;
 	protected HttpContext hcon;
@@ -39,7 +41,7 @@ public abstract class PostTask extends JsonHttpTask {
 		// attempt authentication against a network service.
 		String urlstr = getApiUrl();
 		String useragent = "taxi post api";
-
+		initHeaders("Content-Type", "application/json");
 		try {
 			hcon = new BasicHttpContext();
 			hcon.setAttribute(ClientContext.COOKIE_STORE, cs);
@@ -55,6 +57,7 @@ public abstract class PostTask extends JsonHttpTask {
 					httpRequest.setEntity(new UrlEncodedFormEntity(sess_params,"UTF-8"));
 			} else if ( post_param.length() > 0 ) {
 					httpRequest.setEntity(new StringEntity(post_param,"UTF-8"));
+
 		    }
 
 			_httpResp = new DefaultHttpClient(httpparam).execute(httpRequest, hcon);
@@ -68,7 +71,11 @@ public abstract class PostTask extends JsonHttpTask {
 			_errmsg = "网络错误，请检查网络是否正常"; //"stage 3: "+e.toString();
 			return false;
 		}
-
+		if (_httpResp.getStatusLine().getStatusCode() != 200){
+			_errmsg = "服务器出现异常";
+			Log.d(TAG,"服务器的反回码:"+_httpResp.getStatusLine().getStatusCode());
+			return false;
+		}
 		return true;
 	}
 

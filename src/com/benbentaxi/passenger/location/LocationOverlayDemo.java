@@ -297,7 +297,6 @@ public class LocationOverlayDemo extends Activity {
 
     	mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 44100, 
     			AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, mAudioBufSize);
-    	
     	mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, 
     			AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, mAudioBufSize, AudioTrack.MODE_STREAM);    	
     	

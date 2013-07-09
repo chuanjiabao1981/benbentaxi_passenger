@@ -14,6 +14,8 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
+import android.util.Log;
+
 public abstract class GetTask extends JsonHttpTask{
 
 	protected HttpContext hcon;
@@ -52,6 +54,11 @@ public abstract class GetTask extends JsonHttpTask{
 		} catch (IOException e) {
 			_errmsg = "系统错误"; //"stage 3: "+e.toString();
 			e.printStackTrace();
+			return false;
+		}
+		if (_httpResp.getStatusLine().getStatusCode() != 200){
+			_errmsg = "服务器出现异常";
+			Log.d(TAG,"服务器的反回码:"+_httpResp.getStatusLine().getStatusCode());
 			return false;
 		}
 		return true;

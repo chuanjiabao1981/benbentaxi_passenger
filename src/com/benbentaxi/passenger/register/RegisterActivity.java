@@ -8,7 +8,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 public class RegisterActivity extends Activity {
 	//private String TAG = RegisterActivity.class.getName();
@@ -18,6 +21,12 @@ public class RegisterActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
+		Spinner spinner 					= (Spinner) findViewById(R.id.tenant_item);
+		ArrayAdapter<CharSequence> adapter 	= ArrayAdapter.createFromResource(this,
+		        R.array.tenants_array, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(adapter);
+		Toast.makeText(this, spinner.getSelectedItem().toString(),Toast.LENGTH_LONG).show();
 		buttonBind();
 
 	}
