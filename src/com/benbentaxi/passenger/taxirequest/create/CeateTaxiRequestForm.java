@@ -13,9 +13,9 @@ import android.view.View;
 
 public class CeateTaxiRequestForm extends ViewForm{
 	//private final String TAG			     = RegisterForm.class.getName();
-	private String strLatAndLng="";
-	private String strAudio="";
-	private String strMobile="";
+	private String mLatAndLng="";
+	private String mAudio="";
+	private String mMobile="";
 	
 	public CeateTaxiRequestForm(Activity activity) {			
 		super(activity);		
@@ -24,11 +24,11 @@ public class CeateTaxiRequestForm extends ViewForm{
 		LocationData curloc=app.getCurrentPassengerLocation();
 		String strLat=Double.toString(curloc.longitude);
 		String strLng=Double.toString(curloc.latitude);
-		strLatAndLng= strLat+"|"+strLng;
+		mLatAndLng= strLat+"|"+strLng;
 		
-		strMobile= (app.getCurrentPassenger()!=null)? app.getCurrentPassenger().getMobile():"";
+		mMobile= (app.getCurrentPassenger()!=null)? app.getCurrentPassenger().getMobile():"";
 		
-		strAudio=((CreateTaxiRequestActivity)activity).getAudioFile2String();
+		mAudio=((CreateTaxiRequestActivity)activity).getAudioFile2String();
 	}
 	protected void init()
 	{
@@ -36,7 +36,7 @@ public class CeateTaxiRequestForm extends ViewForm{
 		addControl(CreateTaxiRequestApiConstant.DESTINATION,R.id.destination);
 		addControl(CreateTaxiRequestApiConstant.SOURCE,R.id.source);		
 		addControl(CreateTaxiRequestApiConstant.PASSENGER_MOBILE,R.id.destination);
-		addControl(CreateTaxiRequestApiConstant.VOICE,R.id.destination);
+		addControl(CreateTaxiRequestApiConstant.PASSENGER_VOICE,R.id.destination);
 	}
 	@Override
 	protected int getProgressStatusView() {
@@ -50,22 +50,22 @@ public class CeateTaxiRequestForm extends ViewForm{
 	
 	public String getLatAndLng()
 	{
-		return strLatAndLng;
+		return mLatAndLng;
 	}
 	
 	public void setAudio(String strAudioString)
 	{
-		strAudio=strAudioString;
+		mAudio=strAudioString;
 	}
 	
 	public String getAudio()
 	{
-		return strAudio;
+		return mAudio;
 	}
 	
 	public String getMobile()
 	{
-		return strMobile;		
+		return mMobile;		
 	}
 	 
 }

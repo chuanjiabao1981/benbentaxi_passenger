@@ -64,7 +64,7 @@ public class CreateTaxiRequestActivity  extends Activity  {
 			else
 			     Log.i("mkdir : ","NG");
 		}
-		Log.i("path : ",mAbsolutePath);			
+		
 		initAudio();		
 		buttonBind();		
 	}	
@@ -82,7 +82,7 @@ public class CreateTaxiRequestActivity  extends Activity  {
         	mPlayer=null;
         }
 		
-		Log.i("CraeteActivity : ","Destroyed");
+		
 	}
 	
 	@Override
@@ -101,24 +101,23 @@ public class CreateTaxiRequestActivity  extends Activity  {
 	
 	public String getAudioFile2String()
 	{
+		
 		try{ 
-		FileInputStream fin = new FileInputStream(mTmpfile);
-		int length = fin.available(); 
-
-	    byte [] buffer = new byte[length]; 
-
-	    fin.read(buffer);     
-
-	    //res = EncodingUtils.getString(buffer, "UTF-8"); 
-
-	    fin.close();  
-	    return android.util.Base64.encodeToString(buffer, Base64.DEFAULT);
+			
+			FileInputStream fin = new FileInputStream(mTmpfile);
+			int length = fin.available(); 
+	
+		    byte [] buffer = new byte[length]; 
+	
+		    fin.read(buffer);     	  
+	
+		    fin.close();  
+		    return android.util.Base64.encodeToString(buffer, Base64.DEFAULT);
 	    
 		}catch(Exception e){ 
-
-	           e.printStackTrace(); 
-		} 
-
+			e.printStackTrace(); 
+		}
+		
 		return "-1";
 		
 	}
@@ -132,9 +131,7 @@ private void initAudio() {
         file.delete();  
     
    mediaRecorder = new VoiceRecorder(MediaRecorder.AudioSource.MIC,MediaRecorder.OutputFormat.THREE_GPP,
-    	MediaRecorder.AudioEncoder.AMR_NB,mTmpfile);	
-    
-	Log.i("initAudio : ","end");
+    	MediaRecorder.AudioEncoder.AMR_NB,mTmpfile);
 	
 }
 
@@ -183,7 +180,7 @@ private void initAudio() {
 						
 						try {							
 				            mediaRecorder.StartRecorder();	
-				            Log.i("StartRecorder","OK");
+				            
 				        }
 				        catch (IllegalStateException e) {
 				            e.printStackTrace();
@@ -200,13 +197,13 @@ private void initAudio() {
 						
 						try {
 							mediaRecorder.StopRecorder();
-							Log.i("mediaRecorder : ","stop");
+							
 						}
 				        catch (IllegalStateException e) {
 				            e.printStackTrace();
 				        }
 				        
-						//mediaRecorder.release();     
+					
 					        
 						if ( (System.currentTimeMillis()-mRecTime) < 1000 ) {
 							// 时间太短

@@ -34,7 +34,7 @@ public class CeateTaxiRequestTask extends PostTask{
 		mConfigure		 = new Configure();
 		
 		this.mApp =  (DemoApplication)this.mCeateTaxiRequestForm.getActivity().getApplicationContext();;
-		this.mSession 	  = DemoApplication.getCurrentSession();
+		this.mSession 	  = mApp.getCurrentSession();
 		
 		if (this.mSession != null){
 			initCookies(mSession.getTokenKey(), mSession.getTokenVal(),mConfigure.getHost());//TODO::测试这个加端口
@@ -60,7 +60,7 @@ public class CeateTaxiRequestTask extends PostTask{
 	@SuppressWarnings("static-access")
 	protected void onPostExecute(Boolean succ) 
 	{
-		Log.i("res : ","onPostExecute");
+		
 		TaxiRequestResponse taxiRequestResponse = new TaxiRequestResponse(this.getResult());
 		
 		Log.i("res : ",this.getResult());
@@ -69,16 +69,11 @@ public class CeateTaxiRequestTask extends PostTask{
 		if (!succ){
 			taxiRequestResponse.setSysErrorMessage(this.getErrorMsg());
 		}
-		Log.i("sessionResponse.hasError() : ", String.valueOf(taxiRequestResponse.hasError()));// sessionResponse.hasError()==false?"0":"1");
+		
 		
 		if (!taxiRequestResponse.hasError()){
-			Log.i("res : ",this.getResult());
-			//DemoApplication app = (DemoApplication)this.mCeateTaxiRequestForm.getActivity().getApplicationContext();
-			//app.setCurrentSession(sessionResponse);
-			//Passenger passenger = new Passenger(this.mCeateTaxiRequestForm.getMobile());
-			//app.setCurrentPassenger(passenger);
-			//Intent intent = new Intent(this.mCeateTaxiRequestForm.getActivity(),LocationOverlayDemo.class);
-			//this.mCeateTaxiRequestForm.getActivity().startActivity(intent);			
+			
+			
 			this.mCeateTaxiRequestForm.getActivity().finish();
 		}
 	}

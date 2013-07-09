@@ -16,11 +16,12 @@ public class CreateTaxiRequestApiConstant {
 	public final static String PLATE		 	= "plate";
 	public final static String DISTANCE			= "distance";
 	public final static String STATE			= "state";
-	
+	public final static String WAITING_TIME_RANGE			= "waiting_time_range";
+	public final static String PASSENGER_VOICE_FORMAT="passenger_voice_format";
 	public final static String SOURCE="source";
 	public final static String DESTINATION="destination";
-	public final static String VOICE="want_to";
-	public final static String TAXI_REQUEST_CREATE = "taxi_request";
+	public final static String  PASSENGER_VOICE="passenger_voice";
+	public final static String TAXI_REQUEST_CREATE = "taxi_request_create";
 	
 	
 	
