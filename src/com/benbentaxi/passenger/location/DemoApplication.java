@@ -21,12 +21,12 @@ public class DemoApplication extends Application {
 	private static final String LOGIN_MOBILE					= "login_mobile";
 	private static final String LOGIN_PASS						= "login_pass";
     private static DemoApplication mInstance 			= null;
-    private static TaxiRequest CurrentShowTaxiRequest 	= null;
-    private static TaxiRequest CurrentTaxiRequest 		= null;
-    private static Session 	   CurrentSession			= null;
-    private static Passenger   CurrentPassenger			= null;
-    private static LocationData CurrentPassengerLocation 		= null;
-    private static NearByDriverTrackResponse CurrentNearbyDrivers = null;
+    private TaxiRequest mCurrentShowTaxiRequest 	= null;
+    private TaxiRequest mCurrentTaxiRequest 		= null;
+    private Session 	   mCurrentSession			= null;
+    private Passenger   mCurrentPassenger			= null;
+    private LocationData mCurrentPassengerLocation 		= null;
+    private NearByDriverTrackResponse mCurrentNearbyDrivers = null;
     private DataPreference 					mDataPreference 	  = null;
     public boolean m_bKeyRight = true;
     
@@ -96,57 +96,57 @@ public class DemoApplication extends Application {
         }
     }
     
-    public static void setCurrentPassenger(Passenger passenger)
+    public void setCurrentPassenger(Passenger passenger)
     {
-    	CurrentPassenger = passenger;
+    	mCurrentPassenger = passenger;
     }
-    public static Passenger getCurrentPassenger()
+    public Passenger getCurrentPassenger()
     {
-    	return CurrentPassenger;
-    }
-    
-    public static Session getCurrentSession()
-    {
-    	return CurrentSession;
+    	return mCurrentPassenger;
     }
     
-    public static void setCurrentSession(Session session)
+    public Session getCurrentSession()
     {
-    	CurrentSession = session;
+    	return mCurrentSession;
     }
-    public static void setCurrentTaxiRequest(TaxiRequest o)
+    
+    public void setCurrentSession(Session session)
     {
-		CurrentTaxiRequest = o;
+    	mCurrentSession = session;
+    }
+    public  void setCurrentTaxiRequest(TaxiRequest o)
+    {
+		mCurrentTaxiRequest = o;
 	}
-    public static TaxiRequest getCurrentTaxiRequest()
+    public  TaxiRequest getCurrentTaxiRequest()
     {
-    	return CurrentTaxiRequest;
+    	return mCurrentTaxiRequest;
     }
     
-    public static void setCurrentShowTaxiRequest(TaxiRequest t)
+    public  void setCurrentShowTaxiRequest(TaxiRequest t)
     {
-    	CurrentShowTaxiRequest = t;
+    	mCurrentShowTaxiRequest = t;
     }
-    public static TaxiRequest getCurrentShowTaxiRequest()
+    public  TaxiRequest getCurrentShowTaxiRequest()
     {
-    	return CurrentShowTaxiRequest;
+    	return mCurrentShowTaxiRequest;
     }
     
-    public static LocationData getCurrentPassengerLocation()
+    public  LocationData getCurrentPassengerLocation()
     {
-    	return CurrentPassengerLocation;
+    	return mCurrentPassengerLocation;
     }
-    public static void setCurrentPassengerLocation(LocationData locationData)
+    public  void setCurrentPassengerLocation(LocationData locationData)
     {
-    	CurrentPassengerLocation = locationData;
+    	mCurrentPassengerLocation = locationData;
     }
-    public static NearByDriverTrackResponse getCurrentNearByDriverTrack()
+    public  NearByDriverTrackResponse getCurrentNearByDriverTrack()
     {
-    	return CurrentNearbyDrivers;
+    	return mCurrentNearbyDrivers;
     }
-    public static void setCurrentNearByDrivers(NearByDriverTrackResponse nearByDriverTrackResponse)
+    public  void setCurrentNearByDrivers(NearByDriverTrackResponse nearByDriverTrackResponse)
     {
-    	CurrentNearbyDrivers = nearByDriverTrackResponse;
+    	mCurrentNearbyDrivers = nearByDriverTrackResponse;
     }
     
     public void setLoginMobile(String mobile)
