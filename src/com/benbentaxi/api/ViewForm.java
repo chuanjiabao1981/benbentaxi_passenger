@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 public abstract class ViewForm {
 	private Map< String, ViewControl > mControls = null;	// 在html规范中中每个input都叫做control，沿用此名称
@@ -45,10 +46,10 @@ public abstract class ViewForm {
 	public void setControlFieldError(String name,String errmsg)
 	{
 		if (mControls.containsKey(name)){
-			Log.d(TAG,"xxxxxxxxxxxxxxxxxxxx"+errmsg);
 			mControls.get(name).setError(errmsg);
 		}else{
-			Log.e(TAG, "不存在此control " + name);
+			Toast.makeText(this.mActivity,errmsg,Toast.LENGTH_SHORT).show();
+//			Log.e(TAG, "不存在此control " + name);
 			return;
 		}
 	}

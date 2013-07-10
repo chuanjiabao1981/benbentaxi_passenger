@@ -14,7 +14,7 @@ public class LoginForm extends ViewForm{
 
 	@Override
 	protected void init() {
-		addControl(ApiConstant.BASE,R.id.login_mobile);
+//		addControl(ApiConstant.BASE,R.id.login_mobile);
 		addControl(LoginApiConstant.MOBILE,R.id.login_mobile);
 		addControl(LoginApiConstant.PASSWORD,R.id.login_password);
 	}

@@ -40,5 +40,7 @@
     <color name="taxi_request_detail_item_content">#ffffff</color>
     <string name="call_driver">电话司机</string>
     <string name="passenger_version">乘客版</string>
+    <string name="taxi_request_example_sentence">例句：打车从xxxx地到xxxx地。</string>
+    <string name="sending">发送中...</string>
 
 </resources>

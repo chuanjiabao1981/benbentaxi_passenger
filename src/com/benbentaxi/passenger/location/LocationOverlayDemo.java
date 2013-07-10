@@ -6,35 +6,21 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import android.app.Activity;
-import android.app.Application;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioRecord;
-import android.media.AudioTrack;
-import android.media.MediaRecorder;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
@@ -56,7 +42,7 @@ import com.benbentaxi.passenger.nearbydriver.NearByDriverTask;
 import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
-import com.benbentaxi.util.GetInfoTask;
+import com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity;
 import com.benbentaxi.util.IdShow;
 public class LocationOverlayDemo extends Activity {
 	
@@ -114,7 +100,6 @@ public class LocationOverlayDemo extends Activity {
     };
     
     private String mTokenKey, mTokenVal;
-	private static final String mTestHost = "42.121.55.211:8081";
 	
 	OverlayTest ov = null;
 	// 存放overlayitem 
@@ -127,17 +112,6 @@ public class LocationOverlayDemo extends Activity {
 	public List<Drawable>  res = new ArrayList<Drawable>();
 	private Drawable mDrvMarker;
 	
-	private String mUserMobile;
-	private boolean mIsGetLocation = false; // 判断是否成功获取地理位置
-	
-	private AudioRecord mAudioRecord; //  乘客声音
-	private AudioTrack mAudioTrack; // 播放乘客声音
-	private int mAudioBufSize = 0;
-	private byte[] mAudioBuffer;
-	private long mRecTime; // 判断录音时间是否过短
-	private View mDialogView; // 录音对话框的view
-	private PopupWindow mPopCallTaxi; // 录音的弹出窗口
-	
 	
 	public final static int MSG_HANDLE_MAP_MOVE = 1;
 	public final static int MSG_HANDLE_POS_REFRESH = 2;
@@ -148,9 +122,20 @@ public class LocationOverlayDemo extends Activity {
 	
 	private OnClickListener mCallTaxiListener = new OnClickListener(){
 		public void onClick(View v) {
+			
+			LocationData curloc=mApp.getCurrentPassengerLocation();
+			if(curloc==null)
+			{
+				Toast.makeText(LocationOverlayDemo.this, getString(R.string.no_location).toString(), Toast.LENGTH_SHORT).show();
+				return;
+			}
+			
 			testUpdateClick();
-			testUpdateButton.setText(LocationOverlayDemo.this.getResources().getString(R.string.recall_taxi));
-			showCalltaxi();
+			testUpdateButton.setText(LocationOverlayDemo.this.getResources().getString(R.string.recall_taxi));			
+			Intent createIntent = new Intent(LocationOverlayDemo.this,CreateTaxiRequestActivity.class);			
+			
+			startActivity(createIntent);			
+			onPause();			
 		}
     };
     
@@ -170,7 +155,6 @@ public class LocationOverlayDemo extends Activity {
         mApp			= app;
         mTokenKey 		= (mApp.getCurrentSession()!=null)? mApp.getCurrentSession().getTokenKey():"";
         mTokenVal 		= (mApp.getCurrentSession()!=null)? mApp.getCurrentSession().getTokenVal():"";
-        mUserMobile		= (mApp.getCurrentPassenger()!=null)? mApp.getCurrentPassenger().getMobile():"";
         initMapView();
         
         mLocClient = new LocationClient( this );
@@ -220,11 +204,12 @@ public class LocationOverlayDemo extends Activity {
 		mDrvMarker = this.getResources().getDrawable(R.drawable.steering);
 		res.add(getResources().getDrawable(R.drawable.steering));
 	    ov = new OverlayTest(mDrvMarker, this,mMapView, MsgHandler); 
+	    Log.d(TAG,"create............... ");
+	    
 	    mMapView.getOverlays().add(ov);
 	    
 		myLocationOverlay = new MyLocationOverlay(mMapView);
 		locData = new LocationData();
-		mApp.setCurrentPassengerLocation(locData);
 	    myLocationOverlay.setData(locData);
 		mMapView.getOverlays().add(myLocationOverlay);
 		myLocationOverlay.enableCompass();
@@ -232,13 +217,6 @@ public class LocationOverlayDemo extends Activity {
 		
 		testUpdateButton = (Button)findViewById(R.id.btn_callTaxi);
 	    testUpdateButton.setOnClickListener(mCallTaxiListener);
-	    
-	    // 初始化声音组件
-	    initAudio();
-	    
-	    
-    	mDialogView = getLayoutInflater().inflate(R.layout.record_dialog, null);
-    	mPopCallTaxi = new PopupWindow(mDialogView, 600, 600);
 	    
 	    Log.d(TAG, mTokenKey+": "+mTokenVal);
     }
@@ -251,6 +229,8 @@ public class LocationOverlayDemo extends Activity {
     
     @Override
     protected void onResume() {
+	    Log.d(TAG,"resue OV! " + (ov == null));
+
         mMapView.onResume();
         super.onResume();
     }
@@ -258,6 +238,8 @@ public class LocationOverlayDemo extends Activity {
     
     @Override
     protected void onDestroy() {
+	    Log.d(TAG,"Destory..............");
+
         if (mLocClient != null)
             mLocClient.stop();
         mMapView.destroy();
@@ -290,31 +272,7 @@ public class LocationOverlayDemo extends Activity {
         //mMapController.setMapClickEnable(true);
         //mMapView.setSatellite(false);
     }
-    
-    private void initAudio() {
-        	mAudioBufSize = AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT);
-
-
-    	mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 44100, 
-    			AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, mAudioBufSize);
-    	mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, 
-    			AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, mAudioBufSize, AudioTrack.MODE_STREAM);    	
-    	
-    	mAudioBuffer = new byte[mAudioBufSize];
-    }
-    
-    private void doRecordAudio() {
-    	mAudioRecord.startRecording();
-    	mAudioRecord.read(mAudioBuffer, 0, mAudioBufSize);
-    	mAudioRecord.stop();
-    }
-
-    private void doPlayAudio() {
-    	mAudioTrack.play();
-    	mAudioTrack.write(mAudioBuffer, 0, mAudioBufSize);
-    	mAudioTrack.stop();
-    }
-    
+  
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -327,6 +285,7 @@ public class LocationOverlayDemo extends Activity {
 	private void doPassenger() {
     	// 获取周边Taxi
         TaxiRequest taxiRequest = mApp.getCurrentTaxiRequest();
+        
         NearByDriverTask nearyByDriverTask = new NearByDriverTask(this.mApp);
         nearyByDriverTask.go();
         if (taxiRequest != null) {
@@ -337,60 +296,7 @@ public class LocationOverlayDemo extends Activity {
         ShowCurrentNearByDrivers();
     }
     
-    private void showCalltaxi() {
-    	// 显示打车请求录音界面    	
-    	ImageButton imgBtn = (ImageButton)mDialogView.findViewById(R.id.imgBtnRec);
-    	imgBtn.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				Application app = LocationOverlayDemo.this.getApplication();
-				TextView tv = (TextView)mDialogView.findViewById(R.id.tvRec);
-				
-				// 按下录音，释放发送
-				if (v.getId() == R.id.imgBtnRec) {
-					boolean dismiss = true;
-					
-					if (event.getAction() == MotionEvent.ACTION_DOWN) {
-						// TODO 录音或播放
-						tv.setText(app.getResources().getString(R.string.rec_ing));
-						mRecTime = System.currentTimeMillis();
-					}
-					
-					if (event.getAction() == MotionEvent.ACTION_UP) {
-						if ( (System.currentTimeMillis()-mRecTime) < 1000 ) {
-							// 时间太短
-							//Toast.makeText(LocationOverlayDemo.this, "录音时间太短，请重新录制", Toast.LENGTH_SHORT).show();
-							tv.setText(app.getResources().getString(R.string.rec_short));
-							
-						} else if (mIsGetLocation == true ) {
-							// 发起打车请求
-							GetTaxiTask reqtt = new GetTaxiTask();
-				            reqtt.requireTaxi(locData.longitude, locData.latitude);
-				    		//Toast.makeText(LocationOverlayDemo.this, "发送数据", Toast.LENGTH_SHORT).show();
-				            tv.setText(app.getResources().getString(R.string.rec_send));
-				            dismiss = false;
-
-						} else {
-				    		//Toast.makeText(LocationOverlayDemo.this, "正在为您定位，请稍后再试", Toast.LENGTH_SHORT).show();
-							tv.setText(app.getResources().getString(R.string.rec_retry));
-						}
-						
-						if ( dismiss ) {
-							// 延迟退出
-							DelayTask dt = new DelayTask(DelayTask.TYPE_CLOSE_POPUP);
-							dt.execute(1000);
-						}
-					}
-				}
-				return false;
-			}
-    	});
-    	
-    	Application app1 = LocationOverlayDemo.this.getApplication();
-		TextView tvv = (TextView)mDialogView.findViewById(R.id.tvRec);
-		tvv.setText(app1.getResources().getString(R.string.rec_info));
-    	mPopCallTaxi.showAtLocation(mDialogView, Gravity.CENTER, 0, 0);
-    }
+    
     
     private void showDriverInfo(int idx, JSONObject obj) throws JSONException {
 		int drvid = obj.getInt("driver_id");
@@ -425,8 +331,7 @@ public class LocationOverlayDemo extends Activity {
             mMapView.refresh();
             mMapController.animateTo(new GeoPoint((int)(locData.latitude* 1e6), (int)(locData.longitude *  1e6)), 
             		MsgHandler.obtainMessage(MSG_HANDLE_MAP_MOVE));
-            
-            mIsGetLocation = true;
+    		mApp.setCurrentPassengerLocation(locData);
             MsgHandler.dispatchMessage(MsgHandler.obtainMessage(MSG_HANDLE_POS_REFRESH));
         }
         
@@ -444,117 +349,7 @@ public class LocationOverlayDemo extends Activity {
     
 
     
-	private class GetTaxiTask extends GetInfoTask {
-		private static final int TYPE_REQ_TAXI = 1;
-				
-		
-		private String _useragent = "ning@benbentaxi";
-		private JSONObject _json_data;
-		private int _type = -1;
-		
-				
-		public void requireTaxi(double lng, double lat) {
-			_type = TYPE_REQ_TAXI;
-			String url = "http://"+mTestHost+"/api/v1/taxi_requests";
-			
-			_json_data = new JSONObject();
-			try {
-				//{\"taxi_request\":{\"passenger_mobile\":\"15910676326\",\"passenger_lng\":\"8\",\"passenger_lat\":\"8\",\"waiting_time_range\":30}}" 
-				JSONObject sess = new JSONObject();
-				sess.put("passenger_mobile", mUserMobile);
-				sess.put("passenger_lng", lng);
-				sess.put("passenger_lat", lat);
-				sess.put("waiting_time_range", 10);
-				sess.put("passenger_voice", "aSB3aWxsIGJlIHRoZXJl");
-				sess.put("passenger_voice_format", "m4a");
-				_json_data.put("taxi_request", sess);
-			} catch (JSONException e) {
-				//_info.append("form json error: "+e.toString());
-			}
 
-			doPOST(url);
-		}
-		
-				
-
-		
-		
-		private void doPOST(String url) {
-			// 一定要初始化cookie和content-type!!!!!
-			super.initCookies(mTokenKey, mTokenVal, "42.121.55.211");
-			super.initHeaders("Content-Type", "application/json");
-			
-			execute(url, _useragent, GetInfoTask.TYPE_POST);
-		}
-		
-		@Override
-		protected void onProgressUpdate(Integer... values) {
-			if ( values[0] >= GetInfoTask.REQUEST_SEND && mPopCallTaxi.isShowing() ) {
-				// 在这里关闭录音对话框，造成延迟效果
-				mPopCallTaxi.dismiss();
-			}
-			super.onProgressUpdate(values);
-		}
-
-		@Override
-		protected void initPostValues() {
-			if ( _json_data != null ) {
-				post_param = _json_data.toString();
-			}
-		}
-		
-		@Override
-		protected void onPostExecPost(Boolean succ) {
-			String data = this.toString();
-			if ( succ ) {
-				JSONTokener jsParser = new JSONTokener(data);
-				try {
-					
-					switch ( _type ) {
-					case TYPE_REQ_TAXI:
-						doCreateRequest(jsParser);
-						break;
-
-					default:
-						break;
-					}
-					
-				} catch (JSONException e) {
-					//e.printStackTrace();
-					try {
-						JSONObject ret = (JSONObject) jsParser.nextValue();
-						JSONObject err = ret.getJSONObject("errors");
-						//_info.append("errmsg \""+err.getJSONArray("base").getString(0)+"\"");
-						_errmsg = err.getJSONArray("base").getString(0);
-						succ = false;
-					} catch (Exception ee) {
-						//_info.append("json error: "+ee.toString()+"\n");
-						//_info.append("to json: "+_json_data.toString());
-						_errmsg = "数据通信异常，请检查云服务器配置，或联系服务商";
-						succ = false;
-					}
-				} catch (Exception e) {
-					_errmsg = "网络错误，请检查云服务器配置，并确认网络正常后再试";
-					succ = false;
-				}
-				
-			} else {
-				//_info.append("errmsg: \n"+_errmsg);
-			}
-			
-			if( succ == false ) {
-				Toast.makeText(LocationOverlayDemo.this.getApplicationContext(), "错误返回: "+_errmsg+"\n"+data, Toast.LENGTH_SHORT).show();
-			}
-		}
-		
-		@SuppressWarnings("static-access")
-		private void doCreateRequest(JSONTokener jsParser) throws JSONException {
-			JSONObject ret = (JSONObject)jsParser.nextValue();
-			TaxiRequest taxiRequest = new TaxiRequest(LocationOverlayDemo.this,ret);
-			mApp.setCurrentTaxiRequest(taxiRequest);
-		}
-		
-	}
 	
 	@SuppressWarnings("static-access")
 	private void ShowCurrentNearByDrivers() 
@@ -567,9 +362,6 @@ public class LocationOverlayDemo extends Activity {
 		//清除所有添加的Overlay
         ov.removeAll();
         mGeoList.clear();
-        
-		//添加一个item
-    	//当要添加的item较多时，可以使用addItem(List<OverlayItem> items) 接口
         for( int i=0; i< nearByDriverTrackResponse.getSize(); ++i ) {
         	int lat = 0, lng = 0;
         	
@@ -586,7 +378,6 @@ public class LocationOverlayDemo extends Activity {
         	}
         }
     	if ( ov.size() < mGeoList.size()){
-    		//ov.addItem(mGeoList.get(ov.size() ));
     		ov.addItem(mGeoList);
     	}
 	    mMapView.refresh();
@@ -598,40 +389,8 @@ public class LocationOverlayDemo extends Activity {
 	    
 	}
 	
-	private class DelayTask extends AsyncTask<Integer, Integer, Boolean> {
-		public final static int TYPE_CLOSE_POPUP = 0;
-		
-		private int _type;
-		
-		public DelayTask( int type ) {
-			_type = type;
-		}
-		
-		@Override
-		protected Boolean doInBackground(Integer... params) {
-			// 获取延迟时间, ms
-			int delay = params[0];
-			SystemClock.sleep(delay);
-			return true;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
-			switch( _type ) {
-			case TYPE_CLOSE_POPUP:
-				if ( mPopCallTaxi.isShowing() ) {
-					mPopCallTaxi.dismiss();
-				}
-				break;
-			default:
-				break;
-			}
-		}
-	}
-	
 	@Override
-	public boolean onKeyDown( int keyCode, KeyEvent event ) {
+	public boolean onKeyDown( int keyCode, KeyEvent event ) {		
 	    return super.onKeyDown(keyCode, event);
 	}
 }
