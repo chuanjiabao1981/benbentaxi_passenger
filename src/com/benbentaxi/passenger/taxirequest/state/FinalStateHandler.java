@@ -9,7 +9,6 @@ import com.benbentaxi.passenger.taxirequest.TaxiRequestResponse;
 
 public class FinalStateHandler implements StateChangeHandler{
 	
-	@SuppressWarnings("static-access")
 	@Override
 	public void handler(TaxiRequest old, TaxiRequestResponse newState) {
 		old.init((JSONObject) newState.getJsonResult());
