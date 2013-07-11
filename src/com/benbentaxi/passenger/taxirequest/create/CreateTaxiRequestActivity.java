@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import com.baidu.location.BDLocation;
 import com.benbentaxi.passenger.R;
+import com.benbentaxi.passenger.location.DemoApplication;
 
 
 import android.media.MediaPlayer;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Activity;
 import android.graphics.Color;
@@ -42,7 +45,10 @@ public class CreateTaxiRequestActivity  extends Activity  {
 		setContentView(R.layout.activity_taxi_request_create);	
 		mAbsolutePath		= Environment.getExternalStorageDirectory()+"/benbentaxi_passenger/tmp/voice/";
 		mTmpfile			= mAbsolutePath+"/"+mTmpfile;
-
+		TextView t = (TextView) this.findViewById(R.id.taxi_request_source);
+		DemoApplication app 			= (DemoApplication) this.getApplication();
+		BDLocation 		bdLocation		= app.getCurrentPassengerLocation();
+		t.setText("位置:"+  ((bdLocation == null) ? "未知" : bdLocation.getAddrStr()));
 		File dir = new File(mAbsolutePath);
 		if (!dir.exists()) {
 			 if(dir.mkdirs())

@@ -57,7 +57,7 @@ public abstract class PostTask extends JsonHttpTask {
 					httpRequest.setEntity(new UrlEncodedFormEntity(sess_params,"UTF-8"));
 			} else if ( post_param.length() > 0 ) {
 					httpRequest.setEntity(new StringEntity(post_param,"UTF-8"));
-
+					Log.d(TAG,"post_param length:"+post_param.length());
 		    }
 
 			_httpResp = new DefaultHttpClient(httpparam).execute(httpRequest, hcon);

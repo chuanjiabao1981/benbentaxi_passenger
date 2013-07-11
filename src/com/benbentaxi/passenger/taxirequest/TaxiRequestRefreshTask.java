@@ -20,7 +20,6 @@ public class TaxiRequestRefreshTask extends GetTask{
 	private DemoApplication mApp;
 	private Session mSession = null;
 
-	@SuppressWarnings("static-access")
 	public TaxiRequestRefreshTask(DemoApplication app)
 	{
 		this.mConfigure 		= new  Configure();

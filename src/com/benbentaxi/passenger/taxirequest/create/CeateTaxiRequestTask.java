@@ -7,7 +7,6 @@ import com.benbentaxi.Configure;
 import com.benbentaxi.Session;
 import com.benbentaxi.api.PostTask;
 import com.benbentaxi.passenger.location.DemoApplication;
-import com.benbentaxi.passenger.taxirequest.TaxiRequestResponse;
 
 
 public class CeateTaxiRequestTask extends PostTask{
@@ -52,17 +51,14 @@ public class CeateTaxiRequestTask extends PostTask{
 	protected void onPostExecute(Boolean succ) 
 	{
 		
-		TaxiRequestResponse taxiRequestResponse = new TaxiRequestResponse(this.getResult());
-		
-		Log.i("res : ",this.getResult());
+		CreateTaxiRequestFormResponse createTaxiRequestFormResponse = new CreateTaxiRequestFormResponse(mCeateTaxiRequestForm,this.getResult());
 		
 		this.mCeateTaxiRequestForm.showProgress(false);
 		if (!succ){
-			taxiRequestResponse.setSysErrorMessage(this.getErrorMsg());
+			createTaxiRequestFormResponse.setSysErrorMessage(this.getErrorMsg());
 		}
-		
-		
-		if (!taxiRequestResponse.hasError()){
+		if (!createTaxiRequestFormResponse.hasError()){
+			Log.d("res : ",this.getResult());
 			this.mCeateTaxiRequestForm.getActivity().finish();
 		}
 	}

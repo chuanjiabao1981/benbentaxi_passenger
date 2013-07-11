@@ -30,18 +30,16 @@ public class NearByDriverTask extends GetTask{
 
 	}
 	
-	@SuppressWarnings("static-access")
 	private double lng()
 	{
 		if (mApp.getCurrentPassengerLocation() != null)
-			return mApp.getCurrentPassengerLocation().longitude;
+			return mApp.getCurrentPassengerLocation().getLongitude();
 		return -1;
 	}
-	@SuppressWarnings("static-access")
 	private double lat()
 	{
 		if (mApp.getCurrentPassengerLocation() != null)
-			return mApp.getCurrentPassengerLocation().latitude;
+			return mApp.getCurrentPassengerLocation().getLatitude();
 		return -1;
 	}
 	@Override

@@ -1,9 +1,9 @@
 package com.benbentaxi.passenger.login;
 
-
 import com.benbentaxi.passenger.R;
 import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.register.RegisterActivity;
+import com.benbentaxi.util.CustomExceptionHandler;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -28,6 +28,8 @@ public class LoginActivity extends Activity {
 	private DemoApplication mApp; 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+    	Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler());
+
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_login);

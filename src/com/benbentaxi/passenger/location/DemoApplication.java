@@ -6,9 +6,9 @@ import android.app.Application;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.MKGeneralListener;
-import com.baidu.mapapi.map.LocationData;
 import com.baidu.mapapi.map.MKEvent;
 import com.benbentaxi.Passenger;
 import com.benbentaxi.Session;
@@ -25,7 +25,7 @@ public class DemoApplication extends Application {
     private TaxiRequest mCurrentTaxiRequest 		= null;
     private Session 	   mCurrentSession			= null;
     private Passenger   mCurrentPassenger			= null;
-    private LocationData mCurrentPassengerLocation 		= null;
+    private BDLocation mCurrentPassengerLocation 		= null;
     private NearByDriverTrackResponse mCurrentNearbyDrivers = null;
     private DataPreference 					mDataPreference 	  = null;
     public boolean m_bKeyRight = true;
@@ -132,11 +132,11 @@ public class DemoApplication extends Application {
     	return mCurrentShowTaxiRequest;
     }
     
-    public  LocationData getCurrentPassengerLocation()
+    public  BDLocation getCurrentPassengerLocation()
     {
     	return mCurrentPassengerLocation;
     }
-    public  void setCurrentPassengerLocation(LocationData locationData)
+    public  void setCurrentPassengerLocation(BDLocation locationData)
     {
     	mCurrentPassengerLocation = locationData;
     }

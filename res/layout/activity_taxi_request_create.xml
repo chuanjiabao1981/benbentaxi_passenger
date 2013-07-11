@@ -53,11 +53,25 @@
 			android:contentDescription="@string/record_play"
 			android:layout_gravity="center"/>
 
-               <View
-                   android:id="@+id/View01"
-                   android:layout_width="wrap_content"
-                   android:layout_height="32dp"
-                   android:layout_weight="0.03" />
+			<View
+			    android:id="@+id/View01"
+			    android:layout_width="wrap_content"
+			    android:layout_height="32dp"
+			    android:layout_weight="0.01" />
+
+			<TextView
+			    android:id="@+id/taxi_request_source"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:gravity="center"
+			    android:textColor="@color/blue"
+			    android:textSize="18sp" />
+
+			<View
+			    android:id="@+id/View03"
+			    android:layout_width="wrap_content"
+			    android:layout_height="32dp"
+			    android:layout_weight="0.01" />
 
                <TextView
                    android:id="@+id/taxi_request_example_sentence"
@@ -72,7 +86,7 @@
                    android:id="@+id/View02"
                    android:layout_width="wrap_content"
                    android:layout_height="0dp"
-                   android:layout_weight="0.13" />
+                   android:layout_weight="0.08" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"

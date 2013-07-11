@@ -4,8 +4,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.benbentaxi.api.FormRequest;
+import com.benbentaxi.passenger.R;
 
 import android.util.Log;
+import android.widget.TextView;
 
 public class CeateTaxiRequest extends FormRequest
 {
@@ -22,15 +24,14 @@ public class CeateTaxiRequest extends FormRequest
 		JSONObject _json_data = new JSONObject();
 		try {
 			JSONObject json = new JSONObject();			
-			String strLatAndLng=mCeateTaxiRequestForm.getLatAndLng();			
-			String[] sLatAndLng = strLatAndLng.split("\\|");
 			String strAudio=mCeateTaxiRequestForm.getAudio();	
 			json.put(CreateTaxiRequestApiConstant.PASSENGER_MOBILE, mCeateTaxiRequestForm.getMobile());
-			json.put(CreateTaxiRequestApiConstant.PASSENGER_LAT, sLatAndLng[0]);
-			json.put(CreateTaxiRequestApiConstant.PASSENGER_LNG, sLatAndLng[1]);
+			json.put(CreateTaxiRequestApiConstant.PASSENGER_LAT, mCeateTaxiRequestForm.getLat());
+			json.put(CreateTaxiRequestApiConstant.PASSENGER_LNG, mCeateTaxiRequestForm.getLng());
 			json.put(CreateTaxiRequestApiConstant.WAITING_TIME_RANGE, 10);
 			json.put(CreateTaxiRequestApiConstant.PASSENGER_VOICE, strAudio);
-			json.put(CreateTaxiRequestApiConstant.PASSENGER_VOICE_FORMAT, "3gp");			
+			json.put(CreateTaxiRequestApiConstant.PASSENGER_VOICE_FORMAT, "3gp");	
+			json.put(CreateTaxiRequestApiConstant.SOURCE,mCeateTaxiRequestForm.getSource());
 			_json_data.put(CreateTaxiRequestApiConstant.TAXI_REQUEST_CREATE, json);
 		} catch (JSONException e) {
 			Log.e(TAG,"获取打车数据出错["+CreateTaxiRequestApiConstant.SOURCE+"]");

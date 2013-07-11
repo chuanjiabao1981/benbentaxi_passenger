@@ -2,6 +2,8 @@ package com.benbentaxi.passenger.location;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -99,6 +101,8 @@ public class LocationOverlayDemo extends Activity {
         };
     };
     
+    private boolean mNearyByDriver = false;
+    
     private String mTokenKey, mTokenVal;
 	
 	OverlayTest ov = null;
@@ -120,10 +124,11 @@ public class LocationOverlayDemo extends Activity {
 	
 	private DemoApplication mApp = null;
 	
+	private Timer mTimer		 = null; 
+	
 	private OnClickListener mCallTaxiListener = new OnClickListener(){
 		public void onClick(View v) {
-			
-			LocationData curloc=mApp.getCurrentPassengerLocation();
+			BDLocation curloc=mApp.getCurrentPassengerLocation();
 			if(curloc==null)
 			{
 				Toast.makeText(LocationOverlayDemo.this, getString(R.string.no_location).toString(), Toast.LENGTH_SHORT).show();
@@ -133,13 +138,22 @@ public class LocationOverlayDemo extends Activity {
 			testUpdateClick();
 			testUpdateButton.setText(LocationOverlayDemo.this.getResources().getString(R.string.recall_taxi));			
 			Intent createIntent = new Intent(LocationOverlayDemo.this,CreateTaxiRequestActivity.class);			
-			
 			startActivity(createIntent);			
-			onPause();			
 		}
     };
     
-    @SuppressWarnings("static-access")
+    
+    class RefreshInfo extends TimerTask
+    {
+
+		@Override
+		public void run() {
+			if (MsgHandler != null){
+				MsgHandler.sendMessage(MsgHandler.obtainMessage(MSG_HANDLE_POS_REFRESH));
+			}
+		}
+    	
+    }
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,7 +177,7 @@ public class LocationOverlayDemo extends Activity {
         LocationClientOption option = new LocationClientOption();
         option.setOpenGps(true);//打开gps
         option.setCoorType("bd09ll");     //设置坐标类型
-        option.setScanSpan(5000);
+        option.setAddrType("all");
         mLocClient.setLocOption(option);
         mLocClient.start();
         mMapView.getController().setZoom(14);
@@ -218,28 +232,39 @@ public class LocationOverlayDemo extends Activity {
 		testUpdateButton = (Button)findViewById(R.id.btn_callTaxi);
 	    testUpdateButton.setOnClickListener(mCallTaxiListener);
 	    
+	    
 	    Log.d(TAG, mTokenKey+": "+mTokenVal);
     }
     
     @Override
     protected void onPause() {
+    	mNearyByDriver = false;
+//	    mTimer.cancel();
+//	    mTimer = null;
         mMapView.onPause();
         super.onPause();
+	    Log.d(TAG,"Pause ................. NearyByDriver=" + mNearyByDriver);
     }
     
     @Override
     protected void onResume() {
-	    Log.d(TAG,"resue OV! " + (ov == null));
-
+    	mNearyByDriver = true;
         mMapView.onResume();
+        
+        if (mTimer == null)
+        	mTimer = new Timer("DataRefresh",true);
+        
+        mTimer.schedule(new RefreshInfo(),0 , 5000);
         super.onResume();
+	    Log.d(TAG,"Resume ................. NearyByDriver=" + mNearyByDriver);
+
+        
     }
     
     
     @Override
     protected void onDestroy() {
-	    Log.d(TAG,"Destory..............");
-
+	    mTimer.cancel();
         if (mLocClient != null)
             mLocClient.stop();
         mMapView.destroy();
@@ -249,6 +274,7 @@ public class LocationOverlayDemo extends Activity {
             app.mBMapManager = null;
         }
         super.onDestroy();
+	    Log.d(TAG,"Destory..............");
     }
     
     @Override
@@ -265,7 +291,8 @@ public class LocationOverlayDemo extends Activity {
     }
     
     public void testUpdateClick(){
-        mLocClient.requestLocation();
+       int s = mLocClient.requestLocation();
+       Log.d(TAG,"request my location ,res="+s);
     }
     private void initMapView() {
         mMapView.setLongClickable(true);
@@ -281,19 +308,20 @@ public class LocationOverlayDemo extends Activity {
 
     
     
-    @SuppressWarnings("static-access")
 	private void doPassenger() {
     	// 获取周边Taxi
         TaxiRequest taxiRequest = mApp.getCurrentTaxiRequest();
         
-        NearByDriverTask nearyByDriverTask = new NearByDriverTask(this.mApp);
-        nearyByDriverTask.go();
         if (taxiRequest != null) {
         	TaxiRequestRefreshTask refreshTask = new TaxiRequestRefreshTask(this.mApp);
         	refreshTask.go();
         }
         //展示周边Taxi
-        ShowCurrentNearByDrivers();
+        if (mNearyByDriver){
+        	NearByDriverTask nearyByDriverTask = new NearByDriverTask(this.mApp);
+        	nearyByDriverTask.go();
+            ShowCurrentNearByDrivers();
+        }
     }
     
     
@@ -327,12 +355,12 @@ public class LocationOverlayDemo extends Activity {
             locData.longitude = location.getLongitude();
             locData.accuracy = location.getRadius();
             locData.direction = location.getDerect();
+            Log.d(TAG,""+location.getAddrStr());
             myLocationOverlay.setData(locData);
             mMapView.refresh();
             mMapController.animateTo(new GeoPoint((int)(locData.latitude* 1e6), (int)(locData.longitude *  1e6)), 
             		MsgHandler.obtainMessage(MSG_HANDLE_MAP_MOVE));
-    		mApp.setCurrentPassengerLocation(locData);
-            MsgHandler.dispatchMessage(MsgHandler.obtainMessage(MSG_HANDLE_POS_REFRESH));
+    		mApp.setCurrentPassengerLocation(location);
         }
         
         public void onReceivePoi(BDLocation poiLocation) {
@@ -348,10 +376,7 @@ public class LocationOverlayDemo extends Activity {
     }
     
 
-    
-
 	
-	@SuppressWarnings("static-access")
 	private void ShowCurrentNearByDrivers() 
 	{
 		NearByDriverTrackResponse nearByDriverTrackResponse = this.mApp.getCurrentNearByDriverTrack();

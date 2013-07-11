@@ -13,7 +13,6 @@ public class TaxiRequestResponse extends Response{
 
 	@Override
 	public void parser() {
-		
 	}
 
 	@Override
