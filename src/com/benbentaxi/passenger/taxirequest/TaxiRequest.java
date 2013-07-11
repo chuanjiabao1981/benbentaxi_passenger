@@ -75,9 +75,7 @@ public class TaxiRequest {
 		handler.handler(activity,this,newState);
 		Log.i(TAG,"From [" + oldTaxiRequestState.toString() +"] to ["+newTaxiRequestState.toString() +"] done!");
 
-		if (activity != null){
-			Toast.makeText(activity, "请求"+this.mId+","+this.mTaxiRequestState.getHumanText(), Toast.LENGTH_LONG).show();
-		}
+		
 		//Log.d(TAG,"Refresh State To:"+this.getState().toString());
 		//Log.d(TAG,"Refresh Json is:"+this.mTaxiRequestJson.toString());
 
@@ -150,6 +148,9 @@ public class TaxiRequest {
 		mDriverLng				= JsonHelper.getFloat(obj, TaxiRequestApiConstant.DRIVER_LNG);
 		mPassengerLat			= JsonHelper.getFloat(obj, TaxiRequestApiConstant.PASSENGER_LAT);
 		mPassengerLng			= JsonHelper.getFloat(obj, TaxiRequestApiConstant.PASSENGER_LNG);
+	}
+	public String getHumanStateText(){
+		return this.mTaxiRequestState.getHumanText();
 	}
 	
 	

@@ -102,7 +102,7 @@ public class LocationOverlayDemo extends Activity {
         };
     };
     
-    private boolean mNearyByDriver = false;
+    private boolean mIsOnTop = false;
     
     private String mTokenKey, mTokenVal;
 	
@@ -246,17 +246,17 @@ public class LocationOverlayDemo extends Activity {
     
     @Override
     protected void onPause() {
-    	mNearyByDriver = false;
+    	mIsOnTop = false;
 //	    mTimer.cancel();
 //	    mTimer = null;
         mMapView.onPause();
         super.onPause();
-	    Log.d(TAG,"Pause ................. NearyByDriver=" + mNearyByDriver);
+	    Log.d(TAG,"Pause ................. NearyByDriver=" + mIsOnTop);
     }
     
     @Override
     protected void onResume() {
-    	mNearyByDriver = true;
+    	mIsOnTop = true;
         mMapView.onResume();
         
         if (mTimer == null)
@@ -264,7 +264,7 @@ public class LocationOverlayDemo extends Activity {
         
         mTimer.schedule(new RefreshInfo(),0 , 5000);
         super.onResume();
-	    Log.d(TAG,"Resume ................. NearyByDriver=" + mNearyByDriver);
+	    Log.d(TAG,"Resume ................. NearyByDriver=" + mIsOnTop);
 
         
     }
@@ -321,11 +321,13 @@ public class LocationOverlayDemo extends Activity {
         TaxiRequest taxiRequest = mApp.getCurrentTaxiRequest();
         
         if (taxiRequest != null) {
+        	if (mIsOnTop)
+        		Toast.makeText(this, "请求"+taxiRequest.getId()+","+taxiRequest.getHumanStateText(), Toast.LENGTH_LONG).show();
         	TaxiRequestRefreshTask refreshTask = new TaxiRequestRefreshTask(this);
         	refreshTask.go();
         }
         //展示周边Taxi
-        if (mNearyByDriver){
+        if (mIsOnTop){
         	NearByDriverTask nearyByDriverTask = new NearByDriverTask(this.mApp);
         	nearyByDriverTask.go();
             ShowCurrentNearByDrivers();
