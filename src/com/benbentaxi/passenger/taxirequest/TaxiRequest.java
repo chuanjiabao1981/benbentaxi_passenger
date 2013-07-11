@@ -28,7 +28,6 @@ public class TaxiRequest {
 	private float  mPassengerLat = -1;
 	private float  mPassengerLng = -1;
 	private JSONObject mTaxiRequestJson = null;
-	private Activity mActivity 			= null;
 	private TaxiRequestState mTaxiRequestState = TaxiRequestState.Waiting_Driver_Response;
 	
 	private static FinalStateHandler FINAL_STATE_HANDLER = new FinalStateHandler();
@@ -43,13 +42,12 @@ public class TaxiRequest {
 	
 	
 	
-	public TaxiRequest(Activity activity,JSONObject obj)
+	public TaxiRequest(JSONObject obj)
 	{	this.mTaxiRequestJson = obj;
-		this.mActivity 		  = activity;
 		init(obj);
 	}
 	
-	public void refresh(TaxiRequestResponse newState)
+	public void refresh(Activity activity,TaxiRequestResponse newState)
 	{
 		if (newState == null){
 			Log.e(TAG,"newState is null");
@@ -74,16 +72,17 @@ public class TaxiRequest {
 		//TODO::Lock
 		//TODO::时间戳判断
 
-		handler.handler(this,newState);
+		handler.handler(activity,this,newState);
 		Log.i(TAG,"From [" + oldTaxiRequestState.toString() +"] to ["+newTaxiRequestState.toString() +"] done!");
 
-		if (this.mActivity != null){
-			Toast.makeText(this.mActivity, "请求"+this.mId+","+this.mTaxiRequestState.getHumanText(), Toast.LENGTH_LONG).show();
+		if (activity != null){
+			Toast.makeText(activity, "请求"+this.mId+","+this.mTaxiRequestState.getHumanText(), Toast.LENGTH_LONG).show();
 		}
 		//Log.d(TAG,"Refresh State To:"+this.getState().toString());
 		//Log.d(TAG,"Refresh Json is:"+this.mTaxiRequestJson.toString());
 
 	}
+	/*
 	public DemoApplication getApp()
 	{
 		return (DemoApplication) this.mActivity.getApplication();
@@ -91,7 +90,7 @@ public class TaxiRequest {
 	public Activity getActivity()
 	{
 		return this.mActivity;
-	}
+	}*/
 	public String getField(String key)
 	{
 		if (TaxiRequestApiConstant.DISTANCE.equals(key)){

@@ -24,6 +24,7 @@ public class ConfirmPopupWindow extends PopupWindow{
 	private TextView mContent;
 	private Button mBtnPos, mBtnNeg;
 	private DemoApplication mApp;
+	private Activity mActivity;
 	
 	private View.OnClickListener mPosfunc = null, mNegfunc = null;
 
@@ -35,11 +36,12 @@ public class ConfirmPopupWindow extends PopupWindow{
 	public ConfirmPopupWindow(Activity activity,int width,int height)
 	{
 		super(activity.getLayoutInflater().inflate(R.layout.confirm_dialog, null),width,height);
-		
+		mActivity = activity;
 	}
 	public ConfirmPopupWindow(Activity activity)
 	{
 		this(activity,600,400);
+		mActivity 			 = activity;
 		DemoApplication mApp = (DemoApplication)activity.getApplicationContext();
 		
 		mView = this.getContentView();
@@ -75,7 +77,7 @@ public class ConfirmPopupWindow extends PopupWindow{
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						ConfirmTask confirmRequest = new ConfirmTask(mApp,true);
+						ConfirmTask confirmRequest = new ConfirmTask(ConfirmPopupWindow.this.mActivity,true);
 						confirmRequest.go();
 						ConfirmPopupWindow.this.dismiss();
 
@@ -86,7 +88,7 @@ public class ConfirmPopupWindow extends PopupWindow{
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						ConfirmTask confirmRequest = new ConfirmTask(mApp,false);
+						ConfirmTask confirmRequest = new ConfirmTask(ConfirmPopupWindow.this.mActivity,false);
 						confirmRequest.go();
 						ConfirmPopupWindow.this.dismiss();
 

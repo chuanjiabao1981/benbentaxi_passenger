@@ -45,6 +45,7 @@ import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
 import com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity;
+import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
 import com.benbentaxi.util.IdShow;
 public class LocationOverlayDemo extends Activity {
 	
@@ -128,13 +129,20 @@ public class LocationOverlayDemo extends Activity {
 	
 	private OnClickListener mCallTaxiListener = new OnClickListener(){
 		public void onClick(View v) {
-			BDLocation curloc=mApp.getCurrentPassengerLocation();
+			BDLocation	 curloc					= mApp.getCurrentPassengerLocation();
+			TaxiRequest	 taxiRequest			= mApp.getCurrentTaxiRequest();
 			if(curloc==null)
 			{
 				Toast.makeText(LocationOverlayDemo.this, getString(R.string.no_location).toString(), Toast.LENGTH_SHORT).show();
 				return;
 			}
-			
+			if (taxiRequest != null){
+				mApp.setCurrentShowTaxiRequest(taxiRequest);
+				Intent taxiRequestDetailIntent = new Intent(LocationOverlayDemo.this,TaxiRequestDetail.class);
+				LocationOverlayDemo.this.startActivity(taxiRequestDetailIntent);
+				Toast.makeText(LocationOverlayDemo.this, "打车请求已经发出", Toast.LENGTH_LONG).show();
+				return;
+			}
 			testUpdateClick();
 			testUpdateButton.setText(LocationOverlayDemo.this.getResources().getString(R.string.recall_taxi));			
 			Intent createIntent = new Intent(LocationOverlayDemo.this,CreateTaxiRequestActivity.class);			
@@ -313,7 +321,7 @@ public class LocationOverlayDemo extends Activity {
         TaxiRequest taxiRequest = mApp.getCurrentTaxiRequest();
         
         if (taxiRequest != null) {
-        	TaxiRequestRefreshTask refreshTask = new TaxiRequestRefreshTask(this.mApp);
+        	TaxiRequestRefreshTask refreshTask = new TaxiRequestRefreshTask(this);
         	refreshTask.go();
         }
         //展示周边Taxi

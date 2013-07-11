@@ -2,6 +2,9 @@ package com.benbentaxi.passenger.taxirequest.state;
 
 import org.json.JSONObject;
 
+import android.app.Activity;
+
+import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestResponse;
 
@@ -10,9 +13,9 @@ import com.benbentaxi.passenger.taxirequest.TaxiRequestResponse;
 public class FinalStateHandler implements StateChangeHandler{
 	
 	@Override
-	public void handler(TaxiRequest old, TaxiRequestResponse newState) {
+	public void handler(Activity activity,TaxiRequest old, TaxiRequestResponse newState) {
 		old.init((JSONObject) newState.getJsonResult());
-		old.getApp().setCurrentTaxiRequest(null);
+		((DemoApplication)activity.getApplication()).setCurrentTaxiRequest(null);
 	}
 
 }
