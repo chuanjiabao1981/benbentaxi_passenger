@@ -2,4 +2,7 @@
     <item android:id="@+id/menu_settings"
         android:title="@string/menu_settings"
         android:orderInCategory="100" />
+    <item android:id="@+id/menu_history"
+        android:title="@string/taxi_history"        
+        android:orderInCategory="110" />
 </menu>

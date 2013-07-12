@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -58,6 +59,7 @@ import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
 import com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity;
+import com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexActivity;
 import com.benbentaxi.util.GetInfoTask;
 import com.benbentaxi.util.IdShow;
 public class LocationOverlayDemo extends Activity {
@@ -158,7 +160,7 @@ public class LocationOverlayDemo extends Activity {
 			Intent createIntent = new Intent(LocationOverlayDemo.this,CreateTaxiRequestActivity.class);			
 			
 			startActivity(createIntent);			
-			onPause();			
+			
 		}
     };
     
@@ -301,7 +303,17 @@ public class LocationOverlayDemo extends Activity {
         return true;
     }
 
-    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	Log.i("item:",String.valueOf(item.getItemId()));
+	    switch (item.getItemId()) {
+		    case R.id.menu_history:
+		    	Intent createIntent = new Intent(LocationOverlayDemo.this,TaxiRequestIndexActivity.class);				
+				startActivity(createIntent);			
+		    return true;		    
+	    }
+	    return super.onOptionsItemSelected(item);
+    }
     
     @SuppressWarnings("static-access")
 	private void doPassenger() {
@@ -414,14 +426,6 @@ public class LocationOverlayDemo extends Activity {
 			execute(url, _useragent, GetInfoTask.TYPE_POST);
 		}
 		
-		@Override
-		protected void onProgressUpdate(Integer... values) {
-			if ( values[0] >= GetInfoTask.REQUEST_SEND && mPopCallTaxi.isShowing() ) {
-				// 在这里关闭录音对话框，造成延迟效果
-				mPopCallTaxi.dismiss();
-			}
-			super.onProgressUpdate(values);
-		}
 
 		@Override
 		protected void initPostValues() {
@@ -542,19 +546,7 @@ public class LocationOverlayDemo extends Activity {
 			return true;
 		}
 
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
-			switch( _type ) {
-			case TYPE_CLOSE_POPUP:
-				if ( mPopCallTaxi.isShowing() ) {
-					mPopCallTaxi.dismiss();
-				}
-				break;
-			default:
-				break;
-			}
-		}
+		
 	}
 	
 	@Override

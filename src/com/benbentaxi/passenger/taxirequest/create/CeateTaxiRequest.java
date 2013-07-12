@@ -28,12 +28,12 @@ public class CeateTaxiRequest extends FormRequest
 			String[] sLatAndLng = strLatAndLng.split("\\|");
 			String strAudio=mCeateTaxiRequestForm.getAudio();	
 			json.put(CreateTaxiRequestApiConstant.PASSENGER_MOBILE, mCeateTaxiRequestForm.getMobile());
-			json.put(CreateTaxiRequestApiConstant.DRIVER_LAT, sLatAndLng[0]);
-			json.put(CreateTaxiRequestApiConstant.DRIVER_LNG, sLatAndLng[1]);
+			json.put(CreateTaxiRequestApiConstant.PASSENGER_LAT, sLatAndLng[0]);
+			json.put(CreateTaxiRequestApiConstant.PASSENGER_LNG, sLatAndLng[1]);
 			json.put(CreateTaxiRequestApiConstant.WAITING_TIME_RANGE, 10);
 			json.put(CreateTaxiRequestApiConstant.PASSENGER_VOICE, strAudio);
 			json.put(CreateTaxiRequestApiConstant.PASSENGER_VOICE_FORMAT, "3gp");			
-			_json_data.put(CreateTaxiRequestApiConstant.TAXI_REQUEST_CREATE, json);
+			_json_data.put(CreateTaxiRequestApiConstant.TAXI_REQUEST, json);
 		} catch (JSONException e) {
 			Log.e(TAG,"获取打车数据出错["+CreateTaxiRequestApiConstant.SOURCE+"]");
 		}

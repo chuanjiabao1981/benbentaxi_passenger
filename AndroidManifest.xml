@@ -119,7 +119,11 @@
             android:name="com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail"
             android:label="详细信息" >
         </activity>
-        <activity android:name="com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity" android:label="@string/title_create_request"> 
+        <activity android:name="com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity" 
+            android:label="@string/title_create_request"> 
+        </activity>
+        <activity android:name="com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexActivity" 
+            android:label="打车历史"> 
         </activity>
     </application>
 

@@ -20,7 +20,7 @@ public class CeateTaxiRequestForm extends ViewForm{
 	public CeateTaxiRequestForm(Activity activity) {			
 		super(activity);		
 		DemoApplication app = (DemoApplication)activity.getApplication();
-		
+		  
 		LocationData curloc=app.getCurrentPassengerLocation();
 		String strLat=Double.toString(curloc.longitude);
 		String strLng=Double.toString(curloc.latitude);
