@@ -4,6 +4,7 @@
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Handler;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
@@ -28,6 +29,7 @@ public class DemoApplication extends Application {
     private BDLocation mCurrentPassengerLocation 		= null;
     private NearByDriverTrackResponse mCurrentNearbyDrivers = null;
     private DataPreference 					mDataPreference 	  = null;
+    private Handler		mHandler					= null;
     public boolean m_bKeyRight = true;
     
     BMapManager mBMapManager = null;
@@ -117,6 +119,9 @@ public class DemoApplication extends Application {
     public  void setCurrentTaxiRequest(TaxiRequest o)
     {
 		mCurrentTaxiRequest = o;
+		if (o != null){
+			this.mHandler.sendMessage(mHandler.obtainMessage(LocationOverlayDemo.MSG_HANDLE_REFRESH_CURRENT_TAXIREQUEST));
+		}
 	}
     public  TaxiRequest getCurrentTaxiRequest()
     {
@@ -164,6 +169,10 @@ public class DemoApplication extends Application {
     public String getLoginPass()
     {
     	return mDataPreference.LoadString(LOGIN_PASS);
+    }
+    public void setHandler(Handler h)
+    {
+    	this.mHandler = h;
     }
     
 }

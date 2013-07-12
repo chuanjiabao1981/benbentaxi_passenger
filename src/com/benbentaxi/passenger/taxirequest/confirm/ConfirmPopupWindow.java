@@ -5,8 +5,6 @@ import com.benbentaxi.passenger.location.DemoApplication;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -54,7 +52,6 @@ public class ConfirmPopupWindow extends PopupWindow{
     	mBtnPos = (Button)mView.findViewById(R.id.btnConfirmOk);
     	mBtnNeg = (Button)mView.findViewById(R.id.btnConfirmCancel);
     	mTitle.setText("有司机响应，距离您约");
-    	@SuppressWarnings("static-access")
 		String d =(mApp.getCurrentTaxiRequest() != null) ? mApp.getCurrentTaxiRequest().getDistance().toString() : "0";
     	mContent.setText(d+"公里");
     	mBtnPos.setText(BTN_POS_TEXT);

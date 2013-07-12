@@ -14,6 +14,7 @@ import com.benbentaxi.passenger.taxirequest.state.SimpleStateMachine;
 import com.benbentaxi.passenger.taxirequest.state.StateChangeHandler;
 import com.benbentaxi.passenger.taxirequest.state.SuccessStateHandler;
 import com.benbentaxi.passenger.taxirequest.state.TaxiRequestState;
+import com.benbentaxi.passenger.taxirequest.state.TimeOutStateHandler;
 import com.benbentaxi.passenger.taxirequest.state.WaitingConfirmStateHandler;
 import com.benbentaxi.util.JsonHelper;
 
@@ -37,7 +38,7 @@ public class TaxiRequest {
 		mSimpleStateMachine.addHandler(TaxiRequestState.Canceled_By_Passenger, FINAL_STATE_HANDLER);
 		mSimpleStateMachine.addHandler(TaxiRequestState.Success, new SuccessStateHandler());
 		mSimpleStateMachine.addHandler(TaxiRequestState.Waiting_Passenger_Confirm, new WaitingConfirmStateHandler());
-		mSimpleStateMachine.addHandler(TaxiRequestState.TimeOut, FINAL_STATE_HANDLER);
+		mSimpleStateMachine.addHandler(TaxiRequestState.TimeOut, new TimeOutStateHandler());
 	}
 	
 	
