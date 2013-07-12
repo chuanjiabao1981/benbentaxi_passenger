@@ -29,7 +29,8 @@ public class TaxiRequestDetail extends Activity {
 
 	private static Object DetailTable[][]=
 		{
-			{R.drawable.user,"司机姓名",TaxiRequestApiConstant.ID},
+			{R.drawable.flag,"请求ID", TaxiRequestApiConstant.ID},
+			{R.drawable.user,"司机姓名",TaxiRequestApiConstant.DRIVER_NAME},
 			{R.drawable.plate,"司机车牌",TaxiRequestApiConstant.PLATE},
 			{R.drawable.telephone,"司机电话",TaxiRequestApiConstant.DRIVER_MOBILE},
 			{R.drawable.location,"距离约为(公里)",TaxiRequestApiConstant.DISTANCE}
