@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 public class ConfirmPopupWindow extends PopupWindow{
 	
-	private final static String TAG = ConfirmPopupWindow.class.getName();
+//	private final static String TAG = ConfirmPopupWindow.class.getName();
 	private final static String BTN_POS_TEXT= "确认";
 	private final static String BTN_NEG_TEXT= "重新打车";
 
@@ -21,7 +21,6 @@ public class ConfirmPopupWindow extends PopupWindow{
 	private TextView mTitle;
 	private TextView mContent;
 	private Button mBtnPos, mBtnNeg;
-	private DemoApplication mApp;
 	private Activity mActivity;
 	
 	private View.OnClickListener mPosfunc = null, mNegfunc = null;
