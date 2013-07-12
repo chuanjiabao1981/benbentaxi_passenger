@@ -156,15 +156,11 @@ public class LocationOverlayDemo extends Activity {
     
     class RefreshInfo extends TimerTask
     {
-    	
     	private int mMessage;
-    	
-    	
     	public RefreshInfo(int msg)
     	{
     		this.mMessage = msg;
     	}
-
 		@Override
 		public void run() {
 			if (MsgHandler != null){

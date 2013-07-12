@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.benbentaxi.api.FormRequest;
 import com.benbentaxi.passenger.R;
 import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
@@ -36,7 +35,6 @@ public class TaxiRequestDetail extends Activity {
 			{R.drawable.location,"距离约为(公里)",TaxiRequestApiConstant.DISTANCE}
 		};
 	
-	@SuppressWarnings("static-access")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

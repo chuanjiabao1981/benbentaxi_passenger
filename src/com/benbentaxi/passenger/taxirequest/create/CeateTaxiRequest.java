@@ -4,10 +4,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.benbentaxi.api.FormRequest;
-import com.benbentaxi.passenger.R;
 
 import android.util.Log;
-import android.widget.TextView;
 
 public class CeateTaxiRequest extends FormRequest
 {

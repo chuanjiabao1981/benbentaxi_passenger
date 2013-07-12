@@ -1,5 +1,7 @@
 package com.benbentaxi.passenger.taxirequest;
 
+import java.text.DecimalFormat;
+
 import org.json.JSONObject;
 
 
@@ -7,6 +9,8 @@ import android.app.Activity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.baidu.mapapi.utils.DistanceUtil;
+import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.state.DefaultStateChangeHandler;
 import com.benbentaxi.passenger.taxirequest.state.FinalStateHandler;
@@ -28,6 +32,7 @@ public class TaxiRequest {
 	private float  mDriverLng = -1;
 	private float  mPassengerLat = -1;
 	private float  mPassengerLng = -1;
+	private float  mDistance	 = 0.0f;
 	private JSONObject mTaxiRequestJson = null;
 	private TaxiRequestState mTaxiRequestState = TaxiRequestState.Waiting_Driver_Response;
 	
@@ -74,32 +79,13 @@ public class TaxiRequest {
 		//TODO::时间戳判断
 
 		handler.handler(activity,this,newState);
-		Log.i(TAG,"From [" + oldTaxiRequestState.toString() +"] to ["+newTaxiRequestState.toString() +"] done!");
-
+		Log.d(TAG,"From [" + oldTaxiRequestState.toString() +"] to ["+newTaxiRequestState.toString() +"] done!");
 		
-		//Log.d(TAG,"Refresh State To:"+this.getState().toString());
-		//Log.d(TAG,"Refresh Json is:"+this.mTaxiRequestJson.toString());
-
 	}
-	/*
-	public DemoApplication getApp()
-	{
-		return (DemoApplication) this.mActivity.getApplication();
-	}
-	public Activity getActivity()
-	{
-		return this.mActivity;
-	}*/
 	public String getField(String key)
 	{
 		if (TaxiRequestApiConstant.DISTANCE.equals(key)){
-			return "0.2";
-			/*
-			return   String.valueOf(
-							Math.sqrt(
-										((mDriverLat - mPassengerLat)*(mDriverLat - mPassengerLat) + (mDriverLng-mPassengerLng) *  (mDriverLng-mPassengerLng))
-									  )/1000.0
-									);*/
+			return getDistance();
 		}
 		if (TaxiRequestApiConstant.PLATE.equals(key)){
 			return "晋C13452";
@@ -115,9 +101,10 @@ public class TaxiRequest {
 	{
 		return this.mDriverMobile;
 	}
-	public Float getDistance()
+	public String getDistance()
 	{
-		return 0.2f ;
+		DecimalFormat df = new DecimalFormat("0.00");
+		return df.format(mDistance) ;
 	}
 	public long getId()
 	{
@@ -149,6 +136,13 @@ public class TaxiRequest {
 		mDriverLng				= JsonHelper.getFloat(obj, TaxiRequestApiConstant.DRIVER_LNG);
 		mPassengerLat			= JsonHelper.getFloat(obj, TaxiRequestApiConstant.PASSENGER_LAT);
 		mPassengerLng			= JsonHelper.getFloat(obj, TaxiRequestApiConstant.PASSENGER_LNG);
+		
+		if (mDriverLat > 0 && mDriverLng > 0 && mPassengerLat>0 && mPassengerLng>0){
+			GeoPoint g1 = new GeoPoint((int)(mDriverLat*1e6),(int)(mDriverLng *1e6));
+			GeoPoint g2 = new GeoPoint((int)(mPassengerLat*1e6),(int)(mPassengerLng*1e6));
+			mDistance = (float) (DistanceUtil.getDistance(g1, g2)/1000);
+			
+		}
 	}
 	public String getHumanStateText(){
 		return this.mTaxiRequestState.getHumanText();
