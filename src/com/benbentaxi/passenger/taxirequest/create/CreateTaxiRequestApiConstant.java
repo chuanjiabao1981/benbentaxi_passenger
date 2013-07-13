@@ -1,9 +1,5 @@
 package com.benbentaxi.passenger.taxirequest.create;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import android.media.AudioRecord;
 
 public class CreateTaxiRequestApiConstant {
 	public final static String ID 				= "id";
