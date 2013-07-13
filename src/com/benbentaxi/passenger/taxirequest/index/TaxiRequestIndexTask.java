@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -28,15 +29,17 @@ public class TaxiRequestIndexTask extends GetTask{
 	private final String API1 			="/api/v1/taxi_requests";	
 	private Configure       mConfigure;	
 	private Session mSession = null;
-	private TaxiRequestIndexActivity mTaxiRequestIndexActivity;
+	//private TaxiRequestIndexActivity mTaxiRequestIndexActivity;
 	private DemoApplication mApp = null;
+	private Context mContext;
 	private final String TAG			     = TaxiRequestIndexTask.class.getName();
 
-	public TaxiRequestIndexTask(TaxiRequestIndexActivity activity)
+	public TaxiRequestIndexTask(Context context,DemoApplication app)
 	{	
+		
 		mConfigure		 = new Configure();
-		mTaxiRequestIndexActivity=activity;
-		this.mApp = (DemoApplication) mTaxiRequestIndexActivity.getApplication();
+		mContext=context;
+		this.mApp = app;
 		this.mSession 	  = mApp.getCurrentSession();
 		
 		if (this.mSession != null){
@@ -46,6 +49,7 @@ public class TaxiRequestIndexTask extends GetTask{
 			Log.e(TAG,"Session 获取出错!");
 		}
 		
+		Log.i("TaxiRequestIndexTask","TaxiRequestIndexTask end");
 	}
 	
 		
@@ -68,21 +72,20 @@ public class TaxiRequestIndexTask extends GetTask{
 		
 		//Log.i("res : ",this.getResult());
 		
-		//this.mTaxiRequestIndexForm.showProgress(false);
+		
 		if (!succ){
 			taxiRequestIndexResponse.setSysErrorMessage(this.getErrorMsg());
 		}		
 		
 		if (!taxiRequestIndexResponse.hasError()){	
-			//Log.i("rows:",String.valueOf(taxiRequestIndexResponse.getSize()));
-			ArrayList<TaxiRequest> list=new ArrayList<TaxiRequest>(); 
-			for(int i=0;i<taxiRequestIndexResponse.getSize();i++)
-			{
-				TaxiRequest tx=taxiRequestIndexResponse.getTaxiRequest(i);
-				list.add(tx);
-			}
-			mTaxiRequestIndexActivity.showList(list);
-			//this.mTaxiRequestIndexForm.getActivity().finish();
+						
+		
+			mApp.setCurrentTaxiRequestIndex(taxiRequestIndexResponse);
+			Intent mTaxiRequestIndexActivity = new Intent(mContext,TaxiRequestIndexActivity.class);
+			
+			mContext.startActivity(mTaxiRequestIndexActivity);
+			
+			
 		}
 	}
 	

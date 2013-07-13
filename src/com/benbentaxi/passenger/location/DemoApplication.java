@@ -14,6 +14,7 @@ import com.benbentaxi.Passenger;
 import com.benbentaxi.Session;
 import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
+import com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexResponse;
 import com.benbentaxi.util.DataPreference;
 
 
@@ -27,6 +28,7 @@ public class DemoApplication extends Application {
     private static Passenger   CurrentPassenger			= null;
     private static LocationData CurrentPassengerLocation 		= null;
     private static NearByDriverTrackResponse CurrentNearbyDrivers = null;
+    private static  TaxiRequestIndexResponse CurrentTaxiRequestIndex = null;
     private DataPreference 					mDataPreference 	  = null;
     public boolean m_bKeyRight = true;
     
@@ -147,6 +149,15 @@ public class DemoApplication extends Application {
     public static void setCurrentNearByDrivers(NearByDriverTrackResponse nearByDriverTrackResponse)
     {
     	CurrentNearbyDrivers = nearByDriverTrackResponse;
+    }
+    
+    public static TaxiRequestIndexResponse getCurrentTaxiRequestIndex()
+    {
+    	return CurrentTaxiRequestIndex;
+    }
+    public static void setCurrentTaxiRequestIndex(TaxiRequestIndexResponse taxiRequestIndexResponse)
+    {
+    	CurrentTaxiRequestIndex = taxiRequestIndexResponse;
     }
     
     public void setLoginMobile(String mobile)

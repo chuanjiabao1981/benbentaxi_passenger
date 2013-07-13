@@ -60,6 +60,7 @@ import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
 import com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity;
 import com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexActivity;
+import com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexTask;
 import com.benbentaxi.util.GetInfoTask;
 import com.benbentaxi.util.IdShow;
 public class LocationOverlayDemo extends Activity {
@@ -308,8 +309,10 @@ public class LocationOverlayDemo extends Activity {
     	Log.i("item:",String.valueOf(item.getItemId()));
 	    switch (item.getItemId()) {
 		    case R.id.menu_history:
-		    	Intent createIntent = new Intent(LocationOverlayDemo.this,TaxiRequestIndexActivity.class);				
-				startActivity(createIntent);			
+		    	//Intent createIntent = new Intent(LocationOverlayDemo.this,TaxiRequestIndexActivity.class);				
+				//startActivity(createIntent);
+		    	TaxiRequestIndexTask tsk=new TaxiRequestIndexTask(this,mApp);
+				tsk.go();
 		    return true;		    
 	    }
 	    return super.onOptionsItemSelected(item);

@@ -1,5 +1,7 @@
 package com.benbentaxi.passenger.taxirequest.index;
 
+import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,10 +15,20 @@ public class TaxiRequestIndexResponse extends Response {
 
 	private String TAG =   TaxiRequestIndexResponse.class.getName();
 	JSONArray mRes = null;
+	ArrayList<TaxiRequest> list=null;
 	
 	public TaxiRequestIndexResponse(String s)
 	{
 		super(s);
+		if(!hasError())
+		{
+			ArrayList<TaxiRequest> list=new ArrayList<TaxiRequest>(); 
+			for(int i=0;i<getSize();i++)
+			{
+				TaxiRequest tx=getTaxiRequest(i);
+				list.add(tx);
+			}
+		}
 	}
 	public int getSize()
 	{
