@@ -85,7 +85,9 @@ public class TaxiRequestDetail extends Activity {
 					    TaxiRequestDetail.this.startActivity(call);
 					}
 		});
-
+		if (mTaxiRequest.getDriverMobile() == null || mTaxiRequest.getDriverMobile().equalsIgnoreCase("")){
+			button.setEnabled(false);
+		}
 	}
 
 }
