@@ -25,7 +25,7 @@ public class TaxiRequestIndexResponse extends Response {
 			list=new ArrayList<TaxiRequest>(); 
 			for(int i=0;i<getSize();i++)
 			{
-				TaxiRequest tx=getTaxiRequest(i);
+				TaxiRequest tx=Json2TaxiRequest(i);
 				list.add(tx);
 			}
 		}
@@ -51,13 +51,19 @@ public class TaxiRequestIndexResponse extends Response {
 	
 	public TaxiRequest getTaxiRequest(int index)
 	{
+		if(index>=0 && index<getSize())
+			return list.get(index);
+		else
+			return null;
+	}
+	
+	private TaxiRequest Json2TaxiRequest(int index)
+	{
 		if(getJSONbyIndex(index)!=null)
 			return new TaxiRequest(null,getJSONbyIndex(index));
 		else
 			return null;
 	}
-	
-	
 	
 	@Override
 	public void parser() {
