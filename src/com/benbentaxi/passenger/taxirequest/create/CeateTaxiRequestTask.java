@@ -69,9 +69,9 @@ public class CeateTaxiRequestTask extends PostTask{
 			this.mApp.setCurrentTaxiRequest(
 											new TaxiRequest(
 													(JSONObject) createTaxiRequestFormResponse.getJsonResult()));
-			this.mApp.setCurrentShowTaxiRequest(this.mApp.getCurrentTaxiRequest());
-			Intent  intent = new Intent(this.mCeateTaxiRequestForm.getActivity(),TaxiRequestDetail.class);
-			this.mCeateTaxiRequestForm.getActivity().startActivity(intent);
+//			this.mApp.setCurrentShowTaxiRequest(this.mApp.getCurrentTaxiRequest());
+//			Intent  intent = new Intent(this.mCeateTaxiRequestForm.getActivity(),TaxiRequestDetail.class);
+//			this.mCeateTaxiRequestForm.getActivity().startActivity(intent);
 			this.mCeateTaxiRequestForm.getActivity().finish();
 		}
 	}

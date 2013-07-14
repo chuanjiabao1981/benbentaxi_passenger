@@ -44,5 +44,4 @@ public class WaitingConfirmStateHandler  implements StateChangeHandler{
 		ConfirmPopupWindow confirmPopupWindow = new ConfirmPopupWindow(activity,handler,30);
     	confirmPopupWindow.show();
 	}
-
 }

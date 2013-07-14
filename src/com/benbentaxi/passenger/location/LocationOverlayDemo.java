@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -95,6 +94,7 @@ public class LocationOverlayDemo extends Activity {
         		if (msg.obj != null){
         			((ConfirmPopupWindow)msg.obj).doClean();
         			Toast.makeText(LocationOverlayDemo.this, "请求确认超时，请重新打车!", Toast.LENGTH_LONG).show();
+        			LocationOverlayDemo.this.mApp.setCurrentTaxiRequest(null);
         		}
         		break;
         	default:
@@ -409,7 +409,11 @@ public class LocationOverlayDemo extends Activity {
 	    
 	}
 	@Override
-	public boolean onKeyDown( int keyCode, KeyEvent event ) {		
+	public boolean onKeyDown( int keyCode, KeyEvent event ) {
+		 if (keyCode == KeyEvent.KEYCODE_BACK) {
+		        moveTaskToBack(true);
+		        return true;
+		    }
 	    return super.onKeyDown(keyCode, event);
 	}
 	@Override

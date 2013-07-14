@@ -90,20 +90,21 @@ public class TaxiRequestDetail extends Activity {
 			button_dia.setEnabled(false);
 		}
 		
-		Button button_cal = (Button)findViewById(R.id.cancelTaxiRequestButton);
-		button_cal.setOnClickListener(
-				new View.OnClickListener(){
-					@Override
-					public void onClick(View v) {
-						ConfirmTask confirmTask = new ConfirmTask(TaxiRequestDetail.this,null,false);
-						confirmTask.go();
-						TaxiRequestDetail.this.finish();
-					}
-				}
-		);
-		if (mTaxiRequest.canCancel()){
-			button_cal.setVisibility(View.VISIBLE);
-		}else if (mTaxiRequest.canDialDriver()){
+//		Button button_cal = (Button)findViewById(R.id.cancelTaxiRequestButton);
+//		button_cal.setOnClickListener(
+//				new View.OnClickListener(){
+//					@Override
+//					public void onClick(View v) {
+//						ConfirmTask confirmTask = new ConfirmTask(TaxiRequestDetail.this,null,false);
+//						confirmTask.go();
+//						TaxiRequestDetail.this.finish();
+//					}
+//				}
+//		);
+//		if (mTaxiRequest.canCancel()){
+//			button_cal.setVisibility(View.VISIBLE);
+//		}else 
+		if (mTaxiRequest.canDialDriver()){
 			button_dia.setVisibility(View.VISIBLE);
 		}
 	}

@@ -1,6 +1,10 @@
 package com.benbentaxi.passenger.taxirequest;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import org.json.JSONObject;
 
@@ -28,6 +32,7 @@ public class TaxiRequest {
 	private String mPassengerMobile;
 	private String mDriverMobile;
 	private String mSource;
+	private String mCreatedAt;
 	private float  mDriverLat = -1;
 	private float  mDriverLng = -1;
 	private float  mPassengerLat = -1;
@@ -45,7 +50,6 @@ public class TaxiRequest {
 		mSimpleStateMachine.addHandler(TaxiRequestState.Waiting_Passenger_Confirm, new WaitingConfirmStateHandler());
 		mSimpleStateMachine.addHandler(TaxiRequestState.TimeOut, new TimeOutStateHandler());
 	}
-	
 	
 	
 	public TaxiRequest(JSONObject obj)
@@ -117,6 +121,10 @@ public class TaxiRequest {
 		DecimalFormat df = new DecimalFormat("0.00");
 		return df.format(mDistance) ;
 	}
+	public String getCreatedAt()
+	{
+		return this.mCreatedAt;
+	}
 	public long getId()
 	{
 		return this.mId;
@@ -155,11 +163,28 @@ public class TaxiRequest {
 			mDistance = (float) (DistanceUtil.getDistance(g1, g2)/1000);
 			
 		}
-	}
+
+		mCreatedAt						=JsonHelper.getString(obj, TaxiRequestApiConstant.CREATED_AT);
+		
+		mCreatedAt = mCreatedAt.replaceAll("\\+0([0-9]){1}\\:00", "+0$100");
+		String ISO8601String = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+		SimpleDateFormat formatter = new SimpleDateFormat(ISO8601String,Locale.CHINESE);
+		
+		Date strtodate;
+		try {
+			SimpleDateFormat formatter1= new SimpleDateFormat("yyyy-MM-dd");
+			strtodate = formatter.parse(mCreatedAt);
+			mCreatedAt = formatter1.format(strtodate);
+		} catch (ParseException e) {			
+			e.printStackTrace();
+			Log.e(TAG,"CreateAt is Wrong....."+mCreatedAt);
+		}
+		
+	}	
 	public String getHumanStateText(){
 		return this.mTaxiRequestState.getHumanText();
 	}
-	
+
 	public boolean canCancel()
 	{
 		if (this.mTaxiRequestState == TaxiRequestState.Waiting_Driver_Response || this.mTaxiRequestState == TaxiRequestState.Waiting_Passenger_Confirm){
@@ -167,7 +192,7 @@ public class TaxiRequest {
 		}
 		return false;
 	}
-	
+
 	public boolean canDialDriver()
 	{
 		if (this.mTaxiRequestState == TaxiRequestState.Success ){

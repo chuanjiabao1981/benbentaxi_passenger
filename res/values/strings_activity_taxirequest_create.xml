@@ -7,5 +7,10 @@
 <string name="go_back">取消</string>
 <string name="send_request">发送</string>
 <string name="no_location">获取位置中，请稍后.....</string>
+
+<string name="Column1">序号</string>
+<string name="Column2">时间</string>
+<string name="Column3">状态</string>
+
     
 </resources>
