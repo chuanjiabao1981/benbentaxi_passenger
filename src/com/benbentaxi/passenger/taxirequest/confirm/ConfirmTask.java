@@ -40,7 +40,7 @@ public class ConfirmTask extends PostTask{
 			Log.e(TAG,"获取taxi request 出错!");
 		}
 		if (this.mSession != null){
-			initCookies(mSession.getTokenKey(), mSession.getTokenVal(),mConfigure.getHost());//TODO::测试这个加端口
+			initCookies(mSession.getTokenKey(), mSession.getTokenVal(),mConfigure.getHost());
 			Log.d(TAG,mSession.getTokenKey()+":"+mSession.getTokenVal());
 		}else{
 			Log.e(TAG,"Session 获取出错!");

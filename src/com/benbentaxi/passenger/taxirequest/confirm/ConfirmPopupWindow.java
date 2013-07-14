@@ -48,7 +48,7 @@ public class ConfirmPopupWindow extends PopupWindow{
 	public ConfirmPopupWindow(Activity activity,Handler handler ,long secs)
 	{
 		super(activity.getLayoutInflater().inflate(R.layout.confirm_dialog, null),PopupWindowSize.getPopupWindoWidth(activity),
-				PopupWindowSize.getPopupWindowHeight(activity));
+				PopupWindowSize.getPopupWindowHeight(activity),true);
 		mActivity 			 		= activity;
 		DemoApplication mApp 		= (DemoApplication)activity.getApplicationContext();
 		mView 						= this.getContentView();
@@ -61,7 +61,6 @@ public class ConfirmPopupWindow extends PopupWindow{
     	mProgressBar 				= (ProgressBar)mView.findViewById(R.id.confirmProgress);
     	mSecs						= secs;
     	mHandler					= handler;
-    	
     	mCountDownTimer				= new CountDownTimer(mSecs*1000,1000){
 
 			@Override
@@ -76,7 +75,7 @@ public class ConfirmPopupWindow extends PopupWindow{
 			}
     	};
     	
-
+    	this.setOutsideTouchable(false);
     	mProgressBar.setProgress(0);
     	mProgressBar.setIndeterminate(false);
 

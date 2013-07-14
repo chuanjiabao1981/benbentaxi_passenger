@@ -2,6 +2,7 @@ package com.benbentaxi.passenger.taxirequest.create;
 
 import org.json.JSONObject;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.benbentaxi.Configure;
@@ -10,6 +11,7 @@ import com.benbentaxi.Session;
 import com.benbentaxi.api.PostTask;
 import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
+import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
 
 
 public class CeateTaxiRequestTask extends PostTask{
@@ -67,6 +69,9 @@ public class CeateTaxiRequestTask extends PostTask{
 			this.mApp.setCurrentTaxiRequest(
 											new TaxiRequest(
 													(JSONObject) createTaxiRequestFormResponse.getJsonResult()));
+			this.mApp.setCurrentShowTaxiRequest(this.mApp.getCurrentTaxiRequest());
+			Intent  intent = new Intent(this.mCeateTaxiRequestForm.getActivity(),TaxiRequestDetail.class);
+			this.mCeateTaxiRequestForm.getActivity().startActivity(intent);
 			this.mCeateTaxiRequestForm.getActivity().finish();
 		}
 	}
