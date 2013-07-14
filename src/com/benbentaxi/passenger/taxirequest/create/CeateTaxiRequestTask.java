@@ -48,6 +48,8 @@ public class CeateTaxiRequestTask extends PostTask{
 	protected String getApiUrl()
 	{
 		return "http://"+mConfigure.getService()+API1;
+		
+		
 	}
 	
 	

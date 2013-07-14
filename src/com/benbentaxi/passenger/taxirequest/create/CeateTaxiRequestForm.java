@@ -16,11 +16,8 @@ public class CeateTaxiRequestForm extends ViewForm{
 	public CeateTaxiRequestForm(Activity activity) {			
 		super(activity);		
 		DemoApplication app = (DemoApplication)activity.getApplication();
-		
 		mBDLocation=app.getCurrentPassengerLocation();
-		
 		mMobile= (app.getCurrentPassenger()!=null)? app.getCurrentPassenger().getMobile():"";
-		
 		mAudio=((CreateTaxiRequestActivity)activity).getAudioFile2String();
 	}
 	protected void init()

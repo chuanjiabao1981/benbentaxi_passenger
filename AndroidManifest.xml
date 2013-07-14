@@ -124,6 +124,11 @@
             android:label="@string/title_create_request"
             android:screenOrientation="portrait"> 
         </activity>
+        <activity android:name="com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexActivity" 
+            android:label="打车历史"
+            android:screenOrientation="portrait"> 
+             
+        </activity>
     </application>
 
 </manifest>

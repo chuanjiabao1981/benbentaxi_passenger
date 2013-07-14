@@ -8,11 +8,9 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
-import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.state.DefaultStateChangeHandler;
 import com.benbentaxi.passenger.taxirequest.state.FinalStateHandler;
 import com.benbentaxi.passenger.taxirequest.state.SimpleStateMachine;
@@ -29,6 +27,7 @@ public class TaxiRequest {
 	private long   mId;
 	private String mPassengerMobile;
 	private String mDriverMobile;
+	private String mSource;
 	private float  mDriverLat = -1;
 	private float  mDriverLng = -1;
 	private float  mPassengerLat = -1;
@@ -94,13 +93,24 @@ public class TaxiRequest {
 //		Log.d(TAG,this.mTaxiRequestJson.toString());
 		return JsonHelper.getString(this.mTaxiRequestJson, key);
 	}
+	public String getSource()
+	{
+		return this.mSource;
+	}
 	public String getState()
 	{
 		return this.mTaxiRequestState.toString();
 	}
+	public String getHumanBreifTextState(){
+		return mTaxiRequestState.getHumanBreifText();
+	}
 	public String getDriverMobile()
 	{
 		return this.mDriverMobile;
+	}
+	public String getPassengerMobile()
+	{
+		return this.mPassengerMobile;
 	}
 	public String getDistance()
 	{
@@ -133,11 +143,12 @@ public class TaxiRequest {
 		mId 				 	= JsonHelper.getLong(obj, TaxiRequestApiConstant.ID);
 		mPassengerMobile		= JsonHelper.getString(obj, TaxiRequestApiConstant.PASSENGER_MOBILE);
 		mDriverMobile			= JsonHelper.getString(obj, TaxiRequestApiConstant.DRIVER_MOBILE);
+		
 		mDriverLat 				= JsonHelper.getFloat(obj, TaxiRequestApiConstant.DRIVER_LAT);
 		mDriverLng				= JsonHelper.getFloat(obj, TaxiRequestApiConstant.DRIVER_LNG);
 		mPassengerLat			= JsonHelper.getFloat(obj, TaxiRequestApiConstant.PASSENGER_LAT);
 		mPassengerLng			= JsonHelper.getFloat(obj, TaxiRequestApiConstant.PASSENGER_LNG);
-		
+		mSource					= JsonHelper.getString(obj, TaxiRequestApiConstant.SOURCE);
 		if (mDriverLat > 0 && mDriverLng > 0 && mPassengerLat>0 && mPassengerLng>0){
 			GeoPoint g1 = new GeoPoint((int)(mDriverLat*1e6),(int)(mDriverLng *1e6));
 			GeoPoint g2 = new GeoPoint((int)(mPassengerLat*1e6),(int)(mPassengerLng*1e6));

@@ -18,6 +18,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -43,6 +45,8 @@ import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
 import com.benbentaxi.passenger.taxirequest.confirm.ConfirmPopupWindow;
 import com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity;
 import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
+import com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexActivity;
+import com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexTask;
 import com.benbentaxi.util.IdShow;
 public class LocationOverlayDemo extends Activity {
 	
@@ -318,7 +322,6 @@ public class LocationOverlayDemo extends Activity {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
-
     
     private void doNearByDriver()
     {
@@ -327,7 +330,6 @@ public class LocationOverlayDemo extends Activity {
        ShowCurrentNearByDrivers();
     }
 	private void doRefreshCurrentTaxiRequest() {
-
         TaxiRequest taxiRequest = mApp.getCurrentTaxiRequest();
         if (taxiRequest != null) {
     		if (mRefreshTaxiRequestTimer == null){
@@ -376,8 +378,6 @@ public class LocationOverlayDemo extends Activity {
     	confirm.SetPositiveOnclick("关闭", null);
     	confirm.getIdDialog().show();
     }
-    
-	
 	private void ShowCurrentNearByDrivers() 
 	{
 		NearByDriverTrackResponse nearByDriverTrackResponse = this.mApp.getCurrentNearByDriverTrack();
@@ -411,11 +411,24 @@ public class LocationOverlayDemo extends Activity {
 					Toast.LENGTH_SHORT).show();
 	    
 	}
-	
 	@Override
 	public boolean onKeyDown( int keyCode, KeyEvent event ) {		
 	    return super.onKeyDown(keyCode, event);
 	}
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	Log.i("item:",String.valueOf(item.getItemId()));
+	    switch (item.getItemId()) {
+		    case R.id.menu_history:
+		    	//Intent createIntent = new Intent(LocationOverlayDemo.this,TaxiRequestIndexActivity.class);				
+				//startActivity(createIntent);
+		    	TaxiRequestIndexTask tsk=new TaxiRequestIndexTask(this,mApp);
+				tsk.go();
+		    return true;		    
+	    }
+	    return super.onOptionsItemSelected(item);
+    }
+
 }
 
 

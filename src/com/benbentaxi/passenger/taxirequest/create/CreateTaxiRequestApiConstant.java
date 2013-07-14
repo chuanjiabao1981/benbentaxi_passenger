@@ -17,8 +17,5 @@ public class CreateTaxiRequestApiConstant {
 	public final static String SOURCE="source";
 	public final static String DESTINATION="destination";
 	public final static String  PASSENGER_VOICE="passenger_voice";
-	public final static String TAXI_REQUEST_CREATE = "taxi_request";
-	
-	
-	
+	public final static String TAXI_REQUEST    ="taxi_request";
 }
