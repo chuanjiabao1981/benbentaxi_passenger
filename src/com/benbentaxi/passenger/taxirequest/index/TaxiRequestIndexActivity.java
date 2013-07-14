@@ -118,7 +118,7 @@ public class TaxiRequestIndexActivity extends Activity  {
     			convertView = mInflater.inflate(R.layout.taxi_requestindex_item, null); 
     			holder.date = (TextView) convertView.findViewById(R.id.date);    
     			holder.state = (TextView) convertView.findViewById(R.id.state);    
-    			holder.driver_mobile = (TextView) convertView.findViewById(R.id.driver_mobile);  
+    			holder.index = (TextView) convertView.findViewById(R.id.index);  
     			//holder.cBox = (CheckBox) convertView.findViewById(R.id.cb);     
     			convertView.setTag(holder);            
     		} else {   
@@ -129,17 +129,17 @@ public class TaxiRequestIndexActivity extends Activity  {
     		TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
     		TaxiRequest tx=(TaxiRequest) taxiRequestIndexResponse.getTaxiRequest(position);
     			
-    		holder.date.setText(tx.getPassengerMobile());
-    		holder.state.setText(tx.getState());
-    		holder.driver_mobile.setText(tx.getHumanBreifTextState());
+    		holder.date.setText(tx.getCreatedAt());
+    		holder.state.setText(tx.getHumanBreifTextState());
+    		holder.index.setText(String.valueOf(position+1));
     		//holder.cBox.setChecked(isSelected.get(position));            
     		return convertView;        
     	}            
     	
     	public final class ViewHolder { 
+    		public TextView index;      
     		public TextView date;      
-    		public TextView state;      
-    		public TextView driver_mobile;          
+    		public TextView state;   
     		//public CheckBox cBox;        
     	}       	
     }

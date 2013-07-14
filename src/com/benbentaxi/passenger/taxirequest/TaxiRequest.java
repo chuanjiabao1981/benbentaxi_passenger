@@ -1,5 +1,11 @@
 package com.benbentaxi.passenger.taxirequest;
 
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import org.json.JSONObject;
 
 
@@ -24,6 +30,7 @@ public class TaxiRequest {
 	private String mPassengerMobile;
 	private String mDriverMobile;
 	private String mSource;
+	private String mCreatedAt;
 	private float  mDriverLat = -1;
 	private float  mDriverLng = -1;
 	private float  mPassengerLat = -1;
@@ -41,7 +48,6 @@ public class TaxiRequest {
 		mSimpleStateMachine.addHandler(TaxiRequestState.Waiting_Passenger_Confirm, new WaitingConfirmStateHandler());
 		mSimpleStateMachine.addHandler(TaxiRequestState.TimeOut, FINAL_STATE_HANDLER);
 	}
-	
 	
 	
 	public TaxiRequest(Activity activity,JSONObject obj)
@@ -129,6 +135,10 @@ public class TaxiRequest {
 	{
 		return this.mPassengerMobile;
 	}
+	public String getCreatedAt()
+	{
+		return this.mCreatedAt;
+	}
 	public Float getDistance()
 	{
 		return 0.2f ;
@@ -165,6 +175,23 @@ public class TaxiRequest {
 		mPassengerLat			= JsonHelper.getFloat(obj, TaxiRequestApiConstant.PASSENGER_LAT);
 		mPassengerLng			= JsonHelper.getFloat(obj, TaxiRequestApiConstant.PASSENGER_LNG);
 		mSource					= JsonHelper.getString(obj, TaxiRequestApiConstant.SOURCE);
+		mCreatedAt						=JsonHelper.getString(obj, TaxiRequestApiConstant.CREATED_AT);
+		
+		mCreatedAt = mCreatedAt.replaceAll("\\+0([0-9]){1}\\:00", "+0$100");
+		String ISO8601String = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+		SimpleDateFormat formatter = new SimpleDateFormat(ISO8601String,Locale.CHINESE);
+		
+		Date strtodate;
+		try {
+			SimpleDateFormat formatter1= new SimpleDateFormat("yyyy-MM-dd");
+			strtodate = formatter.parse(mCreatedAt);
+			mCreatedAt = formatter1.format(strtodate);
+		} catch (ParseException e) {			
+			e.printStackTrace();
+			Log.i("BAD",mCreatedAt);
+		}
+		
+		
 	}
 	
 	

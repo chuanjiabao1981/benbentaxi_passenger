@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    android:orientation="horizontal" android:descendantFocusability="blocksDescendants" 
+     android:layout_height="wrap_content" android:background="@color/blue"
+    android:layout_width="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+
+   
+         <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"        
+        android:background="@color/taxi_request_detail_item_divide" />
+         
+    <TextView android:layout_height="wrap_content" android:layout_width="80dp" 
+        android:textSize="30sp" 
+        android:textAppearance="?android:attr/textAppearanceMedium" android:text="@string/Column1" 
+        android:layout_marginRight="5dp" android:layout_marginLeft="5dp" android:layout_alignParentLeft="true"
+         android:id="@+id/textView1"/>
+   
+  <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"        
+        android:background="@color/taxi_request_detail_item_divide" />
+  
+<TextView android:layout_height="wrap_content" android:layout_width="160dp" 
+    android:textSize="30sp" 
+    android:textAppearance="?android:attr/textAppearanceMedium" android:text="@string/Column2" 
+    android:layout_marginRight="5dp" android:layout_marginLeft="5dp" android:id="@+id/textView2"/>
+
+<View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"        
+        android:background="@color/taxi_request_detail_item_divide" />
+
+<TextView android:layout_height="wrap_content" android:layout_width="80dp" 
+    android:textSize="30sp" 
+    android:textAppearance="?android:attr/textAppearanceMedium" android:text="@string/Column3" 
+    android:layout_marginRight="5dp" android:layout_marginLeft="5dp" android:id="@+id/textView3"/>
+</LinearLayout>
+
+
+
+

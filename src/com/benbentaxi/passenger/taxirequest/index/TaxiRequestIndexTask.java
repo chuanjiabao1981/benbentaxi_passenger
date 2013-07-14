@@ -49,7 +49,7 @@ public class TaxiRequestIndexTask extends GetTask{
 			Log.e(TAG,"Session 获取出错!");
 		}
 		
-		Log.i("TaxiRequestIndexTask","TaxiRequestIndexTask end");
+		
 	}
 	
 		
