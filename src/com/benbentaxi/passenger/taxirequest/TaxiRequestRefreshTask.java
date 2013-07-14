@@ -2,6 +2,7 @@ package com.benbentaxi.passenger.taxirequest;
 
 
 import android.app.Activity;
+import android.os.Handler;
 import android.util.Log;
 
 import com.benbentaxi.Configure;
@@ -21,10 +22,12 @@ public class TaxiRequestRefreshTask extends GetTask{
 	private DemoApplication mApp;
 	private Activity mActivity = null;
 	private Session mSession = null;
+	private Handler mHandler = null; 
 
-	public TaxiRequestRefreshTask(Activity activity)
+	public TaxiRequestRefreshTask(Activity activity,Handler handler)
 	{
 		this.mConfigure 		= new  Configure();
+		this.mHandler 			= handler;
 		this.mApp 				= (DemoApplication) activity.getApplication();
 		this.mActivity 			= activity;
 		this.mTaxiRequest		= mApp.getCurrentTaxiRequest();
@@ -63,7 +66,7 @@ public class TaxiRequestRefreshTask extends GetTask{
 			taxiRequestResponse.setSysErrorMessage(this.getErrorMsg());
 		}
 		if (!taxiRequestResponse.hasError()){
-					this.mTaxiRequest.refresh(mActivity,taxiRequestResponse);
+					this.mTaxiRequest.refresh(mActivity,mHandler,taxiRequestResponse);
 		}
 	}
 

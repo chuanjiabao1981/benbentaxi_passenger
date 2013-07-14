@@ -3,6 +3,7 @@ package com.benbentaxi.passenger.taxirequest.confirm;
 
 
 import android.app.Activity;
+import android.os.Handler;
 import android.util.Log;
 
 import com.benbentaxi.Configure;
@@ -23,10 +24,12 @@ public class ConfirmTask extends PostTask{
 	private Configure mConfigure =null;
 	private Activity mActivity = null;
 	private boolean mIsConfirm = true;
+	private Handler mHandler   = null;
 	
-	public ConfirmTask(Activity activity,boolean isConfirm)
+	public ConfirmTask(Activity activity,Handler handler,boolean isConfirm)
 	{
 		this.mApp = (DemoApplication) activity.getApplication();
+		this.mHandler = handler;
 		this.mActivity = activity;
 		this.mConfigure = new Configure();
 		this.mTaxiRequest = mApp.getCurrentTaxiRequest();
@@ -73,7 +76,7 @@ public class ConfirmTask extends PostTask{
 			taxiRequestResponse.setSysErrorMessage(this.getErrorMsg());
 		}
 		if (!taxiRequestResponse.hasError()){
-					this.mTaxiRequest.refresh(this.mActivity,taxiRequestResponse);
+					this.mTaxiRequest.refresh(this.mActivity,this.mHandler,taxiRequestResponse);
 		}
 	}
 

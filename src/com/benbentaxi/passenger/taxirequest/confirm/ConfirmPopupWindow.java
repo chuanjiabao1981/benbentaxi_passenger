@@ -6,13 +6,18 @@ import com.benbentaxi.util.PopupWindowSize;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class ConfirmPopupWindow extends PopupWindow{
+	
+	public final static int MSG_HANDLE_TAXIREQUEST_CONFIRM_TIMEOUT = 200001; 
 	
 //	private final static String TAG = ConfirmPopupWindow.class.getName();
 	private final static String BTN_POS_TEXT= "确认";
@@ -23,6 +28,15 @@ public class ConfirmPopupWindow extends PopupWindow{
 	private TextView mContent;
 	private Button mBtnPos, mBtnNeg;
 	private Activity mActivity;
+	private ProgressBar mProgressBar;
+	private long 	    mSecs;
+	
+	private Handler		mHandler;
+	
+	private CountDownTimer mCountDownTimer;
+	private TextView	   mCountDonwTimerText;
+
+
 	
 	private View.OnClickListener mPosfunc = null, mNegfunc = null;
 
@@ -31,32 +45,48 @@ public class ConfirmPopupWindow extends PopupWindow{
 	{
 		super(c);
 	}
-	public ConfirmPopupWindow(Activity activity,int width,int height)
+	public ConfirmPopupWindow(Activity activity,Handler handler ,long secs)
 	{
 		super(activity.getLayoutInflater().inflate(R.layout.confirm_dialog, null),PopupWindowSize.getPopupWindoWidth(activity),
 				PopupWindowSize.getPopupWindowHeight(activity));
-		mActivity = activity;
-	}
-	public ConfirmPopupWindow(Activity activity)
-	{
-		this(activity,600,400);
-		mActivity 			 = activity;
-		DemoApplication mApp = (DemoApplication)activity.getApplicationContext();
-		
-		mView = this.getContentView();
-//		Display display = activity.getWindowManager().getDefaultDisplay();
-//		Log.e(TAG,"----------------------");
-//		Log.e(TAG,""+display.getHeight());
-//		Log.e(TAG,""+display.getWidth());
-		mTitle = (TextView)mView.findViewById(R.id.tvConfirmTitle);
-    	mContent = (TextView)mView.findViewById(R.id.tvConfirmContent);
-    	mBtnPos = (Button)mView.findViewById(R.id.btnConfirmOk);
-    	mBtnNeg = (Button)mView.findViewById(R.id.btnConfirmCancel);
+		mActivity 			 		= activity;
+		DemoApplication mApp 		= (DemoApplication)activity.getApplicationContext();
+		mView 						= this.getContentView();
+		mTitle 						= (TextView)mView.findViewById(R.id.tvConfirmTitle);
+    	mContent 					= (TextView)mView.findViewById(R.id.tvConfirmContent);
+    	mBtnPos 					= (Button)mView.findViewById(R.id.btnConfirmOk);
+    	mBtnNeg 					= (Button)mView.findViewById(R.id.btnConfirmCancel);
+		String d 					=(mApp.getCurrentTaxiRequest() != null) ? mApp.getCurrentTaxiRequest().getDistance().toString() : "0";
+		mCountDonwTimerText			= (TextView) mView.findViewById(R.id.confirmCountDonwTimerText);
+    	mProgressBar 				= (ProgressBar)mView.findViewById(R.id.confirmProgress);
+    	mSecs						= secs;
+    	mHandler					= handler;
+    	
+    	mCountDownTimer				= new CountDownTimer(mSecs*1000,1000){
+
+			@Override
+			public void onFinish() {
+				if ( mHandler != null ) {
+					mHandler.sendMessage(mHandler.obtainMessage(MSG_HANDLE_TAXIREQUEST_CONFIRM_TIMEOUT,ConfirmPopupWindow.this));
+				}
+			}
+			@Override
+			public void onTick(long millisUntilFinished) {
+				mCountDonwTimerText.setText("确认时间还有:"+millisUntilFinished/1000+"秒！");
+			}
+    	};
+    	
+
+    	mProgressBar.setProgress(0);
+    	mProgressBar.setIndeterminate(false);
+
     	mTitle.setText("有司机响应，距离您约");
-		String d =(mApp.getCurrentTaxiRequest() != null) ? mApp.getCurrentTaxiRequest().getDistance().toString() : "0";
     	mContent.setText(d+"公里");
     	mBtnPos.setText(BTN_POS_TEXT);
     	mBtnNeg.setText(BTN_NEG_TEXT);
+    	
+    	
+
     	mPosfunc = mNegfunc = new View.OnClickListener() {		
 			@Override
 			public void onClick(View v) {
@@ -75,9 +105,9 @@ public class ConfirmPopupWindow extends PopupWindow{
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						ConfirmTask confirmRequest = new ConfirmTask(ConfirmPopupWindow.this.mActivity,true);
+						ConfirmTask confirmRequest = new ConfirmTask(ConfirmPopupWindow.this.mActivity,mHandler,true);
 						confirmRequest.go();
-						ConfirmPopupWindow.this.dismiss();
+						ConfirmPopupWindow.this.doClean();
 
 					}
 	        	}
@@ -86,16 +116,25 @@ public class ConfirmPopupWindow extends PopupWindow{
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						ConfirmTask confirmRequest = new ConfirmTask(ConfirmPopupWindow.this.mActivity,false);
+						ConfirmTask confirmRequest = new ConfirmTask(ConfirmPopupWindow.this.mActivity,mHandler,false);
 						confirmRequest.go();
-						ConfirmPopupWindow.this.dismiss();
+						ConfirmPopupWindow.this.doClean();
 
 					}
 	        	}
 		);
 		showAtLocation(mView, Gravity.CENTER, 0, 0);
-		
+		mCountDownTimer.start();
 	}
+	public void doClean() {
+		if (mCountDownTimer!=null){
+			mCountDownTimer.cancel();
+		}
+		if ( this.isShowing() ) {
+			this.dismiss();
+		}
+	}
+
 
 	
 	

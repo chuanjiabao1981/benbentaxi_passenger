@@ -9,6 +9,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 
 import com.benbentaxi.passenger.location.LocationOverlayDemo;
@@ -20,7 +21,7 @@ public class WaitingConfirmStateHandler  implements StateChangeHandler{
 	private final static String TAG = WaitingConfirmStateHandler.class.getName();
 	@SuppressWarnings("deprecation")
 	@Override
-	public void handler(Activity activity,TaxiRequest old, TaxiRequestResponse newState) {
+	public void handler(Activity activity,Handler handler,TaxiRequest old, TaxiRequestResponse newState) {
 		old.init((JSONObject) newState.getJsonResult());
 		// this
 		String ns = Context.NOTIFICATION_SERVICE;
@@ -40,7 +41,7 @@ public class WaitingConfirmStateHandler  implements StateChangeHandler{
 		Log.d(TAG,"notification default settings:"+notification.defaults);
 		final int HELLO_ID = 1;
 		mNotificationManager.notify(HELLO_ID, notification);        Log.d(TAG,"notify user");
-		ConfirmPopupWindow confirmPopupWindow = new ConfirmPopupWindow(activity);
+		ConfirmPopupWindow confirmPopupWindow = new ConfirmPopupWindow(activity,handler,30);
     	confirmPopupWindow.show();
 	}
 

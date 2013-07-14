@@ -40,6 +40,7 @@ import com.benbentaxi.passenger.nearbydriver.NearByDriverTask;
 import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
+import com.benbentaxi.passenger.taxirequest.confirm.ConfirmPopupWindow;
 import com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity;
 import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
 import com.benbentaxi.util.IdShow;
@@ -87,6 +88,12 @@ public class LocationOverlayDemo extends Activity {
         		break;
         	case MSG_HANDLE_NEARBY_DRIVER:
         		doNearByDriver();
+        		break;
+        	case ConfirmPopupWindow.MSG_HANDLE_TAXIREQUEST_CONFIRM_TIMEOUT:
+        		if (msg.obj != null){
+        			((ConfirmPopupWindow)msg.obj).doClean();
+        			Toast.makeText(LocationOverlayDemo.this, "请求确认超时，请重新打车!", Toast.LENGTH_LONG).show();
+        		}
         		break;
         	default:
         		if ( msg.what >= MSG_HANDLE_ITEM_TOUCH ) {
@@ -330,7 +337,7 @@ public class LocationOverlayDemo extends Activity {
         	if (mIsOnTop){
         		Toast.makeText(this, "请求"+taxiRequest.getId()+","+taxiRequest.getHumanStateText(), Toast.LENGTH_LONG).show();
         	}
-        	TaxiRequestRefreshTask refreshTask = new TaxiRequestRefreshTask(this);
+        	TaxiRequestRefreshTask refreshTask = new TaxiRequestRefreshTask(this,MsgHandler);
         	refreshTask.go();
         }else{
         	if (mRefreshTaxiRequestTimer != null){
