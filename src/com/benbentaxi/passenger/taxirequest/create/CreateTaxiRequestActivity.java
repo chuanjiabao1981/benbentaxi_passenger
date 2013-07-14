@@ -44,7 +44,7 @@ public class CreateTaxiRequestActivity  extends Activity  {
 		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.activity_taxi_request_create);	
 		mAbsolutePath		= Environment.getExternalStorageDirectory()+"/benbentaxi_passenger/tmp/voice/";
-		mTmpfile			= mAbsolutePath+"/"+mTmpfile;
+		mTmpfile			= mAbsolutePath+"/_tmp_passenger_voice";
 		TextView t = (TextView) this.findViewById(R.id.taxi_request_source);
 		DemoApplication app 			= (DemoApplication) this.getApplication();
 		BDLocation 		bdLocation		= app.getCurrentPassengerLocation();

@@ -2,6 +2,7 @@ package com.benbentaxi.passenger.taxirequest.confirm;
 
 import com.benbentaxi.passenger.R;
 import com.benbentaxi.passenger.location.DemoApplication;
+import com.benbentaxi.util.PopupWindowSize;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,7 +33,8 @@ public class ConfirmPopupWindow extends PopupWindow{
 	}
 	public ConfirmPopupWindow(Activity activity,int width,int height)
 	{
-		super(activity.getLayoutInflater().inflate(R.layout.confirm_dialog, null),width,height);
+		super(activity.getLayoutInflater().inflate(R.layout.confirm_dialog, null),PopupWindowSize.getPopupWindoWidth(activity),
+				PopupWindowSize.getPopupWindowHeight(activity));
 		mActivity = activity;
 	}
 	public ConfirmPopupWindow(Activity activity)

@@ -2,6 +2,6 @@
 <resources>
     <string-array name="tenants_array">
         <item>阳泉</item>
-        <item>kk</item>
+        <item>测试</item>
     </string-array>
 </resources>

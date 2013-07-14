@@ -36,7 +36,6 @@ public class LoginTask extends PostTask{
 		execute();
 	}
 	
-	@SuppressWarnings("static-access")
 	protected void onPostExecute(final Boolean succ) 
 	{
 		SessionResponse sessionResponse = new SessionResponse(mLoginForm,this.getResult());

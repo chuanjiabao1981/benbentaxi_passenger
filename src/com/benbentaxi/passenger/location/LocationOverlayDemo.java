@@ -143,7 +143,6 @@ public class LocationOverlayDemo extends Activity {
 				mApp.setCurrentShowTaxiRequest(taxiRequest);
 				Intent taxiRequestDetailIntent = new Intent(LocationOverlayDemo.this,TaxiRequestDetail.class);
 				LocationOverlayDemo.this.startActivity(taxiRequestDetailIntent);
-				//TODO::如果程序被重启 应该跳转到确认页面
 				Toast.makeText(LocationOverlayDemo.this, "打车请求已经发出", Toast.LENGTH_LONG).show();
 				return;
 			}
