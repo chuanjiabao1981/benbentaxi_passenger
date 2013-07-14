@@ -28,6 +28,8 @@ public class CeateTaxiRequestForm extends ViewForm{
 		
 		mMobile= (app.getCurrentPassenger()!=null)? app.getCurrentPassenger().getMobile():"";
 		
+		
+		
 		mAudio=((CreateTaxiRequestActivity)activity).getAudioFile2String();
 	}
 	protected void init()

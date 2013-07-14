@@ -49,27 +49,26 @@ public class TaxiRequestIndexActivity extends Activity  {
 			@Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                     long arg3) {
-                
-					Log.i("arg2:",String.valueOf(arg2));					
-					TaxiRequest tx=(TaxiRequest)TaxiRequestIndexActivity.this.adapter.mData.get(arg2).get("obj");
-					
-					
+					TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
+		    		TaxiRequest tx=(TaxiRequest) taxiRequestIndexResponse.getTaxiRequest(arg2);
                 	mApp.setCurrentShowTaxiRequest(tx);
                 	Intent taxiRequestDetailIntent = new Intent(TaxiRequestIndexActivity.this,TaxiRequestDetail.class);
                     startActivity(taxiRequestDetailIntent);                
             }     
         });		
 		
-				
+		
 		showList();
     }
     
-    public void showList(){    	
-    	
+    protected void showList(){    	
+    	boolean hasData=true;
     	TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
     	listview = (ListView)findViewById(R.id.lv);  
 		
-		adapter = new MyAdapter(this,taxiRequestIndexResponse);  
+    	if(taxiRequestIndexResponse==null)
+    		return;
+		adapter = new MyAdapter(this,hasData);  
 		
 		listview.setAdapter(adapter);  
 		
@@ -79,27 +78,13 @@ public class TaxiRequestIndexActivity extends Activity  {
     
     protected class MyAdapter extends BaseAdapter {        
     	private LayoutInflater mInflater;        
-    	private ArrayList<Map<String, Object>> mData;        
+    	private boolean mhasData;        
     	//public  Map<Integer, Boolean> isSelected;     
     	@SuppressWarnings({ "static-access", "unchecked" })
-    	public MyAdapter(Context context,TaxiRequestIndexResponse taxiRequestIndexResponse) 
+    	public MyAdapter(Context context,boolean hasData) 
     	{           
-    		mInflater = LayoutInflater.from(context);  
-    		
-    		mData=new ArrayList<Map<String, Object>>();  
-    		for (int i = 0; i < taxiRequestIndexResponse.getSize(); i++) 
-    		{               
-    			TaxiRequest tx=taxiRequestIndexResponse.getTaxiRequest(i);
-    			
-    			Map<String, Object> map = new HashMap<String, Object>();   
-    			map.put("date",tx.getPassengerMobile());           
-    			map.put("state",tx.getState());           
-    			map.put("driver_mobile",  tx.getPassengerMobile());    
-    			map.put("obj", tx);
-    			mData.add(map);         
-    			}
-    		
-    		
+    		mInflater = LayoutInflater.from(context); 
+    		mhasData=hasData;
     	}           
     	//初始化       
     	/*private void init() { 
@@ -111,12 +96,14 @@ public class TaxiRequestIndexActivity extends Activity  {
     			}     
     		}   */ 
     	@Override        
-    	public int getCount() {  
-    		return mData.size();        
+    	public int getCount() {      		
+    		TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
+    		return taxiRequestIndexResponse.getSize();
     		}            
     	@Override       
     	public Object getItem(int position) { 
-    		return  mData.get(position);       
+    		TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
+    		return  taxiRequestIndexResponse.getTaxiRequest(position);   
     		}            
     	@Override        
     	public long getItemId(int position) {
@@ -137,10 +124,14 @@ public class TaxiRequestIndexActivity extends Activity  {
     		} else {   
     			holder = (ViewHolder) convertView.getTag(); 
     		}     
-    		TaxiRequest tx=(TaxiRequest) mData.get(position).get("obj");
-    		holder.date.setText((String)mData.get(position).get("date"));
-    		holder.state.setText((String)mData.get(position).get("state"));
-    		holder.driver_mobile.setText((String)mData.get(position).get("driver_mobile"));
+    		
+    		
+    		TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
+    		TaxiRequest tx=(TaxiRequest) taxiRequestIndexResponse.getTaxiRequest(position);
+    			
+    		holder.date.setText(tx.getPassengerMobile());
+    		holder.state.setText(tx.getState());
+    		holder.driver_mobile.setText(tx.getHumanBreifTextState());
     		//holder.cBox.setChecked(isSelected.get(position));            
     		return convertView;        
     	}            

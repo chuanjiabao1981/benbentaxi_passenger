@@ -22,7 +22,7 @@ public class TaxiRequestIndexResponse extends Response {
 		super(s);
 		if(!hasError())
 		{
-			ArrayList<TaxiRequest> list=new ArrayList<TaxiRequest>(); 
+			list=new ArrayList<TaxiRequest>(); 
 			for(int i=0;i<getSize();i++)
 			{
 				TaxiRequest tx=getTaxiRequest(i);
