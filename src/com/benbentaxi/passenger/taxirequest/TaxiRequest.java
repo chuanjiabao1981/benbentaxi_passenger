@@ -160,6 +160,22 @@ public class TaxiRequest {
 		return this.mTaxiRequestState.getHumanText();
 	}
 	
+	public boolean canCancel()
+	{
+		if (this.mTaxiRequestState == TaxiRequestState.Waiting_Driver_Response || this.mTaxiRequestState == TaxiRequestState.Waiting_Passenger_Confirm){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean canDialDriver()
+	{
+		if (this.mTaxiRequestState == TaxiRequestState.Success ){
+			return true;
+		}
+		return false;
+	}
+	
 	
 	
 	

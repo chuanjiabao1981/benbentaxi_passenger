@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -45,7 +44,6 @@ import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
 import com.benbentaxi.passenger.taxirequest.confirm.ConfirmPopupWindow;
 import com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity;
 import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
-import com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexActivity;
 import com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexTask;
 import com.benbentaxi.util.IdShow;
 public class LocationOverlayDemo extends Activity {
@@ -102,15 +100,16 @@ public class LocationOverlayDemo extends Activity {
         	default:
         		if ( msg.what >= MSG_HANDLE_ITEM_TOUCH ) {
         			int idx = msg.what-MSG_HANDLE_ITEM_TOUCH;
+    				NearByDriverTrackResponse nearByDriverTrackResponse = LocationOverlayDemo.this.mApp.getCurrentNearByDriverTrack();
             		try {
 						// 乘客态，显示司机信息
-							JSONObject obj = mReqInfo.getJSONObject(idx);
+							JSONObject obj = nearByDriverTrackResponse.getJsonTaxiRequest(idx);
 							int drvid = obj.getInt("driver_id");
 							showDriverInfo(drvid, obj);
 					} catch (JSONException e) {
 //						resetStatus();
 						// 下标异常
-		        		Toast.makeText(LocationOverlayDemo.this.getApplicationContext(), "请求状态异常: "+idx+"/"+mReqInfo.length(),
+		        		Toast.makeText(LocationOverlayDemo.this.getApplicationContext(), "请求状态异常: "+idx+"/"+nearByDriverTrackResponse.getSize(),
 								Toast.LENGTH_SHORT).show();
 					}
         		}
@@ -125,8 +124,6 @@ public class LocationOverlayDemo extends Activity {
 	OverlayTest ov = null;
 	// 存放overlayitem 
 	public List<OverlayItem> mGeoList = new ArrayList<OverlayItem>();
-	// 保存司机/乘客请求的详细信息
-	public JSONArray mReqInfo;
 	// 被确认的司机/乘客请求信息
 	public JSONObject mConfirmObj;
 	// 存放overlay图片

@@ -28,7 +28,15 @@
             style="@style/loginButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/call_driver" />
+            android:text="@string/call_driver" 
+            android:visibility="gone"/>
+        <Button
+            android:id="@+id/cancelTaxiRequestButton"
+            style="@style/loginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel_taxi_request" 
+            android:visibility="gone"/>
 
     </LinearLayout>
    

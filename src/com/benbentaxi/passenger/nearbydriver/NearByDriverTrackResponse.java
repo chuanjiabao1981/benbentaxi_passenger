@@ -2,6 +2,7 @@ package com.benbentaxi.passenger.nearbydriver;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.util.Log;
 
@@ -57,6 +58,14 @@ public class NearByDriverTrackResponse extends Response {
 			return "";
 		}
 
+	}
+	public JSONObject getJsonTaxiRequest(int index)
+	{
+		try {
+			return mRes.getJSONObject(index);
+		} catch (JSONException e) {
+			return null;
+		}
 	}
 	@Override
 	public void parser() {

@@ -9,6 +9,7 @@ import com.benbentaxi.passenger.R;
 import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestApiConstant;
+import com.benbentaxi.passenger.taxirequest.confirm.ConfirmTask;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -76,8 +77,8 @@ public class TaxiRequestDetail extends Activity {
     }  
 	private void bindButton()
 	{
-		Button button = (Button)findViewById(R.id.taxi_request_detail_call_driver);
-		button.setOnClickListener(
+		Button button_dia = (Button)findViewById(R.id.taxi_request_detail_call_driver);
+		button_dia.setOnClickListener(
 				new View.OnClickListener() {
 					public void onClick(View view) {
 						Uri uri = Uri.parse("tel:"+TaxiRequestDetail.this.mTaxiRequest.getDriverMobile());
@@ -85,9 +86,25 @@ public class TaxiRequestDetail extends Activity {
 					    TaxiRequestDetail.this.startActivity(call);
 					}
 		});
-		
 		if (mTaxiRequest.getDriverMobile() == null || mTaxiRequest.getDriverMobile().equalsIgnoreCase("null")){
-			button.setEnabled(false);
+			button_dia.setEnabled(false);
+		}
+		
+		Button button_cal = (Button)findViewById(R.id.cancelTaxiRequestButton);
+		button_cal.setOnClickListener(
+				new View.OnClickListener(){
+					@Override
+					public void onClick(View v) {
+						ConfirmTask confirmTask = new ConfirmTask(TaxiRequestDetail.this,null,false);
+						confirmTask.go();
+						TaxiRequestDetail.this.finish();
+					}
+				}
+		);
+		if (mTaxiRequest.canCancel()){
+			button_cal.setVisibility(View.VISIBLE);
+		}else if (mTaxiRequest.canDialDriver()){
+			button_dia.setVisibility(View.VISIBLE);
 		}
 	}
 
