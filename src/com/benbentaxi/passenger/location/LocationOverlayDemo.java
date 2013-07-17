@@ -21,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -50,11 +49,12 @@ public class LocationOverlayDemo extends Activity {
 	private String TAG = LocationOverlayDemo.class.getName();
 
 
-	public final static int MSG_HANDLE_MAP_MOVE = 1;
-	public final static int MSG_HANDLE_POS_REFRESH = 2;
-	public final static int MSG_HANDLE_NEARBY_DRIVER = 3;
-	public final static int MSG_HANDLE_REFRESH_CURRENT_TAXIREQUEST = 4;
-	public final static int MSG_HANDLE_ITEM_TOUCH = 10000;
+	public final static int MSG_HANDLE_ITEM_TOUCH 							= 10000;
+	public final static int MSG_HANDLE_MAP_MOVE 							= 1;
+	public final static int MSG_HANDLE_POS_REFRESH 							= 2;
+	public final static int MSG_HANDLE_NEARBY_DRIVER 						= 3;
+	public final static int MSG_HANDLE_REFRESH_CURRENT_TAXIREQUEST 			= 4;
+	public final static int MSG_HANDLE_TAXIREQUEST_DRIVER_RESPONSE 			= 5;
 	
 	
 	static MapView mMapView = null;
@@ -63,12 +63,8 @@ public class LocationOverlayDemo extends Activity {
 
 	public MKMapViewListener mMapListener = null;
 	FrameLayout mMapViewContainer = null;
-	
 	PassengerLocation mPassengerLocation = null;
-	
 	Button testUpdateButton = null;
-	
-	EditText indexText = null;
 	MyLocationOverlay myLocationOverlay = null;
 	int index =0;
 	LocationData locData = null;
@@ -89,6 +85,9 @@ public class LocationOverlayDemo extends Activity {
         		break;
         	case MSG_HANDLE_NEARBY_DRIVER:
         		doNearByDriver();
+        		break;
+        	case MSG_HANDLE_TAXIREQUEST_DRIVER_RESPONSE:
+        		doDriverResponse();
         		break;
         	case ConfirmPopupWindow.MSG_HANDLE_TAXIREQUEST_CONFIRM_TIMEOUT:
         		if (msg.obj != null){
@@ -119,8 +118,6 @@ public class LocationOverlayDemo extends Activity {
     };
     
     private boolean mIsOnTop = false;
-    
-	
 	OverlayTest ov = null;
 	// 存放overlayitem 
 	public List<OverlayItem> mGeoList = new ArrayList<OverlayItem>();
@@ -130,13 +127,12 @@ public class LocationOverlayDemo extends Activity {
 	public List<Drawable>  res = new ArrayList<Drawable>();
 	private Drawable mDrvMarker;
 	
-	
-	private DemoApplication mApp 				= null;
-	
-	private Timer mRefreshTaxiRequestTimer		= null;
-	private long  mRefreshTaxiRequestPerod		= 5000;
-	private Timer mNearyByDriverTimer			= null;
-	private long  mNearyByDrvierPeriod			= 10000;
+	private ConfirmPopupWindow mPassengerConfirmPopupWindow					= null;
+    private DemoApplication mApp 						                    = null;
+    private Timer mRefreshTaxiRequestTimer				                    = null;
+    private long  mRefreshTaxiRequestPerod				                    = 5000;
+    private Timer mNearyByDriverTimer					                    = null;
+    private long  mNearyByDrvierPeriod					                    = 10000;
 	
 	private OnClickListener mCallTaxiListener = new OnClickListener(){
 		public void onClick(View v) {
@@ -186,12 +182,11 @@ public class LocationOverlayDemo extends Activity {
             app.mBMapManager.init(DemoApplication.strKey,new DemoApplication.MyGeneralListener());
         }
         setContentView(R.layout.activity_locationoverlay);
-        mMapView = (MapView)findViewById(R.id.bmapView);
-        mMapController = mMapView.getController();
-        
-        mApp			= app;
+        mMapView 							= (MapView)findViewById(R.id.bmapView);
+        mMapController 						= mMapView.getController();
+        mApp								= app;
+        this.mPassengerConfirmPopupWindow	= new ConfirmPopupWindow(this,MsgHandler,30);
         mApp.setHandler(MsgHandler);
-        
         initMapView();
         this.mPassengerLocation = new PassengerLocation(this,MsgHandler);
         this.mPassengerLocation.start();
@@ -203,12 +198,10 @@ public class LocationOverlayDemo extends Activity {
 			
 			@Override
 			public void onMapMoveFinish() {
-				// Auto-generated method stub
 			}
 			
 			@Override
 			public void onClickMapPoi(MapPoi mapPoiInfo) {
-				// Auto-generated method stub
 				String title = "";
 				if (mapPoiInfo != null){
 					title = mapPoiInfo.strText;
@@ -218,13 +211,10 @@ public class LocationOverlayDemo extends Activity {
 
 			@Override
 			public void onGetCurrentMap(Bitmap b) {
-				//  Auto-generated method stub
-				
 			}
 
 			@Override
 			public void onMapAnimationFinish() {
-				//  Auto-generated method stub
 				
 			}
 		};
@@ -283,6 +273,9 @@ public class LocationOverlayDemo extends Activity {
     protected void onDestroy() {
         if (mPassengerLocation != null)
         	mPassengerLocation.stop();
+        if (mPassengerConfirmPopupWindow != null && mPassengerConfirmPopupWindow.isShowing()){
+        	mPassengerConfirmPopupWindow.dismiss();
+        }
         mMapView.destroy();
         DemoApplication app = (DemoApplication)this.getApplication();
         if (app.mBMapManager != null) {
@@ -319,7 +312,11 @@ public class LocationOverlayDemo extends Activity {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
-    
+    private void doDriverResponse(){
+    	if (this.mPassengerConfirmPopupWindow.isShowing() == false){
+    		this.mPassengerConfirmPopupWindow.show();
+    	}
+    }
     private void doNearByDriver()
     {
        NearByDriverTask nearyByDriverTask = new NearByDriverTask(this.mApp);

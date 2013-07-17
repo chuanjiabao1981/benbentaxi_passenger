@@ -15,7 +15,6 @@ import android.util.Log;
 import com.benbentaxi.passenger.location.LocationOverlayDemo;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestResponse;
-import com.benbentaxi.passenger.taxirequest.confirm.ConfirmPopupWindow;
 
 public class WaitingConfirmStateHandler  implements StateChangeHandler{
 	private final static String TAG = WaitingConfirmStateHandler.class.getName();
@@ -41,7 +40,9 @@ public class WaitingConfirmStateHandler  implements StateChangeHandler{
 		Log.d(TAG,"notification default settings:"+notification.defaults);
 		final int HELLO_ID = 1;
 		mNotificationManager.notify(HELLO_ID, notification);        Log.d(TAG,"notify user");
-		ConfirmPopupWindow confirmPopupWindow = new ConfirmPopupWindow(activity,handler,30);
-    	confirmPopupWindow.show();
+		handler.sendMessage(handler.obtainMessage(LocationOverlayDemo.MSG_HANDLE_TAXIREQUEST_DRIVER_RESPONSE));
+		
+//		ConfirmPopupWindow confirmPopupWindow = new ConfirmPopupWindow(activity,handler,30);
+//    	confirmPopupWindow.show();
 	}
 }

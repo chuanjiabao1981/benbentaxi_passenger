@@ -33,8 +33,6 @@ public class RegisterTask extends PostTask{
 		return "http://"+mConfigure.getService()+API1;
 	}
 	
-	
-	@SuppressWarnings("static-access")
 	protected void onPostExecute(Boolean succ) 
 	{
 		
