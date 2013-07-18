@@ -9,11 +9,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -35,6 +39,8 @@ import com.baidu.mapapi.map.MyLocationOverlay;
 import com.baidu.mapapi.map.OverlayItem;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.benbentaxi.passenger.R;
+import com.benbentaxi.passenger.nearbydriver.NearByDriverService;
+import com.benbentaxi.passenger.nearbydriver.NearByDriverService.NearByDrvierBinder;
 import com.benbentaxi.passenger.nearbydriver.NearByDriverTask;
 import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
@@ -116,7 +122,21 @@ public class LocationOverlayDemo extends Activity {
         	}
         };
     };
-    
+    private ServiceConnection mNearByDriverServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+        	NearByDrvierBinder binder = (NearByDrvierBinder) service;
+        	mNearByDriverService = binder.getService();
+        	mNearByDriverServiceBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        	mNearByDriverServiceBound = false;
+        }
+    };
     private boolean mIsOnTop = false;
 	OverlayTest ov = null;
 	// 存放overlayitem 
@@ -133,6 +153,8 @@ public class LocationOverlayDemo extends Activity {
     private long  mRefreshTaxiRequestPerod				                    = 5000;
     private Timer mNearyByDriverTimer					                    = null;
     private long  mNearyByDrvierPeriod					                    = 10000;
+    private NearByDriverService mNearByDriverService						= null;
+    private boolean mNearByDriverServiceBound								= false;
 	
 	private OnClickListener mCallTaxiListener = new OnClickListener(){
 		public void onClick(View v) {
@@ -236,6 +258,9 @@ public class LocationOverlayDemo extends Activity {
 		testUpdateButton = (Button)findViewById(R.id.btn_callTaxi);
 	    testUpdateButton.setOnClickListener(mCallTaxiListener);
 	    
+	    
+	    
+	    
 	    Log.d(TAG,"create............... ");
 
     }
@@ -249,6 +274,7 @@ public class LocationOverlayDemo extends Activity {
         	mNearyByDriverTimer.cancel();
         	mNearyByDriverTimer = null;
         }
+        unboundService();
         super.onPause();
 	    Log.d(TAG,"Pause ................. ");
     }
@@ -258,7 +284,7 @@ public class LocationOverlayDemo extends Activity {
     	mIsOnTop = true;
         mMapView.onResume();
         
-        
+        boundService();
         if (mNearyByDriverTimer == null){
         	mNearyByDriverTimer = new Timer("NearyByDriverTimer",true);
             mNearyByDriverTimer.schedule(new RefreshInfo(MSG_HANDLE_NEARBY_DRIVER), 0 ,mNearyByDrvierPeriod);
@@ -359,7 +385,20 @@ public class LocationOverlayDemo extends Activity {
          		MsgHandler.obtainMessage(MSG_HANDLE_MAP_MOVE));
 	}
     
-    
+    private void boundService()
+    {
+        Intent intent = new Intent(this, NearByDriverService.class);
+        boolean s = bindService(intent, mNearByDriverServiceConnection, Context.BIND_AUTO_CREATE);
+		Log.i(TAG,"Bind Service "+s);
+
+    }
+    private void unboundService()
+    {
+    	if (this.mNearByDriverServiceBound){
+            unbindService(mNearByDriverServiceConnection);
+            mNearByDriverServiceBound = false;
+    	}
+    }
     
     private void showDriverInfo(int idx, JSONObject obj) throws JSONException {
 		int drvid = obj.getInt("driver_id");
