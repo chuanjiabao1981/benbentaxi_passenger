@@ -1,6 +1,8 @@
-package com.benbentaxi.passenger.nearbydriver;
+package com.benbentaxi.passenger.background;
 
 import com.benbentaxi.passenger.location.DemoApplication;
+import com.benbentaxi.passenger.nearbydriver.NearByDriverTask;
+import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
 
 import android.app.Service;
 import android.content.Intent;
