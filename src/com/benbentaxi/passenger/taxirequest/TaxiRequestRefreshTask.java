@@ -37,7 +37,7 @@ public class TaxiRequestRefreshTask extends GetTask{
 			this.mTaxiRequestId = this.mTaxiRequest.getId();
 		}
 		if (this.mSession != null){
-			initCookies(mSession.getTokenKey(), mSession.getTokenVal(),mConfigure.getHost());
+			setCookie(mSession.getTokenKey(), mSession.getTokenVal(),mConfigure.getHost());
 			Log.d(TAG,mSession.getTokenKey()+":"+mSession.getTokenVal());
 		}else{
 			Log.e(TAG,"Session 获取出错!");

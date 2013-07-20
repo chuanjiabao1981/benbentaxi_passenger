@@ -2,7 +2,6 @@ package com.benbentaxi.passenger.taxirequest.create;
 
 import org.json.JSONObject;
 
-import android.content.Intent;
 import android.util.Log;
 
 import com.benbentaxi.Configure;
@@ -11,7 +10,6 @@ import com.benbentaxi.Session;
 import com.benbentaxi.api.PostTask;
 import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
-import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
 
 
 public class CeateTaxiRequestTask extends PostTask{
@@ -33,7 +31,7 @@ public class CeateTaxiRequestTask extends PostTask{
 		this.mSession 	  = mApp.getCurrentSession();
 		
 		if (this.mSession != null){
-			initCookies(mSession.getTokenKey(), mSession.getTokenVal(),mConfigure.getHost());//TODO::测试这个加端口
+			setCookie(mSession.getTokenKey(), mSession.getTokenVal(),mConfigure.getHost());//TODO::测试这个加端口
 			Log.d(TAG,mSession.getTokenKey()+":"+mSession.getTokenVal());
 		}else{
 			Log.e(TAG,"Session 获取出错!");

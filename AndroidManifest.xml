@@ -129,7 +129,7 @@
             android:screenOrientation="portrait"> 
              
         </activity>
-        <service android:name="com.benbentaxi.passenger.nearbydriver.NearByDriverService" android:enabled="true"></service>
+        <service android:name="com.benbentaxi.passenger.nearbydriver.BackgroundService" android:enabled="true"></service>
     </application>
 
 </manifest>

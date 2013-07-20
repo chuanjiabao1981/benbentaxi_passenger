@@ -18,7 +18,6 @@ public class SpinnerInputControl extends ViewControl {
 
 	@Override
 	public void setError(String errMsg) {
-		Log.d("xxxxxxxxxxxxxx",errMsg);
 		Toast.makeText(this.mActivity, errMsg, Toast.LENGTH_LONG).show();
 	}
 

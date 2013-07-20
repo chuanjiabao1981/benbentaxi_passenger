@@ -12,12 +12,14 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -39,10 +41,11 @@ import com.baidu.mapapi.map.MyLocationOverlay;
 import com.baidu.mapapi.map.OverlayItem;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.benbentaxi.passenger.R;
-import com.benbentaxi.passenger.nearbydriver.NearByDriverService;
-import com.benbentaxi.passenger.nearbydriver.NearByDriverService.NearByDrvierBinder;
+import com.benbentaxi.passenger.nearbydriver.BackgroundService;
+import com.benbentaxi.passenger.nearbydriver.BackgroundServiceBinder;
 import com.benbentaxi.passenger.nearbydriver.NearByDriverTask;
 import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
+import com.benbentaxi.passenger.nearbydriver.NearbyDrvierReceiver;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
 import com.benbentaxi.passenger.taxirequest.confirm.ConfirmPopupWindow;
@@ -63,11 +66,11 @@ public class LocationOverlayDemo extends Activity {
 	public final static int MSG_HANDLE_TAXIREQUEST_DRIVER_RESPONSE 			= 5;
 	
 	
-	static MapView mMapView = null;
+	private NearbyDrvierReceiver mNearbyDrvierReceiver						= null;
 	
-	private MapController mMapController = null;
-
-	public MKMapViewListener mMapListener = null;
+	static MapView mMapView 												= null;
+	private MapController mMapController 									= null;
+	public MKMapViewListener mMapListener 									= null;
 	FrameLayout mMapViewContainer = null;
 	PassengerLocation mPassengerLocation = null;
 	Button testUpdateButton = null;
@@ -127,9 +130,10 @@ public class LocationOverlayDemo extends Activity {
         @Override
         public void onServiceConnected(ComponentName className,
                 IBinder service) {
-        	NearByDrvierBinder binder = (NearByDrvierBinder) service;
-        	mNearByDriverService = binder.getService();
+        	BackgroundServiceBinder binder = (BackgroundServiceBinder) service;
+        	mBackgroundService = (BackgroundService) binder.getService();
         	mNearByDriverServiceBound = true;
+        	mBackgroundService.startRefreshNearByDriver();
         }
 
         @Override
@@ -153,7 +157,7 @@ public class LocationOverlayDemo extends Activity {
     private long  mRefreshTaxiRequestPerod				                    = 5000;
     private Timer mNearyByDriverTimer					                    = null;
     private long  mNearyByDrvierPeriod					                    = 10000;
-    private NearByDriverService mNearByDriverService						= null;
+    private BackgroundService mBackgroundService							= null;
     private boolean mNearByDriverServiceBound								= false;
 	
 	private OnClickListener mCallTaxiListener = new OnClickListener(){
@@ -274,6 +278,7 @@ public class LocationOverlayDemo extends Activity {
         	mNearyByDriverTimer.cancel();
         	mNearyByDriverTimer = null;
         }
+        unregisterReceiver();
         unboundService();
         super.onPause();
 	    Log.d(TAG,"Pause ................. ");
@@ -285,6 +290,7 @@ public class LocationOverlayDemo extends Activity {
         mMapView.onResume();
         
         boundService();
+        registerReceiver();
         if (mNearyByDriverTimer == null){
         	mNearyByDriverTimer = new Timer("NearyByDriverTimer",true);
             mNearyByDriverTimer.schedule(new RefreshInfo(MSG_HANDLE_NEARBY_DRIVER), 0 ,mNearyByDrvierPeriod);
@@ -387,7 +393,7 @@ public class LocationOverlayDemo extends Activity {
     
     private void boundService()
     {
-        Intent intent = new Intent(this, NearByDriverService.class);
+        Intent intent = new Intent(this, BackgroundService.class);
         boolean s = bindService(intent, mNearByDriverServiceConnection, Context.BIND_AUTO_CREATE);
 		Log.i(TAG,"Bind Service "+s);
 
@@ -398,6 +404,18 @@ public class LocationOverlayDemo extends Activity {
             unbindService(mNearByDriverServiceConnection);
             mNearByDriverServiceBound = false;
     	}
+    }
+    private void registerReceiver()
+    {
+    	if (mNearbyDrvierReceiver == null){
+    		mNearbyDrvierReceiver = new NearbyDrvierReceiver(this);
+    	}
+    	LocalBroadcastManager.getInstance(this).registerReceiver(mNearbyDrvierReceiver,new IntentFilter(BackgroundService.NEARYBY_DRIVER_ACTION));
+    }
+    
+    private void unregisterReceiver()
+    {
+    	  LocalBroadcastManager.getInstance(this).unregisterReceiver(mNearbyDrvierReceiver);
     }
     
     private void showDriverInfo(int idx, JSONObject obj) throws JSONException {

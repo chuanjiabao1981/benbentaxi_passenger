@@ -30,7 +30,7 @@ public class TaxiRequestIndexTask extends GetTask{
 		this.mSession 	  = mApp.getCurrentSession();
 		
 		if (this.mSession != null){
-			initCookies(mSession.getTokenKey(), mSession.getTokenVal(),mConfigure.getHost());//TODO::测试这个加端口
+			setCookie(mSession.getTokenKey(), mSession.getTokenVal(),mConfigure.getHost());//TODO::测试这个加端口
 			Log.d(TAG,mSession.getTokenKey()+":"+mSession.getTokenVal());
 		}else{
 			Log.e(TAG,"Session 获取出错!");
