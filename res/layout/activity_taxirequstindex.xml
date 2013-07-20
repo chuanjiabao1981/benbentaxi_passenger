@@ -7,8 +7,6 @@
     android:background="#ff303030"
     android:orientation="vertical"
 	tools:context=".TaxiRequestIndex" >
-  
-    
     
     <include layout="@layout/taxi_requestindex_head"  android:id="@+id/head"/>
     
@@ -16,7 +14,7 @@
         android:id="@+id/lv" android:divider="#535353" android:cacheColorHint="@android:color/transparent"   
         android:background="#303030"
         android:dividerHeight="1dp" 
-   />
+        android:layout_weight="0.7"/>
         
 </RelativeLayout>
     

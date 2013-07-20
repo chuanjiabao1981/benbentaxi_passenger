@@ -1,5 +1,9 @@
 package com.benbentaxi.passenger.taxirequest.index;
 
+import java.util.ArrayList;    
+import java.util.HashMap;    
+import java.util.List;   
+import java.util.Map; 
 
 import com.benbentaxi.passenger.R;
 import com.benbentaxi.passenger.location.DemoApplication;
@@ -9,11 +13,18 @@ import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;  
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;  
+import android.widget.CheckBox;   
+import android.widget.ImageView;    
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView; 
 import android.widget.AdapterView.OnItemClickListener;
@@ -31,10 +42,20 @@ public class TaxiRequestIndexActivity extends Activity  {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		// 获得手机分辨率  		
+		DisplayMetrics dm = new DisplayMetrics();   
+		getWindowManager().getDefaultDisplay().getMetrics(dm); 
+		int adjustFontSize=adjustFontSize(dm.widthPixels,dm.heightPixels);
 		
 		setContentView(R.layout.activity_taxirequstindex);
 		
 		mApp=(DemoApplication)this.getApplication();
+		
+		
+		TextView vw=(TextView) findViewById(R.id.textView2);    
+		vw.setTextSize(adjustFontSize+5);
+		vw=(TextView) findViewById(R.id.textView3);    
+		vw.setTextSize(adjustFontSize+5);
 		
 		listview = (ListView)findViewById(R.id.lv);  
 		
@@ -51,30 +72,50 @@ public class TaxiRequestIndexActivity extends Activity  {
         });		
 		
 		
-		showList();
+		showList(adjustFontSize);
     }
     
-    protected void showList(){    	
+    protected void showList(int nAdjustFontSize){    	
     	boolean hasData=true;
     	TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
     	listview = (ListView)findViewById(R.id.lv);  
 		
     	if(taxiRequestIndexResponse==null)
     		return;
-		adapter = new MyAdapter(this,hasData);  
+    	
+    	 
+		adapter = new MyAdapter(this,hasData,nAdjustFontSize); 
 		
 		listview.setAdapter(adapter);  
 		
-		
     }
-
+    
+    //获取字体大小  
+    private  int adjustFontSize(int screenWidth, int screenHeight) {  
+            screenWidth=screenWidth>screenHeight?screenWidth:screenHeight;  
+            /** 
+             * 1. 在视图的 onsizechanged里获取视图宽度，一般情况下默认宽度是320，所以计算一个缩放比率 
+                rate = (float) w/320   w是实际宽度 
+               2.然后在设置字体尺寸时 paint.setTextSize((int)(8*rate));   8是在分辨率宽为320 下需要设置的字体大小 
+                实际字体大小 = 默认字体大小 x  rate 
+             */  
+            int rate = (int)(5*(float) screenWidth/320); //我自己测试这个倍数比较适合，当然你可以测试后再修改  
+            return rate<15?15:rate; //字体太小也不好看的  
+    }  
     
     protected class MyAdapter extends BaseAdapter {        
     	private LayoutInflater mInflater;        
-    	public MyAdapter(Context context,boolean hasData) 
+    	private boolean mhasData;  
+    	int adjustFontSize;
+    	//public  Map<Integer, Boolean> isSelected;     
+    	@SuppressWarnings({ "static-access", "unchecked" })
+    	public MyAdapter(Context context,boolean hasData,int nAdjustFontSize)
     	{           
+    		adjustFontSize = nAdjustFontSize;  
     		mInflater = LayoutInflater.from(context); 
-    	}           
+    		mhasData=hasData;
+    	}    
+    	
     	@Override        
     	public int getCount() {      		
     		TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
@@ -92,31 +133,43 @@ public class TaxiRequestIndexActivity extends Activity  {
     	@Override        
     	public View getView(int position, View convertView, ViewGroup parent) {
     		ViewHolder holder = null;           
+    		//convertView为null的时候初始化convertView。           
     		if (convertView == null) { 
     			holder = new ViewHolder();  
     			convertView = mInflater.inflate(R.layout.taxi_requestindex_item, null); 
     			holder.date = (TextView) convertView.findViewById(R.id.date);    
-    			holder.state = (TextView) convertView.findViewById(R.id.state);    
-    			holder.index = (TextView) convertView.findViewById(R.id.index);  
+    			holder.source = (TextView) convertView.findViewById(R.id.source);    
+    			holder.state = (TextView) convertView.findViewById(R.id.state); 
     			convertView.setTag(holder);            
     		} else {   
     			holder = (ViewHolder) convertView.getTag(); 
-    		}     
-    		
+    		}         		
     		
     		TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
     		TaxiRequest tx=(TaxiRequest) taxiRequestIndexResponse.getTaxiRequest(position);
     			
-    		holder.date.setText(tx.getCreatedAt());
+    		holder.date.setText(tx.getCreatedAt("dd日\nMM月"));
+    		holder.source.setText(tx.getSource());
     		holder.state.setText(tx.getHumanBreifTextState());
-    		holder.index.setText(String.valueOf(position+1));
+    		
+    		holder.date.setTextSize(adjustFontSize+5);    
+    		holder.source.setTextSize(adjustFontSize+3);    
+    		holder.state.setTextSize(adjustFontSize+3);    
+    		
+    		if(tx.isTaxiRequestSuccess())
+    			holder.state.setTextColor(Color.GREEN);
+    		else
+    			holder.state.setTextColor(Color.RED);
+    		holder.state.setTypeface(Typeface.MONOSPACE,Typeface.ITALIC);
+    		//holder.cBox.setChecked(isSelected.get(position));            
     		return convertView;        
     	}            
     	
     	public final class ViewHolder { 
-    		public TextView index;      
+    		
     		public TextView date;      
-    		public TextView state;   
+    		public TextView source;  
+    		public TextView state;   		   
     	}       	
     }
     

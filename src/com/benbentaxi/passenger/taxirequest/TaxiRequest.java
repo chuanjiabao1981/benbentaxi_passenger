@@ -33,6 +33,7 @@ public class TaxiRequest {
 	private String mDriverMobile;
 	private String mSource;
 	private String mCreatedAt;
+	private Date mCreatedDate;
 	private float  mDriverLat = -1;
 	private float  mDriverLng = -1;
 	private float  mPassengerLat = -1;
@@ -125,6 +126,11 @@ public class TaxiRequest {
 	{
 		return this.mCreatedAt;
 	}
+	public String getCreatedAt(String sDateFormat)
+	{
+		SimpleDateFormat formatter1= new SimpleDateFormat(sDateFormat);		
+		return formatter1.format(mCreatedDate);		
+	}
 	public long getId()
 	{
 		return this.mId;
@@ -174,6 +180,7 @@ public class TaxiRequest {
 		try {
 			SimpleDateFormat formatter1= new SimpleDateFormat("yyyy-MM-dd");
 			strtodate = formatter.parse(mCreatedAt);
+			mCreatedDate=strtodate;
 			mCreatedAt = formatter1.format(strtodate);
 		} catch (ParseException e) {			
 			e.printStackTrace();
