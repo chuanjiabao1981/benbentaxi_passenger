@@ -1,5 +1,7 @@
 package com.benbentaxi.passenger.nearbydriver;
 
+import com.benbentaxi.passenger.location.DemoApplication;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
@@ -18,13 +20,16 @@ public class BackgroundService extends Service{
 	private BackgroundServiceBinder mBackgroundServiceBinder 				= null;
     private Looper			   mLooper			   							= null;
     private ServiceHandler	   mHandler										= null;
+    private NearByDriverTrackResponse mNearByDriverTrackResponse			= null;
+    private HandlerThread mThread 											= null;
+
 
 	@Override
 	public void onCreate()
 	{
-		HandlerThread thread 					= new HandlerThread(TAG,android.os.Process.THREAD_PRIORITY_BACKGROUND);
-		thread.start();
-		mLooper 			 					= thread.getLooper();
+		mThread 								= new HandlerThread(TAG,android.os.Process.THREAD_PRIORITY_BACKGROUND);
+		mThread.start();
+		mLooper 			 					= mThread.getLooper();
 		mBackgroundServiceBinder				= new BackgroundServiceBinder(this);
 		mHandler								= new ServiceHandler(mLooper);
 	}
@@ -35,11 +40,17 @@ public class BackgroundService extends Service{
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		mLooper.quit();
+		mThread.quit();
+		this.mHandler.removeMessages(MSG_NEAR_BY_DRIVERS);
     }
 	public void startRefreshNearByDriver()
 	{
-		this.mHandler.dispatchMessage(this.mHandler.obtainMessage(MSG_NEAR_BY_DRIVERS));
+		
+		this.mHandler.sendMessage(this.mHandler.obtainMessage(MSG_NEAR_BY_DRIVERS));
+	}
+	public NearByDriverTrackResponse getNearByDriverTrackResponse()
+	{
+		return mNearByDriverTrackResponse;
 	}
 	
 	private final class ServiceHandler extends Handler
@@ -52,8 +63,14 @@ public class BackgroundService extends Service{
 				switch (msg.what)
 				{
 					case	MSG_NEAR_BY_DRIVERS:
-						Log.i(TAG, "Test me ............");
-						LocalBroadcastManager.getInstance(BackgroundService.this).sendBroadcast(mNearbyDriverIntent);
+
+						NearByDriverTask nearByDriverTask 							= new NearByDriverTask((DemoApplication) BackgroundService.this.getApplication());
+					 	mNearByDriverTrackResponse 	  								= nearByDriverTask.send();
+					 	if (mNearByDriverTrackResponse != null){
+							LocalBroadcastManager.getInstance(BackgroundService.this).sendBroadcast(mNearbyDriverIntent);
+					 	}else{
+					 		Log.e(TAG,"获取附近司机为null....");
+					 	}
 						mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_NEAR_BY_DRIVERS), REFRESH_NEARBY_DRIVER_INTERVAL);
 						break;
 					default:

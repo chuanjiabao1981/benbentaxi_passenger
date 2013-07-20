@@ -1,14 +1,14 @@
 package com.benbentaxi.passenger.location;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -43,8 +43,6 @@ import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.benbentaxi.passenger.R;
 import com.benbentaxi.passenger.nearbydriver.BackgroundService;
 import com.benbentaxi.passenger.nearbydriver.BackgroundServiceBinder;
-import com.benbentaxi.passenger.nearbydriver.NearByDriverTask;
-import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
 import com.benbentaxi.passenger.nearbydriver.NearbyDrvierReceiver;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
@@ -61,7 +59,6 @@ public class LocationOverlayDemo extends Activity {
 	public final static int MSG_HANDLE_ITEM_TOUCH 							= 10000;
 	public final static int MSG_HANDLE_MAP_MOVE 							= 1;
 	public final static int MSG_HANDLE_POS_REFRESH 							= 2;
-	public final static int MSG_HANDLE_NEARBY_DRIVER 						= 3;
 	public final static int MSG_HANDLE_REFRESH_CURRENT_TAXIREQUEST 			= 4;
 	public final static int MSG_HANDLE_TAXIREQUEST_DRIVER_RESPONSE 			= 5;
 	
@@ -92,11 +89,8 @@ public class LocationOverlayDemo extends Activity {
         	case MSG_HANDLE_REFRESH_CURRENT_TAXIREQUEST:
         		doRefreshCurrentTaxiRequest();
         		break;
-        	case MSG_HANDLE_NEARBY_DRIVER:
-        		doNearByDriver();
-        		break;
         	case MSG_HANDLE_TAXIREQUEST_DRIVER_RESPONSE:
-        		doDriverResponse();
+        		doDriverResponse((TaxiRequest) msg.obj);
         		break;
         	case ConfirmPopupWindow.MSG_HANDLE_TAXIREQUEST_CONFIRM_TIMEOUT:
         		if (msg.obj != null){
@@ -105,22 +99,10 @@ public class LocationOverlayDemo extends Activity {
         			LocationOverlayDemo.this.mApp.setCurrentTaxiRequest(null);
         		}
         		break;
+        	case MSG_HANDLE_ITEM_TOUCH:
+				showDriverInfo((OverlayItem) msg.obj);
+				break;
         	default:
-        		if ( msg.what >= MSG_HANDLE_ITEM_TOUCH ) {
-        			int idx = msg.what-MSG_HANDLE_ITEM_TOUCH;
-    				NearByDriverTrackResponse nearByDriverTrackResponse = LocationOverlayDemo.this.mApp.getCurrentNearByDriverTrack();
-            		try {
-						// 乘客态，显示司机信息
-							JSONObject obj = nearByDriverTrackResponse.getJsonTaxiRequest(idx);
-							int drvid = obj.getInt("driver_id");
-							showDriverInfo(drvid, obj);
-					} catch (JSONException e) {
-//						resetStatus();
-						// 下标异常
-		        		Toast.makeText(LocationOverlayDemo.this.getApplicationContext(), "请求状态异常: "+idx+"/"+nearByDriverTrackResponse.getSize(),
-								Toast.LENGTH_SHORT).show();
-					}
-        		}
         		break;
         	}
         };
@@ -142,21 +124,14 @@ public class LocationOverlayDemo extends Activity {
         }
     };
     private boolean mIsOnTop = false;
-	OverlayTest ov = null;
-	// 存放overlayitem 
-	public List<OverlayItem> mGeoList = new ArrayList<OverlayItem>();
-	// 被确认的司机/乘客请求信息
+	DriverOverlay ov = null;
 	public JSONObject mConfirmObj;
-	// 存放overlay图片
-	public List<Drawable>  res = new ArrayList<Drawable>();
 	private Drawable mDrvMarker;
 	
 	private ConfirmPopupWindow mPassengerConfirmPopupWindow					= null;
     private DemoApplication mApp 						                    = null;
     private Timer mRefreshTaxiRequestTimer				                    = null;
     private long  mRefreshTaxiRequestPerod				                    = 5000;
-    private Timer mNearyByDriverTimer					                    = null;
-    private long  mNearyByDrvierPeriod					                    = 10000;
     private BackgroundService mBackgroundService							= null;
     private boolean mNearByDriverServiceBound								= false;
 	
@@ -247,8 +222,7 @@ public class LocationOverlayDemo extends Activity {
 		mMapView.regMapViewListener(DemoApplication.getInstance().mBMapManager, mMapListener);
 		
 		mDrvMarker = this.getResources().getDrawable(R.drawable.steering);
-		res.add(getResources().getDrawable(R.drawable.steering));
-	    ov = new OverlayTest(mDrvMarker, this,mMapView, MsgHandler); 
+	    ov = new DriverOverlay(mDrvMarker, this,mMapView, MsgHandler); 
 	    
 	    mMapView.getOverlays().add(ov);
 	    
@@ -264,20 +238,18 @@ public class LocationOverlayDemo extends Activity {
 	    
 	    
 	    
-	    
 	    Log.d(TAG,"create............... ");
 
     }
-    
+    public BackgroundService getBackgroundService()
+    {
+    	return this.mBackgroundService;
+    }
     @Override
     protected void onPause() {
+
     	mIsOnTop = false;
         mMapView.onPause();
-        if (mNearyByDriverTimer != null){
-        	Log.d(TAG,"Cancel the NearbyDrvierTimer.");
-        	mNearyByDriverTimer.cancel();
-        	mNearyByDriverTimer = null;
-        }
         unregisterReceiver();
         unboundService();
         super.onPause();
@@ -291,11 +263,6 @@ public class LocationOverlayDemo extends Activity {
         
         boundService();
         registerReceiver();
-        if (mNearyByDriverTimer == null){
-        	mNearyByDriverTimer = new Timer("NearyByDriverTimer",true);
-            mNearyByDriverTimer.schedule(new RefreshInfo(MSG_HANDLE_NEARBY_DRIVER), 0 ,mNearyByDrvierPeriod);
-
-        }
         super.onResume();
 	    Log.d(TAG,"Resume ................. ");
     }
@@ -338,22 +305,31 @@ public class LocationOverlayDemo extends Activity {
     private void initMapView() {
         mMapView.setLongClickable(true);
     }
-  
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
-    private void doDriverResponse(){
+    private void doDriverResponse(TaxiRequest taxiRequest){
     	if (this.mPassengerConfirmPopupWindow.isShowing() == false){
     		this.mPassengerConfirmPopupWindow.show();
     	}
-    }
-    private void doNearByDriver()
-    {
-       NearByDriverTask nearyByDriverTask = new NearByDriverTask(this.mApp);
-       nearyByDriverTask.go();
-       ShowCurrentNearByDrivers();
+    	if (taxiRequest != null){
+    		String ns = Context.NOTIFICATION_SERVICE;
+    		NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(ns);
+    		int icon = android.R.drawable.ic_dialog_info;        
+    		CharSequence tickerText = "有司机响应!"; 
+    		CharSequence contentTitle = "有司机响应";  
+    		CharSequence contentText = "司机:"+taxiRequest.getDriverMobile()+"响应请求，请确认!";
+    		
+    		Intent notificationIntent = new Intent(this.getApplicationContext(), LocationOverlayDemo.class);
+    		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+    		PendingIntent contentIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+    		Notification notification = new Notification(icon, tickerText, System.currentTimeMillis());
+    		notification.setLatestEventInfo(this.getApplicationContext(), contentTitle, contentText, contentIntent);
+    		notification.defaults = Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS;
+    		mNotificationManager.notify((int)taxiRequest.getId(), notification);
+    	}
     }
 	private void doRefreshCurrentTaxiRequest() {
         TaxiRequest taxiRequest = mApp.getCurrentTaxiRequest();
@@ -408,7 +384,7 @@ public class LocationOverlayDemo extends Activity {
     private void registerReceiver()
     {
     	if (mNearbyDrvierReceiver == null){
-    		mNearbyDrvierReceiver = new NearbyDrvierReceiver(this);
+    		mNearbyDrvierReceiver = new NearbyDrvierReceiver(this,this.mMapView,this.ov);
     	}
     	LocalBroadcastManager.getInstance(this).registerReceiver(mNearbyDrvierReceiver,new IntentFilter(BackgroundService.NEARYBY_DRIVER_ACTION));
     }
@@ -418,50 +394,19 @@ public class LocationOverlayDemo extends Activity {
     	  LocalBroadcastManager.getInstance(this).unregisterReceiver(mNearbyDrvierReceiver);
     }
     
-    private void showDriverInfo(int idx, JSONObject obj) throws JSONException {
-		int drvid = obj.getInt("driver_id");
-		double drv_lat = obj.getDouble("lat");
-		double drv_lng = obj.getDouble("lng");
-		
-		IdShow confirm = new IdShow("司机信息", "ID: "+drvid+"\n经度: "+drv_lng+"\n纬度: "+drv_lat, this);
-
+    private void showDriverInfo(OverlayItem item)
+    {
+    	if (item == null){
+    		Log.e(TAG,"tap item info is null");
+    		return;
+    	}
+    	IdShow confirm = new IdShow("司机信息",item.getTitle(),this);
     	confirm.SetNegativeOnclick(null, null);
     	confirm.SetPositiveOnclick("关闭", null);
     	confirm.getIdDialog().show();
     }
-	private void ShowCurrentNearByDrivers() 
-	{
-		NearByDriverTrackResponse nearByDriverTrackResponse = this.mApp.getCurrentNearByDriverTrack();
-		if (nearByDriverTrackResponse  == null){
-			return;
-		}
-			
-		//清除所有添加的Overlay
-        ov.removeAll();
-        mGeoList.clear();
-        for( int i=0; i< nearByDriverTrackResponse.getSize(); ++i ) {
-        	int lat = 0, lng = 0;
-        	
-        	OverlayItem item = null;
-	        lat = (int)(nearByDriverTrackResponse.getLat(i)*1e6);
-	        lng = (int)(nearByDriverTrackResponse.getLng(i)*1e6);
-        	item= new OverlayItem(new GeoPoint(lat, lng),
-		        		"司机"+nearByDriverTrackResponse.getId(i),"创建时间: "+nearByDriverTrackResponse.getCreatedAt(i));		
-        		
-	        
-        	if ( item != null ) {
-			   	item.setMarker(res.get(i%res.size()));
-			   	mGeoList.add(item);
-        	}
-        }
-    	if ( ov.size() < mGeoList.size()){
-    		ov.addItem(mGeoList);
-    	}
-	    mMapView.refresh();
-	    Toast.makeText(LocationOverlayDemo.this.getApplicationContext(), "附近有"+nearByDriverTrackResponse.getSize()+"辆出租车",
-					Toast.LENGTH_SHORT).show();
-	    
-	}
+    
+
 	@Override
 	public boolean onKeyDown( int keyCode, KeyEvent event ) {
 		 if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -475,8 +420,6 @@ public class LocationOverlayDemo extends Activity {
     	Log.i("item:",String.valueOf(item.getItemId()));
 	    switch (item.getItemId()) {
 		    case R.id.menu_history:
-		    	//Intent createIntent = new Intent(LocationOverlayDemo.this,TaxiRequestIndexActivity.class);				
-				//startActivity(createIntent);
 		    	TaxiRequestIndexTask tsk=new TaxiRequestIndexTask(this,mApp);
 				tsk.go();
 		    return true;		    

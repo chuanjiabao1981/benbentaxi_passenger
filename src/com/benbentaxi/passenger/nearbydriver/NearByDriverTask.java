@@ -4,31 +4,25 @@ import android.util.Log;
 
 import com.benbentaxi.Configure;
 import com.benbentaxi.Session;
-import com.benbentaxi.api.GetTask;
+import com.benbentaxi.api.JsonHttpRequest;
 import com.benbentaxi.passenger.location.DemoApplication;
 
-public class NearByDriverTask extends GetTask{
-	public static final String TAG = NearByDriverTask.class.getCanonicalName();
-	public String mApiUrl				= null;
-	public Configure  mConfigure		= null;
-	private DemoApplication mApp 		= null;
-	private Session			mSession 	= null;
-
-//	String url =  "http://"+mTestHost+"/api/v1/users/nearby_driver?lat="+lat+"&lng="+lng;
+public class NearByDriverTask {
+	public static final String TAG 					= NearByDriverTask.class.getCanonicalName();
+	public String mApiUrl							= null;
+	public Configure  mConfigure					= null;
+	private DemoApplication mApp 					= null;
+	private Session			mSession 				= null;
+	
+	private JsonHttpRequest mJsonHttpRequest		= null;
 
 	public NearByDriverTask(DemoApplication app)
 	{
-		mConfigure = new Configure();
-		mApp 	   = app;
+		mConfigure 				= new Configure();
+		mApp 	   				= app;
 		this.mSession 	  		= mApp.getCurrentSession();
-		if (this.mSession != null){
-			setCookie(mSession.getTokenKey(), mSession.getTokenVal(),mConfigure.getHost());
-		}else{
-			Log.e(TAG,"Session 获取出错!");
-		}
-
+		
 	}
-	
 	private double lng()
 	{
 		if (mApp.getCurrentPassengerLocation() != null)
@@ -41,27 +35,49 @@ public class NearByDriverTask extends GetTask{
 			return mApp.getCurrentPassengerLocation().getLatitude();
 		return -1;
 	}
-	@Override
 	protected String getApiUrl() {
 		return "http://"+mConfigure.getService()+"/api/v1/users/nearby_driver?lat="+lat()+"&lng="+lng();
 	}
 
-	@Override
-	public void go() {
-		if (lat() >0 && lng() > 0)
-			execute();
+	public NearByDriverTrackResponse send() {
+		mJsonHttpRequest = new JsonHttpRequest();
+		setCookie();
+		if (lat() >0 && lng() > 0){
+			boolean succ 										= mJsonHttpRequest.get(getApiUrl());
+			NearByDriverTrackResponse nearByDriverTrackResponse = new NearByDriverTrackResponse(mJsonHttpRequest.getResult());
+			if (!succ){
+				nearByDriverTrackResponse.setSysErrorMessage(mJsonHttpRequest.getErrorMsg());
+			}
+			if (!nearByDriverTrackResponse.hasError()){
+				Log.d(TAG,mJsonHttpRequest.getResult());
+				return nearByDriverTrackResponse;
+			}else{
+				//错误已经在hasError中处理过了，所以这里不再处理
+			}
+			return null;
+		}else{
+			Log.e(TAG,"获取经纬度数据出错!");
+			return null;
+		}
 			
 	}
-	
-	protected void onPostExecute(final Boolean succ) 
+	private void setCookie()
 	{
-		NearByDriverTrackResponse nearByDriverTrackResponse = new NearByDriverTrackResponse(this.getResult());
-		if (!succ){
-			nearByDriverTrackResponse.setSysErrorMessage(this.getErrorMsg());
-		}
-		if (!nearByDriverTrackResponse.hasError()){
-					this.mApp.setCurrentNearByDrivers(nearByDriverTrackResponse);
+		if (this.mSession != null){
+			mJsonHttpRequest.setCookie(mSession.getTokenKey(), mSession.getTokenVal(),mConfigure.getHost());
+		}else{
+			Log.e(TAG,"Session 获取出错!");
 		}
 	}
+//	protected void onPostExecute(final Boolean succ) 
+//	{
+//		NearByDriverTrackResponse nearByDriverTrackResponse = new NearByDriverTrackResponse(this.getResult());
+//		if (!succ){
+//			nearByDriverTrackResponse.setSysErrorMessage(this.getErrorMsg());
+//		}
+//		if (!nearByDriverTrackResponse.hasError()){
+//					this.mApp.setCurrentNearByDrivers(nearByDriverTrackResponse);
+//		}
+//	}
 
 }
