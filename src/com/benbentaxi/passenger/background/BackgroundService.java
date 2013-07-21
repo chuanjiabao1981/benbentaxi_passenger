@@ -16,8 +16,11 @@ import android.util.Log;
 
 public class BackgroundService extends Service{
 	private static final int	MSG_NEAR_BY_DRIVERS							= 0;
+	private static final int	MSG_TEXT_AD									= 1;
 	private static final long	REFRESH_NEARBY_DRIVER_INTERVAL   			= 10000;
+	private static final long	REFRESH_TEXT_AD_INTERVAL					= 10000;
 	public  static final String	NEARYBY_DRIVER_ACTION						= "nearbydrvier_action";
+	public  static final String TEXT_AD_ACTION								= "text_ad_action";
 	private static final String TAG 										= BackgroundService.class.getName();
 	private BackgroundServiceBinder mBackgroundServiceBinder 				= null;
     private Looper			   mLooper			   							= null;
@@ -44,11 +47,17 @@ public class BackgroundService extends Service{
 		super.onDestroy();
 		mThread.quit();
 		this.mHandler.removeMessages(MSG_NEAR_BY_DRIVERS);
+		this.mHandler.removeMessages(MSG_TEXT_AD);
     }
 	public void startRefreshNearByDriver()
 	{
 		
 		this.mHandler.sendMessage(this.mHandler.obtainMessage(MSG_NEAR_BY_DRIVERS));
+	}
+	
+	public void startTextAd()
+	{
+		this.mHandler.sendMessage(this.mHandler.obtainMessage(MSG_TEXT_AD));
 	}
 	public NearByDriverTrackResponse getNearByDriverTrackResponse()
 	{
@@ -58,6 +67,7 @@ public class BackgroundService extends Service{
 	private final class ServiceHandler extends Handler
 	{
 		private Intent mNearbyDriverIntent = new Intent(NEARYBY_DRIVER_ACTION);
+		private Intent mTextAdIntent	   = new Intent(TEXT_AD_ACTION);
 		 public ServiceHandler(Looper looper) {
 	          super(looper);
 	      }
@@ -74,6 +84,10 @@ public class BackgroundService extends Service{
 					 		Log.e(TAG,"获取附近司机为null....");
 					 	}
 						mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_NEAR_BY_DRIVERS), REFRESH_NEARBY_DRIVER_INTERVAL);
+						break;
+					case MSG_TEXT_AD:
+						LocalBroadcastManager.getInstance(BackgroundService.this).sendBroadcast(mTextAdIntent);
+						mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_TEXT_AD), REFRESH_TEXT_AD_INTERVAL);
 						break;
 					default:
 						break;

@@ -4,14 +4,18 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-
+    <fragment
+        android:id="@+id/test_fragment"
+        android:name="com.benbentaxi.passenger.ad.TextAdFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+   	/>
     <com.baidu.mapapi.map.MapView android:id="@+id/bmapView"
 	    android:layout_width="fill_parent"
-		android:layout_height="wrap_content" 
+		android:layout_height="0dp" 
 	    android:clickable="true"
 	    android:layout_weight="100"
 	/>
-    
     <Button
         android:id="@+id/btn_callTaxi"
         style="@style/loginButton"

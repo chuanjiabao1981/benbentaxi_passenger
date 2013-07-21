@@ -69,15 +69,5 @@ public class NearByDriverTask {
 			Log.e(TAG,"Session 获取出错!");
 		}
 	}
-//	protected void onPostExecute(final Boolean succ) 
-//	{
-//		NearByDriverTrackResponse nearByDriverTrackResponse = new NearByDriverTrackResponse(this.getResult());
-//		if (!succ){
-//			nearByDriverTrackResponse.setSysErrorMessage(this.getErrorMsg());
-//		}
-//		if (!nearByDriverTrackResponse.hasError()){
-//					this.mApp.setCurrentNearByDrivers(nearByDriverTrackResponse);
-//		}
-//	}
 
 }
