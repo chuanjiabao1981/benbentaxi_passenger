@@ -1,9 +1,7 @@
 package com.benbentaxi.passenger.ad;
 
-import java.util.Random;
 
 import com.benbentaxi.passenger.R;
-import com.benbentaxi.passenger.background.AdServiceConnection;
 import com.benbentaxi.passenger.background.BackgroundService;
 
 import android.content.Context;
@@ -20,8 +18,11 @@ import android.widget.TextView;
 
 public class TextAdFragment extends Fragment{
 	private static final String TAG								=  TextAdFragment.class.getName();
+	private static final String DEFAULT_AD_STR					=  "欢迎使用奔奔打车!";
 	private AdServiceConnection	mAdServiceConnection 			=	null;
 	private TextAdReceiver		mTextAdReceiver					=   null;
+	private String	mCurrentTextAds								= 	null;
+	private TextView mAdInfoTextView							=	null;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v =  inflater.inflate(R.layout.fragment_text_ad, container, false);
@@ -29,12 +30,8 @@ public class TextAdFragment extends Fragment{
 	}
 	public void onResume()
 	{
-        TextView adInfo = (TextView) getActivity().findViewById(R.id.ad_info_text);
-        if (new Random().nextBoolean()){
-        	adInfo.setText("fffffffffffffffffff3333333333333333吗u哦22222222.。。。。。。");
-        }else{
-        	adInfo.setText("阳泉人民欢迎您。。。。。。。。。。。。。。。。。。。!!!!!!!!!");
-        }
+		mAdInfoTextView = (TextView) getActivity().findViewById(R.id.ad_info_text);
+		refreshAdInfo(mCurrentTextAds);
         boundService();
         registerReceiver();
         super.onResume();
@@ -45,14 +42,24 @@ public class TextAdFragment extends Fragment{
 		unboundService();
 		super.onPause();
 	}
-	
 	public BackgroundService getBackgroundService()
 	{
 		if (mAdServiceConnection != null)
 			return mAdServiceConnection.getService();
 		return null;
 	}
-	
+	public void refreshAdInfo(String textAds)
+	{
+		if (textAds == null || textAds.trim().equalsIgnoreCase("")){
+			mCurrentTextAds = DEFAULT_AD_STR;
+		}else{
+			mCurrentTextAds = textAds;
+		}
+		
+		if (mAdInfoTextView != null){
+			mAdInfoTextView.setText(mCurrentTextAds);
+		}
+	}
 	private void boundService()
 	{
 		if (mAdServiceConnection == null){

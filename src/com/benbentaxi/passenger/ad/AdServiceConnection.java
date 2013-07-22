@@ -1,4 +1,9 @@
-package com.benbentaxi.passenger.background;
+package com.benbentaxi.passenger.ad;
+
+
+import com.benbentaxi.passenger.background.BackgroundService;
+import com.benbentaxi.passenger.background.BackgroundServiceBinder;
+import com.benbentaxi.passenger.background.BackgroundServiceConnection;
 
 import android.content.ComponentName;
 import android.os.IBinder;

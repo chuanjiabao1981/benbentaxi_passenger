@@ -1,5 +1,7 @@
 package com.benbentaxi.passenger.background;
 
+import com.benbentaxi.passenger.ad.TextAdTask;
+import com.benbentaxi.passenger.ad.TextAds;
 import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.nearbydriver.NearByDriverTask;
 import com.benbentaxi.passenger.nearbydriver.NearByDriverTrackResponse;
@@ -17,7 +19,7 @@ import android.util.Log;
 public class BackgroundService extends Service{
 	private static final int	MSG_NEAR_BY_DRIVERS							= 0;
 	private static final int	MSG_TEXT_AD									= 1;
-	private static final long	REFRESH_NEARBY_DRIVER_INTERVAL   			= 10000;
+	private static final long	REFRESH_NEARBY_DRIVER_INTERVAL   			= 60000;
 	private static final long	REFRESH_TEXT_AD_INTERVAL					= 10000;
 	public  static final String	NEARYBY_DRIVER_ACTION						= "nearbydrvier_action";
 	public  static final String TEXT_AD_ACTION								= "text_ad_action";
@@ -26,6 +28,7 @@ public class BackgroundService extends Service{
     private Looper			   mLooper			   							= null;
     private ServiceHandler	   mHandler										= null;
     private NearByDriverTrackResponse mNearByDriverTrackResponse			= null;
+    private TextAds					  mTextAds								= null;
     private HandlerThread mThread 											= null;
 
 
@@ -63,6 +66,10 @@ public class BackgroundService extends Service{
 	{
 		return mNearByDriverTrackResponse;
 	}
+	public TextAds getTextAds()
+	{
+		return mTextAds;
+	}
 	
 	private final class ServiceHandler extends Handler
 	{
@@ -75,7 +82,6 @@ public class BackgroundService extends Service{
 				switch (msg.what)
 				{
 					case	MSG_NEAR_BY_DRIVERS:
-
 						NearByDriverTask nearByDriverTask 							= new NearByDriverTask((DemoApplication) BackgroundService.this.getApplication());
 					 	mNearByDriverTrackResponse 	  								= nearByDriverTask.send();
 					 	if (mNearByDriverTrackResponse != null){
@@ -83,11 +89,17 @@ public class BackgroundService extends Service{
 					 	}else{
 					 		Log.e(TAG,"获取附近司机为null....");
 					 	}
-						mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_NEAR_BY_DRIVERS), REFRESH_NEARBY_DRIVER_INTERVAL);
+					 	if (mHandler.getLooper().getThread().getState() != Thread.State.TERMINATED){
+					 		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_NEAR_BY_DRIVERS), REFRESH_NEARBY_DRIVER_INTERVAL);
+					 	}
 						break;
 					case MSG_TEXT_AD:
+						TextAdTask	textAdTask			= new TextAdTask((DemoApplication) BackgroundService.this.getApplication());
+						mTextAds						=  textAdTask.send();
 						LocalBroadcastManager.getInstance(BackgroundService.this).sendBroadcast(mTextAdIntent);
-						mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_TEXT_AD), REFRESH_TEXT_AD_INTERVAL);
+					 	if (mHandler.getLooper().getThread().getState() != Thread.State.TERMINATED){
+					 		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_TEXT_AD), REFRESH_TEXT_AD_INTERVAL);
+					 	}
 						break;
 					default:
 						break;
