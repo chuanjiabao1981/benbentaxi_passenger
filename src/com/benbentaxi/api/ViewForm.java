@@ -7,8 +7,6 @@ import com.benbentaxi.util.DataPreference;
 
 
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
@@ -62,12 +60,15 @@ public abstract class ViewForm {
 	{
 		return this.mActivity;
 	}
-		
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+	
+	//@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public void showProgress(final boolean show) {
 		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
 		// for very easy animations. If available, use these APIs to fade-in
 		// the progress spinner.
+		/*
+		 * 2.3.3版本rom不支持
+		 *
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 			int shortAnimTime = this.mActivity.getResources().getInteger(
 					android.R.integer.config_shortAnimTime);
@@ -95,11 +96,12 @@ public abstract class ViewForm {
 						}
 					});
 		} else {
+		*/
 			// The ViewPropertyAnimator APIs are not available, so simply show
 			// and hide the relevant UI components.
 			mProgressStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
 			mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
+		//}
 	}
 	
 	protected abstract void init();
