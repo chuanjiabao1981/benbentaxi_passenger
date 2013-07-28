@@ -9,7 +9,7 @@ import android.util.Log;
 
 public class TextAdReceiver extends BroadcastReceiver{
 	private static final String TAG							= TextAdReceiver.class.getName();
-	private static final String SPLITOR						= "\t";
+	private static final String SPLITOR						= "============";
 	private TextAdFragment 		mTextAdFragment				= null;
 	
 	public TextAdReceiver(TextAdFragment textAdFragment)
@@ -43,6 +43,7 @@ public class TextAdReceiver extends BroadcastReceiver{
 			all += textAds.getContent(i);
 			all += SPLITOR;
 		}
+		Log.d(TAG,".|......"+all);
 		mTextAdFragment.refreshAdInfo(all);
 	}
 

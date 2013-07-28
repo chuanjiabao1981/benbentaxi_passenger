@@ -19,8 +19,9 @@ import android.util.Log;
 public class BackgroundService extends Service{
 	private static final int	MSG_NEAR_BY_DRIVERS							= 0;
 	private static final int	MSG_TEXT_AD									= 1;
-	private static final long	REFRESH_NEARBY_DRIVER_INTERVAL   			= 60000;
-	private static final long	REFRESH_TEXT_AD_INTERVAL					= 10000;
+	private static final long	REFRESH_NEARBY_DRIVER_INTERVAL   			= 600000;
+	private static final long   REFRESH_NEARBY_DRVIER_SHORT_INTERVAL		= 1000;
+	private static final long	REFRESH_TEXT_AD_INTERVAL					= 100000;
 	public  static final String	NEARYBY_DRIVER_ACTION						= "nearbydrvier_action";
 	public  static final String TEXT_AD_ACTION								= "text_ad_action";
 	private static final String TAG 										= BackgroundService.class.getName();
@@ -89,11 +90,17 @@ public class BackgroundService extends Service{
 					 	}else{
 					 		Log.e(TAG,"获取附近司机为null....");
 					 	}
+
 					 	if (mHandler.getLooper().getThread().getState() != Thread.State.TERMINATED){
-					 		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_NEAR_BY_DRIVERS), REFRESH_NEARBY_DRIVER_INTERVAL);
+					 		if (mNearByDriverTrackResponse == null){
+					 			mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_NEAR_BY_DRIVERS), REFRESH_NEARBY_DRVIER_SHORT_INTERVAL);
+					 		}else{
+					 			mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_NEAR_BY_DRIVERS), REFRESH_NEARBY_DRIVER_INTERVAL);
+					 		}
 					 	}
 						break;
 					case MSG_TEXT_AD:
+
 						TextAdTask	textAdTask			= new TextAdTask((DemoApplication) BackgroundService.this.getApplication());
 						mTextAds						=  textAdTask.send();
 						LocalBroadcastManager.getInstance(BackgroundService.this).sendBroadcast(mTextAdIntent);

@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.IOException;
 
 import android.media.MediaRecorder;
+import android.util.Log;
 
 
 public class VoiceRecorder {
+	private static final String TAG = VoiceRecorder.class.getName();
 	private String strPath;
 	private boolean bStart=false;
 	
@@ -78,8 +80,13 @@ public class VoiceRecorder {
 	public void StopRecorder() throws NullPointerException{		
 		if(mediaRecorder!=null)
 		{
-			if(bStart)
-				mediaRecorder.stop();	
+			if(bStart){
+				try {
+					mediaRecorder.stop();
+				}catch(RuntimeException stopException){
+					Log.e(TAG,"no voice is record.......");
+				}
+			}
 			bStart=false;
 		}
 		else
