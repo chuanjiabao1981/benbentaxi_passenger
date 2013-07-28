@@ -18,6 +18,7 @@ package com.benbentaxi.passenger.actionbar;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.view.ActionProvider;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -262,7 +263,7 @@ public class SimpleMenuItem implements MenuItem {
 
     /*
      * 2.3.3版本不支持
-   	 *
+   	 */
 	@Override
 	public ActionProvider getActionProvider() {
 		// TODO Auto-generated method stub
@@ -280,5 +281,4 @@ public class SimpleMenuItem implements MenuItem {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	*/
 }

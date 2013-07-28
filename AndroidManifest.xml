@@ -84,13 +84,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-         -->
-        
+        -->
         <activity
             android:name="com.benbentaxi.passenger.login.LoginActivity"
             android:excludeFromRecents="false"
             android:label="奔奔打车"
             android:noHistory="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -124,6 +124,7 @@
 
         <activity
             android:name="com.benbentaxi.passenger.login.ListDetail"
+            android:screenOrientation="portrait"
             android:label="打车详情" >
         </activity>
         <!-- 考虑2.3rom的兼容性 
@@ -139,6 +140,7 @@
             android:name="com.benbentaxi.passenger.register.RegisterActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_register"
+            android:screenOrientation="portrait"
             android:noHistory="true" >
         </activity>
         <activity

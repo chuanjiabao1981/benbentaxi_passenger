@@ -95,6 +95,7 @@ public class BackgroundService extends Service{
 					 		if (mNearByDriverTrackResponse == null){
 					 			mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_NEAR_BY_DRIVERS), REFRESH_NEARBY_DRVIER_SHORT_INTERVAL);
 					 		}else{
+					 			Log.d(TAG,"Thread state is "+mHandler.getLooper().getThread().getState());
 					 			mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_NEAR_BY_DRIVERS), REFRESH_NEARBY_DRIVER_INTERVAL);
 					 		}
 					 	}

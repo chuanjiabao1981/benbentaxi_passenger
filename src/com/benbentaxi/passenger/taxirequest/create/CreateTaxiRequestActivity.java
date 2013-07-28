@@ -168,7 +168,6 @@ public class CreateTaxiRequestActivity  extends Activity  {
 		imgBtn.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {					
-				Log.d(TAG,"action is "+event.getAction());
 				if (v.getId() == R.id.imgBtnRec) {
 					if (event.getAction() == MotionEvent.ACTION_DOWN) {
 						mRecorderSuccess = false;

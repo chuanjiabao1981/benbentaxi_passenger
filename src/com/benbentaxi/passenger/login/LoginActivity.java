@@ -12,6 +12,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -31,7 +33,9 @@ public class LoginActivity extends FragmentActivity {
     	Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler());
 
 		super.onCreate(savedInstanceState);
-
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+                                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_login);
 		bindButton();
 		mMobileView 			= (EditText) findViewById(R.id.login_mobile);
