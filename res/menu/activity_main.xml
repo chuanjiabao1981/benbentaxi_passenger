@@ -1,6 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 
     <item android:id="@+id/menu_history"
         android:showAsAction="always|withText"        
+        android:title="@string/taxi_history"        
+        android:orderInCategory="110" />
+     -->
+     <item android:id="@+id/menu_history"      
         android:title="@string/taxi_history"        
         android:orderInCategory="110" />
 </menu>
