@@ -38,6 +38,7 @@ import com.baidu.mapapi.map.MyLocationOverlay;
 import com.baidu.mapapi.map.OverlayItem;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.benbentaxi.passenger.R;
+import com.benbentaxi.passenger.actionbar.ActionBarActivity;
 import com.benbentaxi.passenger.background.BackgroundService;
 import com.benbentaxi.passenger.nearbydriver.NearbyDrvierReceiver;
 import com.benbentaxi.passenger.nearbydriver.NearybyDrvierServiceConnection;
@@ -48,7 +49,7 @@ import com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity;
 import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
 import com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexTask;
 import com.benbentaxi.util.IdShow;
-public class LocationOverlayDemo extends FragmentActivity {
+public class LocationOverlayDemo extends ActionBarActivity {
 	
 	private String TAG = LocationOverlayDemo.class.getName();
 
