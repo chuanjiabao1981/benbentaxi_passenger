@@ -43,7 +43,6 @@ public class TextAdReceiver extends BroadcastReceiver{
 			all += textAds.getContent(i);
 			all += SPLITOR;
 		}
-		Log.d(TAG,".|......"+all);
 		mTextAdFragment.refreshAdInfo(all);
 	}
 
