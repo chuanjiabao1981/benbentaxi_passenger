@@ -1,4 +1,4 @@
-package com.benbentaxi.util;
+package com.benbentaxi.remoteexception;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -7,14 +7,16 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
 
+
 import android.os.Environment;
 
-public class CustomExceptionHandler implements UncaughtExceptionHandler {
+public class RemoteExceptionHandler implements UncaughtExceptionHandler {
 
 	
 	private UncaughtExceptionHandler defaultUEH;
     private String localPath;
-    public CustomExceptionHandler ()
+    private String stacktrace;
+    public RemoteExceptionHandler ()
     {
     	localPath      = Environment.getExternalStorageDirectory() +"/";
     	this.defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
@@ -26,13 +28,20 @@ public class CustomExceptionHandler implements UncaughtExceptionHandler {
         final Writer result = new StringWriter();
         final PrintWriter printWriter = new PrintWriter(result);
         e.printStackTrace(printWriter);
-        String stacktrace = result.toString();
+        stacktrace = result.toString();
         printWriter.close();
         String filename ="benbentaxi_passenger"+ timestamp + ".stacktrace";
 
         if (localPath != null) {
             writeToFile(stacktrace, filename);
+            RemoteExceptionTask et = new RemoteExceptionTask(stacktrace);
+            et.go();
         }
+//        try {
+//			//Thread.sleep(3000);
+//		} catch (InterruptedException e1) {
+//			e1.printStackTrace();
+//		}
         defaultUEH.uncaughtException(thread, e);
 	}
 	private void writeToFile(String stacktrace, String filename) {

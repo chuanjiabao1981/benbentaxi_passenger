@@ -1,6 +1,7 @@
 package com.benbentaxi.api;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 
 public abstract class PostTask  extends AsyncTask<String, Integer, Boolean> {
@@ -20,7 +21,14 @@ public abstract class PostTask  extends AsyncTask<String, Integer, Boolean> {
 	
 	@Override
 	protected Boolean doInBackground(String... params) {
-		return mJsonHttpRequest.post(getApiUrl(), getPostParams());
+		Log.d(TAG,"send post request...............");
+		try{
+			return mJsonHttpRequest.post(getApiUrl(), getPostParams());
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 

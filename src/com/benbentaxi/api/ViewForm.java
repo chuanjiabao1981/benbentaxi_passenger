@@ -7,9 +7,7 @@ import com.benbentaxi.util.DataPreference;
 
 
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;

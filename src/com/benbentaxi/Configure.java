@@ -14,4 +14,14 @@ public class Configure {
 	{
 		return "xxxxxxxx";
 	}
+	public String getOsVersion()
+	{
+		return "android "+android.os.Build.VERSION.RELEASE;
+	}
+	
+	public String getClientVersion()
+	{
+		//这个和分支一致
+		return "passenger-"+"0.1";
+	}
 }

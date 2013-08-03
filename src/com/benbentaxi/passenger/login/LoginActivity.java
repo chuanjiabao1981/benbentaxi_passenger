@@ -3,7 +3,7 @@ package com.benbentaxi.passenger.login;
 import com.benbentaxi.passenger.R;
 import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.register.RegisterActivity;
-import com.benbentaxi.util.CustomExceptionHandler;
+import com.benbentaxi.remoteexception.RemoteExceptionHandler;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,7 +30,7 @@ public class LoginActivity extends FragmentActivity {
 	private DemoApplication mApp; 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-    	Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler());
+    	Thread.setDefaultUncaughtExceptionHandler(new RemoteExceptionHandler());
 
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
