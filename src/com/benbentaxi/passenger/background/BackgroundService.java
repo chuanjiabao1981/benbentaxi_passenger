@@ -101,7 +101,6 @@ public class BackgroundService extends Service{
 					 	}
 						break;
 					case MSG_TEXT_AD:
-
 						TextAdTask	textAdTask			= new TextAdTask((DemoApplication) BackgroundService.this.getApplication());
 						mTextAds						=  textAdTask.send();
 						LocalBroadcastManager.getInstance(BackgroundService.this).sendBroadcast(mTextAdIntent);
