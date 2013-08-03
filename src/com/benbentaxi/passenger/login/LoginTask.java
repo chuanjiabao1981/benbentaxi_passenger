@@ -50,9 +50,9 @@ public class LoginTask extends PostTask{
 			app.setCurrentSession(sessionResponse);
 			Passenger passenger = new Passenger(this.mLoginForm.getMobile());
 			app.setCurrentPassenger(passenger);
-			/**/ 
-			String a = null;
-			a.length();
+			/* test remote exception handler*/ 
+			//String a = null;
+			//a.length();
 			/**/
 			Intent intent = new Intent(this.mLoginForm.getActivity(),LocationOverlayDemo.class);
 			this.mLoginForm.getActivity().startActivity(intent);
