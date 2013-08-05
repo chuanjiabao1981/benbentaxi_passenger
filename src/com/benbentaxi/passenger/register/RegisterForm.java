@@ -35,5 +35,9 @@ public class RegisterForm extends ViewForm{
 	{
 		return this.getControlVal(RegisterApiConstant.MOBILE);
 	}
+	public String getPass()
+	{
+		return this.getControlVal(RegisterApiConstant.PASSWORD);
+	}
 	 
 }

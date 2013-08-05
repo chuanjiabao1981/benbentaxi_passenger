@@ -55,7 +55,6 @@ public class BackgroundService extends Service{
     }
 	public void startRefreshNearByDriver()
 	{
-		
 		this.mHandler.sendMessage(this.mHandler.obtainMessage(MSG_NEAR_BY_DRIVERS));
 	}
 	
@@ -112,8 +111,6 @@ public class BackgroundService extends Service{
 						break;
 				}
 			}
-
-
 	}
 	
 	

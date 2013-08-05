@@ -15,6 +15,8 @@ public class RegisterTask extends PostTask{
 	private RegisterRequest 	mRegisterRequest;
 	private Configure       mConfigure;
 	private RegisterForm    mRegisterForm;
+	private DemoApplication 	mApp;
+
 	private final String TAG			     = RegisterTask.class.getName();
 
 	public RegisterTask(RegisterForm registerForm)
@@ -22,10 +24,14 @@ public class RegisterTask extends PostTask{
 		mRegisterForm 	 = registerForm;
 		mRegisterRequest = new RegisterRequest(mRegisterForm);
 		mConfigure		 = new Configure();
+		mApp 			 = (DemoApplication) mRegisterForm.getActivity().getApplication();
+
 	}
 	public void go()
 	{
 		this.mRegisterForm.showProgress(true);
+		this.mApp.setLoginMobile(this.mRegisterForm.getMobile());
+		this.mApp.setLoginPass(this.mRegisterForm.getPass());
 		execute();
 	}
 	protected String getApiUrl()

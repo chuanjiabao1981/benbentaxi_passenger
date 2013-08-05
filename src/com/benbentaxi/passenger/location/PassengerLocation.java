@@ -15,10 +15,12 @@ public class PassengerLocation
 	private LocationClient mLocClient;
 	private Handler				mHandler;
 	private DemoApplication     mApp;
+//	private Activity 			mA;
 	public PassengerLocation(Activity a,Handler h)
 	{
 		mLocClient 	= new LocationClient(a.getApplicationContext());
         mHandler 	= h;
+//        mA			= a;
         mApp		= (DemoApplication) a.getApplication();
         mLocClient.registerLocationListener( new MyLocationListenner() );
         LocationClientOption option = new LocationClientOption();
@@ -26,6 +28,8 @@ public class PassengerLocation
         option.setCoorType("bd09ll");     //设置坐标类型
         option.setAddrType("all");
         option.setScanSpan(5000);
+        //优先使用网络，目的是获取地理位置信息
+        option.setPriority( LocationClientOption.NetWorkFirst);
         mLocClient.setLocOption(option);
 	}
 	public void start()
@@ -63,6 +67,7 @@ public class PassengerLocation
                 return ;
             }
             mHandler.sendMessage(mHandler.obtainMessage(LocationOverlayDemo.MSG_HANDLE_POS_REFRESH, location));
+//            Toast.makeText(mA, "aaaaaaaaaa"+location.getAddrStr()+"|"+location.getLocType(), Toast.LENGTH_LONG).show();
             mApp.setCurrentPassengerLocation(location);
     		Log.d(TAG,"定位成功:"+location.getLocType()+"|"+location.getLongitude()+"|"+location.getLatitude());
 
