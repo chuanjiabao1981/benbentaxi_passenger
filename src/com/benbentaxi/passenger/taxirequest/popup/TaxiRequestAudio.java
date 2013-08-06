@@ -83,7 +83,8 @@ public class TaxiRequestAudio implements android.media.MediaPlayer.OnErrorListen
 	}
 	public void release()
 	{
-		this.mMediaPlayer.release();
+		if (this.mMediaPlayer != null)
+			this.mMediaPlayer.release();
 		this.mState 			= STATE.INIT;
 		this.mMediaPlayer		= null;
 	}
