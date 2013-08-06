@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.PopupClickListener;
 import com.baidu.mapapi.map.PopupOverlay;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
