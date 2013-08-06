@@ -30,16 +30,16 @@ public class DriverOverlay extends ItemizedOverlay<OverlayItem> {
 	public DriverOverlay(Drawable marker,Context context, MapView mapView){
 		super(marker,mapView);
 		this.mContext = context;
-        pop = new PopupOverlay( mapView,new PopupClickListener() {
-			
-			@Override
-			public void onClickedPopup(int index) {
-			    if (null == mToast)
-			        mToast = Toast.makeText(mContext, "popup item :" + index + " is clicked.", Toast.LENGTH_SHORT);
-			    else mToast.setText("popup item :" + index + " is clicked.");
-			    mToast.show();
-			}
-		});
+//        pop = new PopupOverlay( mapView,new PopupClickListener() {
+//			
+//			@Override
+//			public void onClickedPopup(int index) {
+//			    if (null == mToast)
+//			        mToast = Toast.makeText(mContext, "popup item :" + index + " is clicked.", Toast.LENGTH_SHORT);
+//			    else mToast.setText("popup item :" + index + " is clicked.");
+//			    mToast.show();
+//			}
+//		});
        // 自2.1.1 开始，使用 add/remove 管理overlay , 无需调用以下接口.
 	   // populate();
 		
@@ -73,11 +73,6 @@ public class DriverOverlay extends ItemizedOverlay<OverlayItem> {
             }
 	    }
         
-	    //pop.showPopup(bmps, getItem(index).getPoint(), 32);
-		//if (null == mToast)
-        //  mToast = Toast.makeText(mContext, getItem(index).getTitle(), Toast.LENGTH_SHORT);
-        //else mToast.setText(getItem(index).getTitle());
-		//mToast.show();
 	    
 	    if ( mH != null ) {
 	    	mH.sendMessage(mH.obtainMessage(LocationOverlayDemo.MSG_HANDLE_ITEM_TOUCH,this.getItem(index)));
@@ -86,9 +81,6 @@ public class DriverOverlay extends ItemizedOverlay<OverlayItem> {
 		return true;
 	}
 	public boolean onTap(GeoPoint pt, MapView mapView){
-		if (pop != null){
-			pop.hidePop();
-		}
 		super.onTap(pt,mapView);
 		return false;
 	}

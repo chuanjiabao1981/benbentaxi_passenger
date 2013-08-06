@@ -9,12 +9,12 @@ import java.util.Locale;
 import org.json.JSONObject;
 
 
-import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
 
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.state.DefaultStateChangeHandler;
 import com.benbentaxi.passenger.taxirequest.state.FinalStateHandler;
 import com.benbentaxi.passenger.taxirequest.state.SimpleStateMachine;
@@ -57,7 +57,7 @@ public class TaxiRequest {
 		init(obj);
 	}
 	
-	public void refresh(Activity activity,Handler h,TaxiRequestResponse newState)
+	public void refresh(DemoApplication app,Handler h,TaxiRequestResponse newState)
 	{
 		if (newState == null){
 			Log.e(TAG,"newState is null");
@@ -82,7 +82,7 @@ public class TaxiRequest {
 		//TODO::Lock
 		//TODO::时间戳判断
 
-		handler.handler(activity,h,this,newState);
+		handler.handler(app,h,this,newState);
 		Log.d(TAG,"From [" + oldTaxiRequestState.toString() +"] to ["+newTaxiRequestState.toString() +"] done!");
 		
 	}

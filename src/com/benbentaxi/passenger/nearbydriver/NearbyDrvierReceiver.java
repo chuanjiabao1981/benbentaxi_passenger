@@ -14,6 +14,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.Toast;
 
 
@@ -47,8 +48,10 @@ public class NearbyDrvierReceiver extends BroadcastReceiver {
 	private void ShowCurrentNearByDrivers(NearByDriverTrackResponse nearByDriverTrackResponse) 
 	{		
 		//清除所有添加的Overlay
-		if (mOverlay != null)
+		if (mOverlay != null){
 			mOverlay.removeAll();
+		}
+		
         mGeoList.clear();
         for( int i=0; i< nearByDriverTrackResponse.getSize(); ++i ) {
         	int lat = 0, lng = 0;

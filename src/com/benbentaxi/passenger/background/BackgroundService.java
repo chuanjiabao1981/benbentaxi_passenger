@@ -104,6 +104,7 @@ public class BackgroundService extends Service{
 						mTextAds						=  textAdTask.send();
 						LocalBroadcastManager.getInstance(BackgroundService.this).sendBroadcast(mTextAdIntent);
 					 	if (mHandler.getLooper().getThread().getState() != Thread.State.TERMINATED){
+				 			Log.d(TAG,"Thread state is "+mHandler.getLooper().getThread().getState());
 					 		mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_TEXT_AD), REFRESH_TEXT_AD_INTERVAL);
 					 	}
 						break;

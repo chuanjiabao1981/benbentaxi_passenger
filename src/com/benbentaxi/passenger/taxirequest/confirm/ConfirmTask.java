@@ -22,7 +22,6 @@ public class ConfirmTask extends PostTask{
 	private long mTaxiRequestId = DEFAILT_ID;
 	private Session mSession = null;
 	private Configure mConfigure =null;
-	private Activity mActivity = null;
 	private boolean mIsConfirm = true;
 	private Handler mHandler   = null;
 	
@@ -30,7 +29,6 @@ public class ConfirmTask extends PostTask{
 	{
 		this.mApp = (DemoApplication) activity.getApplication();
 		this.mHandler = handler;
-		this.mActivity = activity;
 		this.mConfigure = new Configure();
 		this.mTaxiRequest = mApp.getCurrentTaxiRequest();
 		this.mSession 	  = mApp.getCurrentSession();
@@ -76,7 +74,7 @@ public class ConfirmTask extends PostTask{
 			taxiRequestResponse.setSysErrorMessage(this.getErrorMsg());
 		}
 		if (!taxiRequestResponse.hasError()){
-					this.mTaxiRequest.refresh(this.mActivity,this.mHandler,taxiRequestResponse);
+					this.mTaxiRequest.refresh(this.mApp,this.mHandler,taxiRequestResponse);
 		}
 	}
 

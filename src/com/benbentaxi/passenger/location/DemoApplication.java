@@ -118,9 +118,16 @@ public class DemoApplication extends Application {
     }
     public  void setCurrentTaxiRequest(TaxiRequest o)
     {
-		mCurrentTaxiRequest = o;
+    	if (mCurrentTaxiRequest == null){
+    		mCurrentTaxiRequest = o;
+    		this.mHandler.sendMessage(mHandler.obtainMessage(LocationOverlayDemo.MSG_HANDLE_TAXIREQUEST_POPUP));
+    	}else{
+    		mCurrentTaxiRequest = o;
+    	}
 		if (o != null){
 			this.mHandler.sendMessage(mHandler.obtainMessage(LocationOverlayDemo.MSG_HANDLE_REFRESH_CURRENT_TAXIREQUEST));
+		}else{
+    		this.mHandler.sendMessage(mHandler.obtainMessage(LocationOverlayDemo.MSG_HANDLE_TAXIREQUEST_HIDE));
 		}
 	}
     public  TaxiRequest getCurrentTaxiRequest()

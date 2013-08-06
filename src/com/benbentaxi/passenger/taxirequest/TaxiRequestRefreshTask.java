@@ -20,7 +20,6 @@ public class TaxiRequestRefreshTask extends GetTask{
 	private Configure mConfigure;
 	private TaxiRequest mTaxiRequest;
 	private DemoApplication mApp;
-	private Activity mActivity = null;
 	private Session mSession = null;
 	private Handler mHandler = null; 
 
@@ -29,7 +28,6 @@ public class TaxiRequestRefreshTask extends GetTask{
 		this.mConfigure 		= new  Configure();
 		this.mHandler 			= handler;
 		this.mApp 				= (DemoApplication) activity.getApplication();
-		this.mActivity 			= activity;
 		this.mTaxiRequest		= mApp.getCurrentTaxiRequest();
 		this.mSession 	  		= mApp.getCurrentSession();
 
@@ -38,7 +36,7 @@ public class TaxiRequestRefreshTask extends GetTask{
 		}
 		if (this.mSession != null){
 			setCookie(mSession.getTokenKey(), mSession.getTokenVal(),mConfigure.getHost());
-			Log.d(TAG,mSession.getTokenKey()+":"+mSession.getTokenVal());
+//			Log.d(TAG,mSession.getTokenKey()+":"+mSession.getTokenVal());
 		}else{
 			Log.e(TAG,"Session 获取出错!");
 		}
@@ -66,7 +64,7 @@ public class TaxiRequestRefreshTask extends GetTask{
 			taxiRequestResponse.setSysErrorMessage(this.getErrorMsg());
 		}
 		if (!taxiRequestResponse.hasError()){
-					this.mTaxiRequest.refresh(mActivity,mHandler,taxiRequestResponse);
+					this.mTaxiRequest.refresh(mApp,mHandler,taxiRequestResponse);
 		}
 	}
 

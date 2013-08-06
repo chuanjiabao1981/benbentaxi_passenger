@@ -47,6 +47,7 @@ import com.benbentaxi.passenger.taxirequest.confirm.ConfirmPopupWindow;
 import com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity;
 import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
 import com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexTask;
+import com.benbentaxi.passenger.taxirequest.popup.TaxiRequestPopupWindow;
 import com.benbentaxi.util.IdShow;
 public class LocationOverlayDemo extends ActionBarActivity {
 	
@@ -58,13 +59,15 @@ public class LocationOverlayDemo extends ActionBarActivity {
 	public final static int MSG_HANDLE_POS_REFRESH 							= 2;
 	public final static int MSG_HANDLE_REFRESH_CURRENT_TAXIREQUEST 			= 4;
 	public final static int MSG_HANDLE_TAXIREQUEST_DRIVER_RESPONSE 			= 5;
+	public final static int MSG_HANDLE_TAXIREQUEST_POPUP					= 6;
+	public final static int MSG_HANDLE_TAXIREQUEST_HIDE						= 7;
 	
 	
 	private NearbyDrvierReceiver mNearbyDrvierReceiver						= null;
 	
 	static MapView mMapView 												= null;
 	private MapController mMapController 									= null;
-	public MKMapViewListener mMapListener 									= null;
+
 	FrameLayout mMapViewContainer = null;
 	PassengerLocation mPassengerLocation = null;
 	Button testUpdateButton = null;
@@ -79,6 +82,10 @@ public class LocationOverlayDemo extends ActionBarActivity {
             //Toast.makeText(LocationOverlayDemo.this, "msg:" +msg.what, Toast.LENGTH_SHORT).show();
         	switch (msg.what) {
         	case MSG_HANDLE_MAP_MOVE:
+        		break;
+        	case MSG_HANDLE_TAXIREQUEST_POPUP:
+        	case MSG_HANDLE_TAXIREQUEST_HIDE:
+        		doTaxiRequestPopupWindow(msg.what);
         		break;
         	case MSG_HANDLE_POS_REFRESH:
         		doPassengerLocationRefresh((BDLocation) msg.obj);
@@ -100,6 +107,7 @@ public class LocationOverlayDemo extends ActionBarActivity {
 				showDriverInfo((OverlayItem) msg.obj);
 				break;
         	default:
+        		Log.d(TAG,"Mesg="+msg.what);
         		break;
         	}
         };
@@ -114,6 +122,7 @@ public class LocationOverlayDemo extends ActionBarActivity {
     private Timer mRefreshTaxiRequestTimer				                    	= null;
     private long  mRefreshTaxiRequestPerod				                    	= 5000;
     private NearybyDrvierServiceConnection mNearByDriverServiceConnection		= null;
+    private TaxiRequestPopupWindow		   mTaxiRequestPopupWindow				= null;
 	
 	private OnClickListener mCallTaxiListener = new OnClickListener(){
 		public void onClick(View v) {
@@ -169,41 +178,18 @@ public class LocationOverlayDemo extends ActionBarActivity {
         this.mPassengerConfirmPopupWindow	= new ConfirmPopupWindow(this,MsgHandler,30);
         mApp.setHandler(MsgHandler);
         initMapView();
-        this.mPassengerLocation = new PassengerLocation(this,MsgHandler);
+        this.mPassengerLocation 			= new PassengerLocation(this,MsgHandler);
         this.mPassengerLocation.start();
         mMapView.getController().setZoom(14);
         mMapView.getController().enableClick(true);
         
         mMapView.setBuiltInZoomControls(true);
-        mMapListener = new MKMapViewListener() {
-			
-			@Override
-			public void onMapMoveFinish() {
-			}
-			
-			@Override
-			public void onClickMapPoi(MapPoi mapPoiInfo) {
-				String title = "";
-				if (mapPoiInfo != null){
-					title = mapPoiInfo.strText;
-					Toast.makeText(LocationOverlayDemo.this,title,Toast.LENGTH_SHORT).show();
-				}
-			}
-
-			@Override
-			public void onGetCurrentMap(Bitmap b) {
-			}
-
-			@Override
-			public void onMapAnimationFinish() {
-				
-			}
-		};
-		mMapView.regMapViewListener(DemoApplication.getInstance().mBMapManager, mMapListener);
+        
 		
 		mDrvMarker = this.getResources().getDrawable(R.drawable.steering);
-	    ov = new DriverOverlay(mDrvMarker, this,mMapView, MsgHandler); 
-	    
+	    ov 						= new DriverOverlay(mDrvMarker, this,mMapView, MsgHandler); 
+	    mTaxiRequestPopupWindow	= new TaxiRequestPopupWindow((DemoApplication) this.getApplication(),mMapView,MsgHandler);
+
 	    mMapView.getOverlays().add(ov);
 	    
 		myLocationOverlay = new MyLocationOverlay(mMapView);
@@ -215,6 +201,7 @@ public class LocationOverlayDemo extends ActionBarActivity {
 		
 		testUpdateButton = (Button)findViewById(R.id.btn_callTaxi);
 	    testUpdateButton.setOnClickListener(mCallTaxiListener);
+	    
 	    
 	    
 	    
@@ -244,7 +231,6 @@ public class LocationOverlayDemo extends ActionBarActivity {
     protected void onResume() {
     	mIsOnTop = true;
         mMapView.onResume();
-        
         boundService();
         registerReceiver();
         super.onResume();
@@ -350,7 +336,15 @@ public class LocationOverlayDemo extends ActionBarActivity {
 		mMapController.animateTo(new GeoPoint((int)(locData.latitude* 1e6), (int)(locData.longitude *  1e6)), 
          		MsgHandler.obtainMessage(MSG_HANDLE_MAP_MOVE));
 	}
-    
+    private void doTaxiRequestPopupWindow(int msg)
+    {
+    	if (msg == MSG_HANDLE_TAXIREQUEST_POPUP){
+    			mTaxiRequestPopupWindow.showPopup();
+    	}
+    	else if (msg == MSG_HANDLE_TAXIREQUEST_HIDE){
+    		mTaxiRequestPopupWindow.hidePop();
+    	}
+    }
     private void boundService()
     {
         if (mNearByDriverServiceConnection == null){
