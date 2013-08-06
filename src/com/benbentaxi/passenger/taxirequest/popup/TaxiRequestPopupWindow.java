@@ -25,6 +25,7 @@ public class TaxiRequestPopupWindow {
 	private TaxiRequest			mTaxiRequest		=	null;	
 	private Bitmap[] 			mBmps 				= 	new Bitmap[3];  
 	private TaxiRequestAudio	mTaxiRequestAudio	=	null;
+	private boolean				mAddToOverlay		=	false;
 
 	
 	public TaxiRequestPopupWindow(DemoApplication app,MapView mapView,Handler handler)
@@ -37,40 +38,69 @@ public class TaxiRequestPopupWindow {
 	}
 	public void showPopup()
 	{
-		
 		if (mPopupOverlay != null){
 			BDLocation bdLocation 		= mApp.getCurrentPassengerLocation();
 			mTaxiRequest 				= mApp.getCurrentTaxiRequest();
 			if (mTaxiRequest == null){
-				Log.e(TAG, "Can't find current TaxiRequest !!!");
+				Log.w(TAG, "Can't find current TaxiRequest !!!");
 				return;
 			}
-						
-			GeoPoint ptTAM = new GeoPoint((int)( bdLocation.getLatitude()* 1E6), (int) (bdLocation.getLongitude() * 1E6));
+			if (bdLocation == null ){
+				Log.w(TAG, "Can't find current Location !!!");
+				return;
+			}
 			
+			
+			GeoPoint ptTAM = new GeoPoint((int)( bdLocation.getLatitude()* 1E6), (int) (bdLocation.getLongitude() * 1E6));
+			Log.d(TAG,"show the popup window before ...................................."+mMapView.getOverlays().size());
+			if (!mAddToOverlay){
+//				 mMapView.getOverlays().add(mPopupOverlay);
+			}
 			mPopupOverlay.showPopup(mBmps, ptTAM, 64);
-			Log.d(TAG,"show the popup window....................................");
+			Log.d(TAG,"show the popup window after ...................................."+mMapView.getOverlays().size());
+
 		}
 	}
-	public void release()
+	public void release(boolean onlyMedia)
 	{
-		hidePop();
+		if (!onlyMedia)
+			hidePop();
 		if (mTaxiRequestAudio != null){
 			mTaxiRequestAudio.release();
 		}
-	}
-	public PopupOverlay getPopupOverlay()
-	{
-		return mPopupOverlay;
+		
 	}
 	private void hidePop()
 	{
 		if (mPopupOverlay != null){
+			Log.d(TAG,"map overlay size before hide popupOverlay:"+mMapView.getOverlays().size());
 			mPopupOverlay.hidePop();
+			/*
+			 * hide之后必须再次把它加进去
+			 * 否则，mPopupOverlay的PopupClickListener不能用，原因不明
+			 * 如果升级baidu map api 一定要测试重复打车是否可以在地图上展示。
+			 */
+		    mMapView.getOverlays().add(mPopupOverlay);
+			mAddToOverlay = false;
+			Log.d(TAG,"map overlay size after hide popupOverlay:"+mMapView.getOverlays().size());
 		}
 	}
 
 	private void init()
+	{
+		mPopupOverlay = getPopupOverlay();
+	    try {
+			mBmps[0] = BitmapFactory.decodeStream(mApp.getAssets().open("steering.png"));
+			mBmps[1] = BitmapFactory.decodeStream(mApp.getAssets().open("steering.png"));
+			mBmps[2] = BitmapFactory.decodeStream(mApp.getAssets().open("steering.png"));
+		} catch (IOException e) {
+			Log.e(TAG,"open bmp for popup fail!");
+			e.printStackTrace();
+		}  
+
+	}
+	
+	private PopupOverlay getPopupOverlay()
 	{
 		mPopupOverlay	=	new PopupOverlay(mMapView,new  PopupClickListener(){
 
@@ -82,24 +112,18 @@ public class TaxiRequestPopupWindow {
 				if (arg0 == 2){
 					ConfirmTask  confirmTask = new ConfirmTask(mApp,mHandler,false);
 					confirmTask.go();
-					//TODO:: 测试 release 被调用2次
-					release();
+					release(false);
 				}
 				Log.i(TAG,"click index is :..........................................."+arg0);
 			}
 			
 		}
 		);
+		Log.d(TAG,"map overlay size before add popupOverlay:"+mMapView.getOverlays().size());
 	    mMapView.getOverlays().add(mPopupOverlay);
-	    try {
-			mBmps[0] = BitmapFactory.decodeStream(mApp.getAssets().open("steering.png"));
-			mBmps[1] = BitmapFactory.decodeStream(mApp.getAssets().open("steering.png"));
-			mBmps[2] = BitmapFactory.decodeStream(mApp.getAssets().open("steering.png"));
-		} catch (IOException e) {
-			Log.e(TAG,"open bmp for popup fail!");
-			e.printStackTrace();
-		}  
-
+		Log.d(TAG,"map overlay size after add popupOverlay:"+mMapView.getOverlays().size());
+		mAddToOverlay = true;
+		return mPopupOverlay;
 	}
 	
 	

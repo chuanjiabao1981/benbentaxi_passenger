@@ -25,16 +25,18 @@ public class TaxiRequestAudio implements android.media.MediaPlayer.OnErrorListen
 	{
 		
 	}
-	public synchronized void play()
+	public void play()
 	{
+		Log.d(TAG,"Begin .................................");
 		if (mState != STATE.INIT){
 			Log.w(TAG,"mMediaPlayer play need in INIT state");
 			return;
 		}
 		if (mMediaPlayer != null){
-			Log.w(TAG,"mMediaPlayer not destroy!");
+			Log.w(TAG,"mMediaPlayer not destroy!" + mMediaPlayer);
 		}
     	mMediaPlayer = new MediaPlayer();
+    	Log.d(TAG,"MediaPlayer init ............"+mMediaPlayer);
     	try {
 			mMediaPlayer.setDataSource(mAudioFilePath);
 		} catch (IllegalArgumentException e) {
@@ -59,6 +61,8 @@ public class TaxiRequestAudio implements android.media.MediaPlayer.OnErrorListen
     	Thread p = new Thread(){
     		public void run()
     		{
+    			Log.d(TAG,"thread start........................");
+
     			try {
 					mMediaPlayer.prepare();
 				} catch (IllegalStateException e) {
@@ -70,6 +74,8 @@ public class TaxiRequestAudio implements android.media.MediaPlayer.OnErrorListen
 					e.printStackTrace();
 					return;
 				}
+    			Log.d(TAG,"thread prepare ready........................");
+
     			try{
     				mMediaPlayer.start();
     			}catch (IllegalStateException e){
@@ -77,14 +83,22 @@ public class TaxiRequestAudio implements android.media.MediaPlayer.OnErrorListen
 					e.printStackTrace();
 					return;
     			}
+    			Log.d(TAG,"thread exit........................");
     		}
     	};
+		Log.d(TAG,"End .................................");
+
     	p.start();
 	}
+	
 	public void release()
 	{
-		if (this.mMediaPlayer != null)
+		if (this.mMediaPlayer != null){
+			Log.d(TAG,"1. MediaPlaer release......................................."+mMediaPlayer);
 			this.mMediaPlayer.release();
+			Log.d(TAG,"2. MediaPlaer release......................................."+mMediaPlayer);
+
+		}
 		this.mState 			= STATE.INIT;
 		this.mMediaPlayer		= null;
 	}

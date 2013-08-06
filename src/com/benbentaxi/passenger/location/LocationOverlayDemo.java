@@ -11,7 +11,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,9 +28,7 @@ import android.widget.Toast;
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.map.LocationData;
-import com.baidu.mapapi.map.MKMapViewListener;
 import com.baidu.mapapi.map.MapController;
-import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationOverlay;
 import com.baidu.mapapi.map.OverlayItem;
@@ -61,6 +58,7 @@ public class LocationOverlayDemo extends ActionBarActivity {
 	public final static int MSG_HANDLE_TAXIREQUEST_DRIVER_RESPONSE 			= 5;
 	public final static int MSG_HANDLE_TAXIREQUEST_POPUP					= 6;
 	public final static int MSG_HANDLE_TAXIREQUEST_HIDE						= 7;
+	public final static int MSG_HANDLE_TAXI_EQUEST_PASSENGER_CONFIRM		= 8;
 	
 	
 	private NearbyDrvierReceiver mNearbyDrvierReceiver						= null;
@@ -84,8 +82,12 @@ public class LocationOverlayDemo extends ActionBarActivity {
         	case MSG_HANDLE_MAP_MOVE:
         		break;
         	case MSG_HANDLE_TAXIREQUEST_POPUP:
+        		if  (mTaxiRequestPopupWindow != null)
+        			mTaxiRequestPopupWindow.showPopup();
+        		break;
         	case MSG_HANDLE_TAXIREQUEST_HIDE:
-        		doTaxiRequestPopupWindow(msg.what);
+        		if (mTaxiRequestPopupWindow != null)
+        			mTaxiRequestPopupWindow.release(false);
         		break;
         	case MSG_HANDLE_POS_REFRESH:
         		doPassengerLocationRefresh((BDLocation) msg.obj);
@@ -95,6 +97,9 @@ public class LocationOverlayDemo extends ActionBarActivity {
         		break;
         	case MSG_HANDLE_TAXIREQUEST_DRIVER_RESPONSE:
         		doDriverResponse((TaxiRequest) msg.obj);
+        		break;
+        	case MSG_HANDLE_TAXI_EQUEST_PASSENGER_CONFIRM:
+        		doShowTaxiRequestDetialInfo((TaxiRequest) msg.obj);
         		break;
         	case ConfirmPopupWindow.MSG_HANDLE_TAXIREQUEST_CONFIRM_TIMEOUT:
         		if (msg.obj != null){
@@ -112,11 +117,9 @@ public class LocationOverlayDemo extends ActionBarActivity {
         	}
         };
     };
-    private boolean mIsOnTop = false;
-	DriverOverlay ov = null;
-	public JSONObject mConfirmObj;
-	private Drawable mDrvMarker;
-	
+    private boolean mIsOnTop 													= false;
+	DriverOverlay ov 															= null;
+	private Drawable mDrvMarker													= null;
 	private ConfirmPopupWindow mPassengerConfirmPopupWindow						= null;
     private DemoApplication mApp 						                    	= null;
     private Timer mRefreshTaxiRequestTimer				                    	= null;
@@ -188,7 +191,6 @@ public class LocationOverlayDemo extends ActionBarActivity {
 		
 		mDrvMarker = this.getResources().getDrawable(R.drawable.steering);
 	    ov 						= new DriverOverlay(mDrvMarker, this,mMapView, MsgHandler); 
-	    mTaxiRequestPopupWindow	= new TaxiRequestPopupWindow((DemoApplication) this.getApplication(),mMapView,MsgHandler);
 
 	    mMapView.getOverlays().add(ov);
 	    
@@ -199,8 +201,12 @@ public class LocationOverlayDemo extends ActionBarActivity {
 		myLocationOverlay.enableCompass();
 		mMapView.refresh();
 		
+		
+
 		testUpdateButton = (Button)findViewById(R.id.btn_callTaxi);
 	    testUpdateButton.setOnClickListener(mCallTaxiListener);
+	    mTaxiRequestPopupWindow	= new TaxiRequestPopupWindow((DemoApplication) this.getApplication(),mMapView,MsgHandler);
+
 	    
 	    
 	    
@@ -220,6 +226,9 @@ public class LocationOverlayDemo extends ActionBarActivity {
     protected void onPause() {
 
     	mIsOnTop = false;
+    	if (mTaxiRequestPopupWindow != null){
+    		mTaxiRequestPopupWindow.release(true);
+    	}
         mMapView.onPause();
         unregisterReceiver();
         unboundService();
@@ -233,6 +242,9 @@ public class LocationOverlayDemo extends ActionBarActivity {
         mMapView.onResume();
         boundService();
         registerReceiver();
+        /*
+        if (mTaxiRequestPopupWindow != null)
+        	mTaxiRequestPopupWindow.showPopup();*/
         super.onResume();
 	    Log.d(TAG,"Resume ................. ");
     }
@@ -245,6 +257,9 @@ public class LocationOverlayDemo extends ActionBarActivity {
         if (mPassengerConfirmPopupWindow != null && mPassengerConfirmPopupWindow.isShowing()){
         	mPassengerConfirmPopupWindow.dismiss();
         }
+    	if (mTaxiRequestPopupWindow != null){
+    		mTaxiRequestPopupWindow.release(false);
+    	}
         mMapView.destroy();
         DemoApplication app = (DemoApplication)this.getApplication();
         if (app.mBMapManager != null) {
@@ -336,14 +351,12 @@ public class LocationOverlayDemo extends ActionBarActivity {
 		mMapController.animateTo(new GeoPoint((int)(locData.latitude* 1e6), (int)(locData.longitude *  1e6)), 
          		MsgHandler.obtainMessage(MSG_HANDLE_MAP_MOVE));
 	}
-    private void doTaxiRequestPopupWindow(int msg)
+    private void doShowTaxiRequestDetialInfo(TaxiRequest taxiRequest)
     {
-    	if (msg == MSG_HANDLE_TAXIREQUEST_POPUP){
-    			mTaxiRequestPopupWindow.showPopup();
-    	}
-    	else if (msg == MSG_HANDLE_TAXIREQUEST_HIDE){
-    		mTaxiRequestPopupWindow.release();
-    	}
+		mApp.setCurrentShowTaxiRequest(taxiRequest);
+		mApp.setCurrentTaxiRequest(null);
+		Intent taxiRequestDetailIntent = new Intent(this,TaxiRequestDetail.class);
+		startActivity(taxiRequestDetailIntent);
     }
     private void boundService()
     {
