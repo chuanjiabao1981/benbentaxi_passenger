@@ -25,9 +25,9 @@ public class ConfirmTask extends PostTask{
 	private boolean mIsConfirm = true;
 	private Handler mHandler   = null;
 	
-	public ConfirmTask(Activity activity,Handler handler,boolean isConfirm)
+	public ConfirmTask(DemoApplication app,Handler handler,boolean isConfirm)
 	{
-		this.mApp = (DemoApplication) activity.getApplication();
+		this.mApp = app;
 		this.mHandler = handler;
 		this.mConfigure = new Configure();
 		this.mTaxiRequest = mApp.getCurrentTaxiRequest();

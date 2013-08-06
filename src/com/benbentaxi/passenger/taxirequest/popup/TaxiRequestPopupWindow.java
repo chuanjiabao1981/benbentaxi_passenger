@@ -15,6 +15,7 @@ import com.baidu.mapapi.map.PopupOverlay;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
+import com.benbentaxi.passenger.taxirequest.confirm.ConfirmTask;
 
 public class TaxiRequestPopupWindow {
 	private final String TAG			     		= TaxiRequestPopupWindow.class.getName();
@@ -24,13 +25,15 @@ public class TaxiRequestPopupWindow {
 	private Handler			    mHandler			=	null;
 	private TaxiRequest			mTaxiRequest		=	null;	
 	private Bitmap[] 			mBmps 				= 	new Bitmap[3];  
+	private TaxiRequestAudio	mTaxiRequestAudio	=	null;
 
 	
 	public TaxiRequestPopupWindow(DemoApplication app,MapView mapView,Handler handler)
 	{
-		mApp 			=		app;
-		mMapView		=		mapView;
-		mHandler		=		handler;
+		mApp 				=		app;
+		mMapView			=		mapView;
+		mHandler			=		handler;
+		mTaxiRequestAudio	=		new TaxiRequestAudio();
 		init();
 	}
 	public void showPopup()
@@ -50,28 +53,40 @@ public class TaxiRequestPopupWindow {
 			Log.d(TAG,"show the popup window....................................");
 		}
 	}
-	public void hidePop()
+	public void release()
 	{
-		if (mPopupOverlay != null){
-			mPopupOverlay.hidePop();
+		hidePop();
+		if (mTaxiRequestAudio != null){
+			mTaxiRequestAudio.release();
 		}
 	}
 	public PopupOverlay getPopupOverlay()
 	{
 		return mPopupOverlay;
 	}
+	private void hidePop()
+	{
+		if (mPopupOverlay != null){
+			mPopupOverlay.hidePop();
+		}
+	}
+
 	private void init()
 	{
 		mPopupOverlay	=	new PopupOverlay(mMapView,new  PopupClickListener(){
 
 			@Override
 			public void onClickedPopup(int arg0) {
-				
+				if (arg0 == 0){
+					mTaxiRequestAudio.play();
+				}
+				if (arg0 == 2){
+					ConfirmTask  confirmTask = new ConfirmTask(mApp,mHandler,false);
+					confirmTask.go();
+					//TODO:: 测试 release 被调用2次
+					release();
+				}
 				Log.i(TAG,"click index is :..........................................."+arg0);
-				Log.i(TAG,"click index is :...........................................");
-				Log.i(TAG,"click index is :...........................................");
-				Log.i(TAG,"click index is :...........................................");
-				Log.i(TAG,"click index is :...........................................");
 			}
 			
 		}

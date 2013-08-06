@@ -91,10 +91,6 @@ public class TaxiRequest {
 		if (TaxiRequestApiConstant.DISTANCE.equals(key)){
 			return getDistance();
 		}
-//		if (TaxiRequestApiConstant.PLATE.equals(key)){
-//			return "晋C13452";
-//		}
-//		Log.d(TAG,this.mTaxiRequestJson.toString());
 		return JsonHelper.getString(this.mTaxiRequestJson, key);
 	}
 	public String getSource()

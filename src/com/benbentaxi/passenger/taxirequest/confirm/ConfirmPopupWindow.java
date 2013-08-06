@@ -104,7 +104,7 @@ public class ConfirmPopupWindow extends PopupWindow{
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						ConfirmTask confirmRequest = new ConfirmTask(ConfirmPopupWindow.this.mActivity,mHandler,true);
+						ConfirmTask confirmRequest = new ConfirmTask((DemoApplication) ConfirmPopupWindow.this.mActivity.getApplication(),mHandler,true);
 						confirmRequest.go();
 						ConfirmPopupWindow.this.doClean();
 
@@ -115,7 +115,7 @@ public class ConfirmPopupWindow extends PopupWindow{
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						ConfirmTask confirmRequest = new ConfirmTask(ConfirmPopupWindow.this.mActivity,mHandler,false);
+						ConfirmTask confirmRequest = new ConfirmTask((DemoApplication) ConfirmPopupWindow.this.mActivity.getApplication(),mHandler,false);
 						confirmRequest.go();
 						ConfirmPopupWindow.this.doClean();
 

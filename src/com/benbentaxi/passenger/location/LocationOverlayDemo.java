@@ -342,7 +342,7 @@ public class LocationOverlayDemo extends ActionBarActivity {
     			mTaxiRequestPopupWindow.showPopup();
     	}
     	else if (msg == MSG_HANDLE_TAXIREQUEST_HIDE){
-    		mTaxiRequestPopupWindow.hidePop();
+    		mTaxiRequestPopupWindow.release();
     	}
     }
     private void boundService()

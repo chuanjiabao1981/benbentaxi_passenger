@@ -31,9 +31,11 @@ import android.graphics.Color;
 
 public class CreateTaxiRequestActivity  extends Activity  {
 	private final static String TAG = CreateTaxiRequestActivity.class.getName();
-	private String mTmpfile ; 
+	private final static String PASSENGER_VOICE_DIR			=	Environment.getExternalStorageDirectory()+"/benbentaxi_passenger/tmp/voice/";
+	public  final static String PASSENGER_VOICE_FILE		=	PASSENGER_VOICE_DIR + "/_tmp_passenger_voice";
+//	private String mTmpfile ; 
 	private long mRecTime;
-	private String mAbsolutePath=""; 
+//	private String mAbsolutePath=""; 
 	private VoiceRecorder mediaRecorder;
 	private boolean		  mRecorderSuccess = false;
 	private MediaPlayer   mPlayer = null; 
@@ -43,16 +45,16 @@ public class CreateTaxiRequestActivity  extends Activity  {
 	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.activity_taxi_request_create);	
-		mAbsolutePath		= Environment.getExternalStorageDirectory()+"/benbentaxi_passenger/tmp/voice/";
-		mTmpfile			= mAbsolutePath+"/_tmp_passenger_voice";
+//		mAbsolutePath		= Environment.getExternalStorageDirectory()+"/benbentaxi_passenger/tmp/voice/";
+//		mTmpfile			= mAbsolutePath+"/_tmp_passenger_voice";
 		TextView t = (TextView) this.findViewById(R.id.taxi_request_source);
 		DemoApplication app 			= (DemoApplication) this.getApplication();
 		BDLocation 		bdLocation		= app.getCurrentPassengerLocation();
 		t.setText("位置:"+  ((bdLocation == null) ? "未知" : bdLocation.getAddrStr()));
-		File dir = new File(mAbsolutePath);
+		File dir = new File(PASSENGER_VOICE_DIR);
 		if (!dir.exists()) {
 			 if(dir.mkdirs())
-			     Log.i("mkdir : ",mAbsolutePath+" ok");
+			     Log.i("mkdir : ",PASSENGER_VOICE_DIR+" ok");
 			else
 			     Log.i("mkdir : ","NG");
 		}
@@ -93,7 +95,7 @@ public class CreateTaxiRequestActivity  extends Activity  {
 		
 		try{ 
 			
-			FileInputStream fin = new FileInputStream(mTmpfile);
+			FileInputStream fin = new FileInputStream(PASSENGER_VOICE_FILE);
 			int length = fin.available(); 
 	
 		    byte [] buffer = new byte[length]; 
@@ -105,7 +107,7 @@ public class CreateTaxiRequestActivity  extends Activity  {
 	    
 		}
 		catch(FileNotFoundException e){
-			Log.e(TAG,"文件未找到"+mTmpfile);
+			Log.e(TAG,"文件未找到:"+PASSENGER_VOICE_FILE);
 		}
 		catch(Exception e){ 
 			e.printStackTrace(); 
@@ -116,11 +118,11 @@ public class CreateTaxiRequestActivity  extends Activity  {
 	}
 	
 	private void initAudio() {
-		File file = new File(mTmpfile); 
+		File file = new File(PASSENGER_VOICE_FILE); 
 		if (file.exists()) 
 			file.delete();  
 		mediaRecorder = new VoiceRecorder(MediaRecorder.AudioSource.MIC,MediaRecorder.OutputFormat.THREE_GPP,
-		MediaRecorder.AudioEncoder.AMR_NB,mTmpfile);
+		MediaRecorder.AudioEncoder.AMR_NB,PASSENGER_VOICE_FILE);
 
 	}
 	
@@ -203,7 +205,7 @@ public class CreateTaxiRequestActivity  extends Activity  {
 					        
 						if ( (System.currentTimeMillis()-mRecTime) < 1000 ) {
 							// 时间太短
-							File file = new File(mTmpfile); 
+							File file = new File(PASSENGER_VOICE_FILE); 
 					         if (file.exists()) 
 					        	 file.delete();
 							Toast.makeText(CreateTaxiRequestActivity.this, "录音时间太短，请重新录制", Toast.LENGTH_SHORT).show();
