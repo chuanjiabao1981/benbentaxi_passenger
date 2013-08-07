@@ -120,14 +120,14 @@ public class DemoApplication extends Application {
     {
     	if (mCurrentTaxiRequest == null){
     		mCurrentTaxiRequest = o;
-    		this.mHandler.sendMessage(mHandler.obtainMessage(LocationOverlayDemo.MSG_HANDLE_TAXIREQUEST_POPUP));
+    		this.mHandler.sendMessage(mHandler.obtainMessage(LocationOverlayDemo.MSG_HANDLE_TAXIREQUEST_PLAYER_SHOW));
     	}else{
     		mCurrentTaxiRequest = o;
     	}
 		if (o != null){
 			this.mHandler.sendMessage(mHandler.obtainMessage(LocationOverlayDemo.MSG_HANDLE_REFRESH_CURRENT_TAXIREQUEST));
 		}else{
-    		this.mHandler.sendMessage(mHandler.obtainMessage(LocationOverlayDemo.MSG_HANDLE_TAXIREQUEST_HIDE));
+    		this.mHandler.sendMessage(mHandler.obtainMessage(LocationOverlayDemo.MSG_HANDLE_TAXIREQUEST_PLAYER_HIDE));
 		}
 	}
     public  TaxiRequest getCurrentTaxiRequest()

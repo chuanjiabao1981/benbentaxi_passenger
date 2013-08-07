@@ -44,7 +44,7 @@ import com.benbentaxi.passenger.taxirequest.confirm.ConfirmPopupWindow;
 import com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity;
 import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
 import com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexTask;
-import com.benbentaxi.passenger.taxirequest.popup.TaxiRequestPopupWindow;
+import com.benbentaxi.passenger.taxirequest.player.TaxiRequestPlayerPanel;
 import com.benbentaxi.util.IdShow;
 public class LocationOverlayDemo extends ActionBarActivity {
 	
@@ -56,8 +56,8 @@ public class LocationOverlayDemo extends ActionBarActivity {
 	public final static int MSG_HANDLE_POS_REFRESH 							= 2;
 	public final static int MSG_HANDLE_REFRESH_CURRENT_TAXIREQUEST 			= 4;
 	public final static int MSG_HANDLE_TAXIREQUEST_DRIVER_RESPONSE 			= 5;
-	public final static int MSG_HANDLE_TAXIREQUEST_POPUP					= 6;
-	public final static int MSG_HANDLE_TAXIREQUEST_HIDE						= 7;
+	public final static int MSG_HANDLE_TAXIREQUEST_PLAYER_SHOW					= 6;
+	public final static int MSG_HANDLE_TAXIREQUEST_PLAYER_HIDE						= 7;
 	public final static int MSG_HANDLE_TAXI_EQUEST_PASSENGER_CONFIRM		= 8;
 	
 	
@@ -81,13 +81,15 @@ public class LocationOverlayDemo extends ActionBarActivity {
         	switch (msg.what) {
         	case MSG_HANDLE_MAP_MOVE:
         		break;
-        	case MSG_HANDLE_TAXIREQUEST_POPUP:
-        		if  (mTaxiRequestPopupWindow != null)
-        			mTaxiRequestPopupWindow.showPopup();
+        	case MSG_HANDLE_TAXIREQUEST_PLAYER_SHOW:
+        		if  (mTaxiRequestPlayer != null)
+        			mTaxiRequestPlayer.show();
         		break;
-        	case MSG_HANDLE_TAXIREQUEST_HIDE:
-        		if (mTaxiRequestPopupWindow != null)
-        			mTaxiRequestPopupWindow.release(false);
+        	case MSG_HANDLE_TAXIREQUEST_PLAYER_HIDE:
+        		if (mTaxiRequestPlayer != null){
+        			mTaxiRequestPlayer.hide();
+        			mTaxiRequestPlayer.releaseMedia();
+        		}
         		break;
         	case MSG_HANDLE_POS_REFRESH:
         		doPassengerLocationRefresh((BDLocation) msg.obj);
@@ -125,7 +127,7 @@ public class LocationOverlayDemo extends ActionBarActivity {
     private Timer mRefreshTaxiRequestTimer				                    	= null;
     private long  mRefreshTaxiRequestPerod				                    	= 5000;
     private NearybyDrvierServiceConnection mNearByDriverServiceConnection		= null;
-    private TaxiRequestPopupWindow		   mTaxiRequestPopupWindow				= null;
+    private TaxiRequestPlayerPanel		   mTaxiRequestPlayer				= null;
 	
 	private OnClickListener mCallTaxiListener = new OnClickListener(){
 		public void onClick(View v) {
@@ -205,7 +207,7 @@ public class LocationOverlayDemo extends ActionBarActivity {
 
 		testUpdateButton = (Button)findViewById(R.id.btn_callTaxi);
 	    testUpdateButton.setOnClickListener(mCallTaxiListener);
-	    mTaxiRequestPopupWindow	= new TaxiRequestPopupWindow((DemoApplication) this.getApplication(),mMapView,MsgHandler);
+	    mTaxiRequestPlayer	= new TaxiRequestPlayerPanel((DemoApplication) this.getApplication(),mMapView,MsgHandler);
 
 	    
 	    
@@ -226,8 +228,8 @@ public class LocationOverlayDemo extends ActionBarActivity {
     protected void onPause() {
 
     	mIsOnTop = false;
-    	if (mTaxiRequestPopupWindow != null){
-    		mTaxiRequestPopupWindow.release(true);
+    	if (mTaxiRequestPlayer != null){
+    		mTaxiRequestPlayer.releaseMedia();
     	}
         mMapView.onPause();
         unregisterReceiver();
@@ -242,9 +244,6 @@ public class LocationOverlayDemo extends ActionBarActivity {
         mMapView.onResume();
         boundService();
         registerReceiver();
-        /*
-        if (mTaxiRequestPopupWindow != null)
-        	mTaxiRequestPopupWindow.showPopup();*/
         super.onResume();
 	    Log.d(TAG,"Resume ................. ");
     }
@@ -257,8 +256,8 @@ public class LocationOverlayDemo extends ActionBarActivity {
         if (mPassengerConfirmPopupWindow != null && mPassengerConfirmPopupWindow.isShowing()){
         	mPassengerConfirmPopupWindow.dismiss();
         }
-    	if (mTaxiRequestPopupWindow != null){
-    		mTaxiRequestPopupWindow.release(false);
+    	if (mTaxiRequestPlayer!= null){
+    		mTaxiRequestPlayer.releaseMedia();
     	}
         mMapView.destroy();
         DemoApplication app = (DemoApplication)this.getApplication();

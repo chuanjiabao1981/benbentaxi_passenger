@@ -1,4 +1,4 @@
-package com.benbentaxi.passenger.taxirequest.popup;
+package com.benbentaxi.passenger.taxirequest.player;
 
 import java.io.IOException;
 
@@ -25,7 +25,7 @@ public class TaxiRequestAudio implements android.media.MediaPlayer.OnErrorListen
 	{
 		
 	}
-	public void play()
+	public synchronized void play()
 	{
 		Log.d(TAG,"Begin .................................");
 		if (mState != STATE.INIT){
@@ -58,6 +58,7 @@ public class TaxiRequestAudio implements android.media.MediaPlayer.OnErrorListen
 		}
     	mMediaPlayer.setOnErrorListener(this);
     	mMediaPlayer.setOnCompletionListener(this);
+    	mState = STATE.PALY;
     	Thread p = new Thread(){
     		public void run()
     		{

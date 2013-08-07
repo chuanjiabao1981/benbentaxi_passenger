@@ -1,4 +1,4 @@
-package com.benbentaxi.passenger.taxirequest.popup;
+package com.benbentaxi.passenger.taxirequest.player;
 
 import java.io.IOException;
 
@@ -16,8 +16,8 @@ import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.confirm.ConfirmTask;
 
-public class TaxiRequestPopupWindow {
-	private final String TAG			     		= TaxiRequestPopupWindow.class.getName();
+public class TaxiRequestPlayerPanel {
+	private final String TAG			     		= TaxiRequestPlayerPanel.class.getName();
 	private PopupOverlay 		mPopupOverlay		=	null;
 	private MapView				mMapView			=	null;
 	private DemoApplication		mApp				=	null;
@@ -25,10 +25,9 @@ public class TaxiRequestPopupWindow {
 	private TaxiRequest			mTaxiRequest		=	null;	
 	private Bitmap[] 			mBmps 				= 	new Bitmap[3];  
 	private TaxiRequestAudio	mTaxiRequestAudio	=	null;
-	private boolean				mAddToOverlay		=	false;
 
 	
-	public TaxiRequestPopupWindow(DemoApplication app,MapView mapView,Handler handler)
+	public TaxiRequestPlayerPanel(DemoApplication app,MapView mapView,Handler handler)
 	{
 		mApp 				=		app;
 		mMapView			=		mapView;
@@ -36,7 +35,7 @@ public class TaxiRequestPopupWindow {
 		mTaxiRequestAudio	=		new TaxiRequestAudio();
 		init();
 	}
-	public void showPopup()
+	public void show()
 	{
 		if (mPopupOverlay != null){
 			BDLocation bdLocation 		= mApp.getCurrentPassengerLocation();
@@ -50,25 +49,23 @@ public class TaxiRequestPopupWindow {
 				return;
 			}
 			
-			
 			GeoPoint ptTAM = new GeoPoint((int)( bdLocation.getLatitude()* 1E6), (int) (bdLocation.getLongitude() * 1E6));
 			Log.d(TAG,"show the popup window before ...................................."+mMapView.getOverlays().size());
-			if (!mAddToOverlay){
-//				 mMapView.getOverlays().add(mPopupOverlay);
-			}
 			mPopupOverlay.showPopup(mBmps, ptTAM, 64);
 			Log.d(TAG,"show the popup window after ...................................."+mMapView.getOverlays().size());
 
 		}
 	}
-	public void release(boolean onlyMedia)
+	public void hide()
 	{
-		if (!onlyMedia)
-			hidePop();
+		hidePop();
+	}
+	public void releaseMedia()
+	{
 		if (mTaxiRequestAudio != null){
 			mTaxiRequestAudio.release();
 		}
-		
+
 	}
 	private void hidePop()
 	{
@@ -81,7 +78,6 @@ public class TaxiRequestPopupWindow {
 			 * 如果升级baidu map api 一定要测试重复打车是否可以在地图上展示。
 			 */
 		    mMapView.getOverlays().add(mPopupOverlay);
-			mAddToOverlay = false;
 			Log.d(TAG,"map overlay size after hide popupOverlay:"+mMapView.getOverlays().size());
 		}
 	}
@@ -112,7 +108,6 @@ public class TaxiRequestPopupWindow {
 				if (arg0 == 2){
 					ConfirmTask  confirmTask = new ConfirmTask(mApp,mHandler,false);
 					confirmTask.go();
-					release(false);
 				}
 				Log.i(TAG,"click index is :..........................................."+arg0);
 			}
@@ -122,7 +117,6 @@ public class TaxiRequestPopupWindow {
 		Log.d(TAG,"map overlay size before add popupOverlay:"+mMapView.getOverlays().size());
 	    mMapView.getOverlays().add(mPopupOverlay);
 		Log.d(TAG,"map overlay size after add popupOverlay:"+mMapView.getOverlays().size());
-		mAddToOverlay = true;
 		return mPopupOverlay;
 	}
 	
