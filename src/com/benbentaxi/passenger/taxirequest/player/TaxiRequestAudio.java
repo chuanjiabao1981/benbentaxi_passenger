@@ -107,7 +107,7 @@ public class TaxiRequestAudio implements android.media.MediaPlayer.OnErrorListen
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		Log.d(TAG,"find error!!"+what+"|"+extra);
-		//return false 一定会调用onComplete回调函数，在哪里处理状态，释放资源。
+		//return false 一定会调用onComplete回调函数，在那里处理状态，释放资源。
 		return false;
 	}
 	@Override
