@@ -88,7 +88,6 @@ public class LocationOverlayDemo extends ActionBarActivity {
         	case MSG_HANDLE_TAXIREQUEST_PLAYER_HIDE:
         		if (mTaxiRequestPlayer != null){
         			mTaxiRequestPlayer.hide();
-        			mTaxiRequestPlayer.releaseMedia();
         		}
         		break;
         	case MSG_HANDLE_POS_REFRESH:
@@ -229,7 +228,7 @@ public class LocationOverlayDemo extends ActionBarActivity {
 
     	mIsOnTop = false;
     	if (mTaxiRequestPlayer != null){
-    		mTaxiRequestPlayer.releaseMedia();
+    		mTaxiRequestPlayer.stop();
     	}
         mMapView.onPause();
         unregisterReceiver();
@@ -257,7 +256,7 @@ public class LocationOverlayDemo extends ActionBarActivity {
         	mPassengerConfirmPopupWindow.dismiss();
         }
     	if (mTaxiRequestPlayer!= null){
-    		mTaxiRequestPlayer.releaseMedia();
+    		mTaxiRequestPlayer.stop();
     	}
         mMapView.destroy();
         DemoApplication app = (DemoApplication)this.getApplication();

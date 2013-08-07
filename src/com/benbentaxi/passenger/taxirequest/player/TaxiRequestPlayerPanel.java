@@ -59,8 +59,9 @@ public class TaxiRequestPlayerPanel {
 	public void hide()
 	{
 		hidePop();
+		stop();
 	}
-	public void releaseMedia()
+	public void stop()
 	{
 		if (mTaxiRequestAudio != null){
 			mTaxiRequestAudio.release();
@@ -86,9 +87,9 @@ public class TaxiRequestPlayerPanel {
 	{
 		mPopupOverlay = getPopupOverlay();
 	    try {
-			mBmps[0] = BitmapFactory.decodeStream(mApp.getAssets().open("steering.png"));
-			mBmps[1] = BitmapFactory.decodeStream(mApp.getAssets().open("steering.png"));
-			mBmps[2] = BitmapFactory.decodeStream(mApp.getAssets().open("steering.png"));
+			mBmps[0] = BitmapFactory.decodeStream(mApp.getAssets().open("panel_play.png"));
+			mBmps[1] = BitmapFactory.decodeStream(mApp.getAssets().open("panel_current_location.png"));
+			mBmps[2] = BitmapFactory.decodeStream(mApp.getAssets().open("panel_cancel.png"));
 		} catch (IOException e) {
 			Log.e(TAG,"open bmp for popup fail!");
 			e.printStackTrace();
