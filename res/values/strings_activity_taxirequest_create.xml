@@ -10,7 +10,7 @@
 
 <string name="Column1">序号</string>
 <string name="Column2">时间</string>
-<string name="Column3">状态</string>
+<string name="Column3">详情</string>
 
     
 </resources>
