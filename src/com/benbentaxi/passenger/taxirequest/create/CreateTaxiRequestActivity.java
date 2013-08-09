@@ -32,7 +32,8 @@ import android.graphics.Color;
 public class CreateTaxiRequestActivity  extends Activity  {
 	private final static String TAG = CreateTaxiRequestActivity.class.getName();
 	private final static String PASSENGER_VOICE_DIR			=	Environment.getExternalStorageDirectory()+"/benbentaxi_passenger/tmp/voice/";
-	public  final static String PASSENGER_VOICE_FILE		=	PASSENGER_VOICE_DIR + "/_tmp_passenger_voice";
+
+	public  final static String PASSENGER_VOICE_FILE		=	PASSENGER_VOICE_DIR + "/_tmp_passenger_voice.3gp";
 //	private String mTmpfile ; 
 	private long mRecTime;
 //	private String mAbsolutePath=""; 

@@ -63,7 +63,7 @@ public class TaxiRequestAudio implements android.media.MediaPlayer.OnErrorListen
     		public void run()
     		{
     			Log.d(TAG,"thread start........................");
-
+    		
     			try {
 					mMediaPlayer.prepare();
 				} catch (IllegalStateException e) {
@@ -88,7 +88,6 @@ public class TaxiRequestAudio implements android.media.MediaPlayer.OnErrorListen
     		}
     	};
 		Log.d(TAG,"End .................................");
-
     	p.start();
 	}
 	

@@ -1,10 +1,5 @@
 package com.benbentaxi.passenger.taxirequest.index;
 
-import java.util.ArrayList;    
-import java.util.HashMap;    
-import java.util.List;   
-import java.util.Map; 
-
 import com.benbentaxi.passenger.R;
 import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
@@ -17,14 +12,10 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;  
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;  
-import android.widget.CheckBox;   
-import android.widget.ImageView;    
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView; 
 import android.widget.AdapterView.OnItemClickListener;
@@ -52,10 +43,10 @@ public class TaxiRequestIndexActivity extends Activity  {
 		mApp=(DemoApplication)this.getApplication();
 		
 		
-		TextView vw=(TextView) findViewById(R.id.textView2);    
-		vw.setTextSize(adjustFontSize+5);
-		vw=(TextView) findViewById(R.id.textView3);    
-		vw.setTextSize(adjustFontSize+5);
+//		TextView vw=(TextView) findViewById(R.id.textView2);    
+//		vw.setTextSize(adjustFontSize+5);
+//		vw=(TextView) findViewById(R.id.textView3);    
+//		vw.setTextSize(adjustFontSize+5);
 		
 		listview = (ListView)findViewById(R.id.lv);  
 		
@@ -137,7 +128,8 @@ public class TaxiRequestIndexActivity extends Activity  {
     		if (convertView == null) { 
     			holder = new ViewHolder();  
     			convertView = mInflater.inflate(R.layout.taxi_requestindex_item, null); 
-    			holder.date = (TextView) convertView.findViewById(R.id.date);    
+    			holder.date 	= (TextView) convertView.findViewById(R.id.date);
+    			holder.month	= (TextView) convertView.findViewById(R.id.taxi_request_index_month);
     			holder.source = (TextView) convertView.findViewById(R.id.source);    
     			holder.state = (TextView) convertView.findViewById(R.id.state); 
     			convertView.setTag(holder);            
@@ -148,14 +140,15 @@ public class TaxiRequestIndexActivity extends Activity  {
     		TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
     		TaxiRequest tx=(TaxiRequest) taxiRequestIndexResponse.getTaxiRequest(position);
     			
-    		holder.date.setText(tx.getCreatedAt("dd日\nMM月"));
-    		holder.source.setText(tx.getSource());
-    		holder.state.setText(tx.getHumanBreifTextState());
-    		
+    		holder.date.setText(tx.getCreatedAt("dd日"));
+    		holder.month.setText(tx.getCreatedAt("MM月"));
+    		holder.source.setText("打车位置:"+tx.getSource());
+    		holder.state.setText("交易状态:"+tx.getHumanBreifTextState());
+    		/*
     		holder.date.setTextSize(adjustFontSize+5);    
     		holder.source.setTextSize(adjustFontSize+3);    
     		holder.state.setTextSize(adjustFontSize+3);    
-    		
+    		*/
     		if(tx.isTaxiRequestSuccess())
     			holder.state.setTextColor(Color.GREEN);
     		else
@@ -167,7 +160,8 @@ public class TaxiRequestIndexActivity extends Activity  {
     	
     	public final class ViewHolder { 
     		
-    		public TextView date;      
+    		public TextView date;
+    		public TextView month;
     		public TextView source;  
     		public TextView state;   		   
     	}       	

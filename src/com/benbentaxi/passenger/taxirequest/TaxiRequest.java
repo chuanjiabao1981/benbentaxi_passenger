@@ -124,7 +124,7 @@ public class TaxiRequest {
 	}
 	public String getCreatedAt(String sDateFormat)
 	{
-		SimpleDateFormat formatter1= new SimpleDateFormat(sDateFormat);		
+		SimpleDateFormat formatter1= new SimpleDateFormat(sDateFormat);	
 		return formatter1.format(mCreatedDate);		
 	}
 	public long getId()
