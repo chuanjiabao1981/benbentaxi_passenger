@@ -1,6 +1,5 @@
 package com.benbentaxi.api;
 
-import android.util.Log;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.app.Activity;
