@@ -14,7 +14,6 @@ import com.baidu.mapapi.map.MKEvent;
 import com.benbentaxi.Passenger;
 import com.benbentaxi.Session;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
-import com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexResponse;
 import com.benbentaxi.util.DataPreference;
 
 
@@ -27,7 +26,6 @@ public class DemoApplication extends Application {
     private Session 	   mCurrentSession			= null;
     private Passenger   mCurrentPassenger			= null;
     private BDLocation mCurrentPassengerLocation 		= null;
-    private TaxiRequestIndexResponse CurrentTaxiRequestIndex = null;
     private DataPreference 					mDataPreference 	  = null;
     private Handler		mHandler					= null;
     public boolean m_bKeyRight = true;
@@ -151,16 +149,7 @@ public class DemoApplication extends Application {
     public  void setCurrentPassengerLocation(BDLocation locationData)
     {
     	mCurrentPassengerLocation = locationData;
-    }
-    public TaxiRequestIndexResponse getCurrentTaxiRequestIndex()
-    {
-    	return CurrentTaxiRequestIndex;
-    }
-    public void setCurrentTaxiRequestIndex(TaxiRequestIndexResponse taxiRequestIndexResponse)
-    {
-    	CurrentTaxiRequestIndex = taxiRequestIndexResponse;
-    }
-    
+    }    
     public void setLoginMobile(String mobile)
     {
     	mDataPreference.SaveData(LOGIN_MOBILE, mobile);

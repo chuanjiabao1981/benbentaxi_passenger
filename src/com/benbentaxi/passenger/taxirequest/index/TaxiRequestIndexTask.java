@@ -4,6 +4,7 @@ package com.benbentaxi.passenger.taxirequest.index;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 
 import com.benbentaxi.Configure;
@@ -14,16 +15,17 @@ import com.benbentaxi.passenger.location.DemoApplication;
 
 
 public class TaxiRequestIndexTask extends GetTask{
-	private final String API1 			="/api/v1/taxi_requests";	
-	private Configure       mConfigure;	
-	private Session mSession = null;
-	private DemoApplication mApp = null;
-	private Context mContext;
-	private final String TAG			     = TaxiRequestIndexTask.class.getName();
+	private final String API1 						="/api/v1/taxi_requests";
+	private final String TAG			     		= TaxiRequestIndexTask.class.getName();
 
-	public TaxiRequestIndexTask(Context context,DemoApplication app)
+	private Configure       mConfigure				= null;	
+	private Session mSession 						= null;
+	private DemoApplication mApp 					= null;
+	private Context mContext						= null;
+	private Handler mHandler						= null;
+
+	private TaxiRequestIndexTask(Context context,DemoApplication app)
 	{	
-		
 		mConfigure		 = new Configure();
 		mContext=context;
 		this.mApp = app;
@@ -35,14 +37,18 @@ public class TaxiRequestIndexTask extends GetTask{
 		}else{
 			Log.e(TAG,"Session 获取出错!");
 		}
-		
-		
+	}
+	
+	public TaxiRequestIndexTask(Context context,DemoApplication app,Handler handler)
+	{
+		this(context,app);
+		mHandler = handler;
 	}
 	
 		
 	public void go()
 	{
-		//this.mTaxiRequestIndexForm.showProgress(true);
+		mHandler.sendMessage(mHandler.obtainMessage(TaxiRequestIndexActivity.MSG_HANDLE_INDEX_TASK_START));
 		execute();
 	}
 	protected String getApiUrl()
@@ -56,11 +62,12 @@ public class TaxiRequestIndexTask extends GetTask{
 		TaxiRequestIndexResponse taxiRequestIndexResponse = new TaxiRequestIndexResponse(this.getResult());
 		if (!succ){
 			taxiRequestIndexResponse.setSysErrorMessage(this.getErrorMsg());
-		}		
+			mHandler.sendMessage(mHandler.obtainMessage(TaxiRequestIndexActivity.MSG_HANDLE_INDEX_TASK_ERROR,this.getErrorMsg()));
+		}
 		if (!taxiRequestIndexResponse.hasError()){	
-			mApp.setCurrentTaxiRequestIndex(taxiRequestIndexResponse);
-			Intent mTaxiRequestIndexActivity = new Intent(mContext,TaxiRequestIndexActivity.class);
-			mContext.startActivity(mTaxiRequestIndexActivity);
+			mHandler.sendMessage(mHandler.obtainMessage(TaxiRequestIndexActivity.MSG_HANDLE_INDEX_TASK_SUCCESS,taxiRequestIndexResponse));
+		}else{
+			mHandler.sendMessage(mHandler.obtainMessage(TaxiRequestIndexActivity.MSG_HANDLE_INDEX_TASK_ERROR,"获取历史打车列表失败，访问服务器出错！"));
 		}
 	}
 	

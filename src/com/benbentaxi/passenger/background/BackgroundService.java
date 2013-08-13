@@ -49,9 +49,11 @@ public class BackgroundService extends Service{
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		mThread.quit();
+		boolean t = mThread.quit();//quitSafely
 		this.mHandler.removeMessages(MSG_NEAR_BY_DRIVERS);
 		this.mHandler.removeMessages(MSG_TEXT_AD);
+ 		Log.e(TAG,"Destroy BackgroundService ...." + t);
+
     }
 	public void startRefreshNearByDriver()
 	{

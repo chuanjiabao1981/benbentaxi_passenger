@@ -3,7 +3,6 @@ package com.benbentaxi.passenger.location;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.json.JSONObject;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -43,7 +42,7 @@ import com.benbentaxi.passenger.taxirequest.TaxiRequestRefreshTask;
 import com.benbentaxi.passenger.taxirequest.confirm.ConfirmPopupWindow;
 import com.benbentaxi.passenger.taxirequest.create.CreateTaxiRequestActivity;
 import com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail;
-import com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexTask;
+import com.benbentaxi.passenger.taxirequest.index.TaxiRequestIndexActivity;
 import com.benbentaxi.passenger.taxirequest.player.TaxiRequestPlayerPanel;
 import com.benbentaxi.util.IdShow;
 public class LocationOverlayDemo extends ActionBarActivity {
@@ -56,8 +55,8 @@ public class LocationOverlayDemo extends ActionBarActivity {
 	public final static int MSG_HANDLE_POS_REFRESH 							= 2;
 	public final static int MSG_HANDLE_REFRESH_CURRENT_TAXIREQUEST 			= 4;
 	public final static int MSG_HANDLE_TAXIREQUEST_DRIVER_RESPONSE 			= 5;
-	public final static int MSG_HANDLE_TAXIREQUEST_PLAYER_SHOW					= 6;
-	public final static int MSG_HANDLE_TAXIREQUEST_PLAYER_HIDE						= 7;
+	public final static int MSG_HANDLE_TAXIREQUEST_PLAYER_SHOW				= 6;
+	public final static int MSG_HANDLE_TAXIREQUEST_PLAYER_HIDE				= 7;
 	public final static int MSG_HANDLE_TAXI_EQUEST_PASSENGER_CONFIRM		= 8;
 	
 	
@@ -410,11 +409,10 @@ public class LocationOverlayDemo extends ActionBarActivity {
 	}
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
-    	Log.i("item:",String.valueOf(item.getItemId()));
 	    switch (item.getItemId()) {
 		    case R.id.menu_history:
-		    	TaxiRequestIndexTask tsk=new TaxiRequestIndexTask(this,mApp);
-				tsk.go();
+				Intent intent = new Intent(this,TaxiRequestIndexActivity.class);
+				startActivity(intent);
 		    return true;		    
 	    }
 	    return super.onOptionsItemSelected(item);

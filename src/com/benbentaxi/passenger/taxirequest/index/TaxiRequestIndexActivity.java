@@ -9,114 +9,107 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;  
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;  
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView; 
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 
 public class TaxiRequestIndexActivity extends Activity  {
 	
-	private final String TAG			     = TaxiRequestDetail.class.getName();
+	public final static int MSG_HANDLE_INDEX_TASK_START		    =	0;
+	public final static int MSG_HANDLE_INDEX_TASK_SUCCESS		=	1;
+	public final static int MSG_HANDLE_INDEX_TASK_ERROR			= 	2;
 	
-	private MyAdapter adapter;  
-    private ListView listview;  
-    private DemoApplication mApp;
+	private final String TAG			     					= TaxiRequestDetail.class.getName();
+	private MyAdapter adapter				 					= null;  
+    private ListView mListView				 					= null;  
+    private DemoApplication mApp			 					= null;
+    private ProgressBar mProgress			 					= null;
+    private TaxiRequestIndexTask  mTaxiRequestIndexTask 		= null;
     
+    
+    Handler MsgHandler = new Handler() {
+        public void handleMessage(android.os.Message msg) 
+        {
+        	switch (msg.what) {
+        		case MSG_HANDLE_INDEX_TASK_START:
+        			mProgress.setVisibility(View.VISIBLE);
+        			break;
+        		case MSG_HANDLE_INDEX_TASK_SUCCESS:
+        			mProgress.setVisibility(View.GONE);
+        			showList((TaxiRequestIndexResponse) msg.obj);
+        			break;
+        		case MSG_HANDLE_INDEX_TASK_ERROR:
+        			String errMsg = (String) msg.obj;
+        			Toast.makeText(TaxiRequestIndexActivity.this,errMsg, Toast.LENGTH_LONG).show();
+        			break;
+        		default:
+        			break;
+        	}
+        }
+    };
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		// 获得手机分辨率  		
-		DisplayMetrics dm = new DisplayMetrics();   
-		getWindowManager().getDefaultDisplay().getMetrics(dm); 
-		int adjustFontSize=adjustFontSize(dm.widthPixels,dm.heightPixels);
 		
 		setContentView(R.layout.activity_taxirequstindex);
-		
-		mApp=(DemoApplication)this.getApplication();
-		
-		
-//		TextView vw=(TextView) findViewById(R.id.textView2);    
-//		vw.setTextSize(adjustFontSize+5);
-//		vw=(TextView) findViewById(R.id.textView3);    
-//		vw.setTextSize(adjustFontSize+5);
-		
-		listview = (ListView)findViewById(R.id.lv);  
-		
-		listview.setOnItemClickListener(new OnItemClickListener(){			
+		mApp						= (DemoApplication)this.getApplication();
+		mListView 					= (ListView)findViewById(R.id.lv);  
+		mProgress					= (ProgressBar)findViewById(R.id.taxi_request_index_progressbar);
+		mTaxiRequestIndexTask 		= new TaxiRequestIndexTask(this,mApp,MsgHandler);
+		mTaxiRequestIndexTask.go();
+
+		mListView.setOnItemClickListener(new OnItemClickListener(){			
 			@Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                     long arg3) {
-					TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
-		    		TaxiRequest tx=(TaxiRequest) taxiRequestIndexResponse.getTaxiRequest(arg2);
-                	mApp.setCurrentShowTaxiRequest(tx);
+				    MyAdapter 		myAdapter 				= (MyAdapter) arg0.getAdapter();
+                	mApp.setCurrentShowTaxiRequest((TaxiRequest) myAdapter.getItem(arg2));
                 	Intent taxiRequestDetailIntent = new Intent(TaxiRequestIndexActivity.this,TaxiRequestDetail.class);
                     startActivity(taxiRequestDetailIntent);                
             }     
         });		
 		
-		
-		showList(adjustFontSize);
     }
     
-    protected void showList(int nAdjustFontSize){    	
-    	boolean hasData=true;
-    	TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
-    	listview = (ListView)findViewById(R.id.lv);  
-		
+    protected void showList(TaxiRequestIndexResponse taxiRequestIndexResponse){    	
+    	mListView = (ListView)findViewById(R.id.lv);  
     	if(taxiRequestIndexResponse==null)
     		return;
-    	
-    	 
-		adapter = new MyAdapter(this,hasData,nAdjustFontSize); 
-		
-		listview.setAdapter(adapter);  
-		
+		adapter = new MyAdapter(this,taxiRequestIndexResponse); 
+		mListView.setAdapter(adapter);  
     }
     
-    //获取字体大小  
-    private  int adjustFontSize(int screenWidth, int screenHeight) {  
-            screenWidth=screenWidth>screenHeight?screenWidth:screenHeight;  
-            /** 
-             * 1. 在视图的 onsizechanged里获取视图宽度，一般情况下默认宽度是320，所以计算一个缩放比率 
-                rate = (float) w/320   w是实际宽度 
-               2.然后在设置字体尺寸时 paint.setTextSize((int)(8*rate));   8是在分辨率宽为320 下需要设置的字体大小 
-                实际字体大小 = 默认字体大小 x  rate 
-             */  
-            int rate = (int)(5*(float) screenWidth/320); //我自己测试这个倍数比较适合，当然你可以测试后再修改  
-            return rate<15?15:rate; //字体太小也不好看的  
-    }  
-    
     protected class MyAdapter extends BaseAdapter {        
-    	private LayoutInflater mInflater;        
-    	private boolean mhasData;  
-    	int adjustFontSize;
-    	//public  Map<Integer, Boolean> isSelected;     
-    	@SuppressWarnings({ "static-access", "unchecked" })
-    	public MyAdapter(Context context,boolean hasData,int nAdjustFontSize)
+    	private LayoutInflater   		mInflater;        
+    	TaxiRequestIndexResponse 		mTaxiRequestIndexResponse;
+    	public MyAdapter(Context context,TaxiRequestIndexResponse taxiRequestIndexResponse)
     	{           
-    		adjustFontSize = nAdjustFontSize;  
-    		mInflater = LayoutInflater.from(context); 
-    		mhasData=hasData;
+    		mInflater 					= LayoutInflater.from(context); 
+    		mTaxiRequestIndexResponse	= taxiRequestIndexResponse;
     	}    
     	
     	@Override        
-    	public int getCount() {      		
-    		TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
-    		return taxiRequestIndexResponse.getSize();
-    		}            
+    	public int getCount() {
+    		if (mTaxiRequestIndexResponse != null)
+    			return mTaxiRequestIndexResponse.getSize();
+    		return 0;
+    	}            
     	@Override       
     	public Object getItem(int position) { 
-    		TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
-    		return  taxiRequestIndexResponse.getTaxiRequest(position);   
-    		}            
+    		if (mTaxiRequestIndexResponse != null && mTaxiRequestIndexResponse.getSize() > position)
+    			return  mTaxiRequestIndexResponse.getTaxiRequest(position);
+    		return null;
+    	}            
     	@Override        
     	public long getItemId(int position) {
     		return position;        
@@ -124,7 +117,6 @@ public class TaxiRequestIndexActivity extends Activity  {
     	@Override        
     	public View getView(int position, View convertView, ViewGroup parent) {
     		ViewHolder holder = null;           
-    		//convertView为null的时候初始化convertView。           
     		if (convertView == null) { 
     			holder = new ViewHolder();  
     			convertView = mInflater.inflate(R.layout.taxi_requestindex_item, null); 
@@ -137,23 +129,17 @@ public class TaxiRequestIndexActivity extends Activity  {
     			holder = (ViewHolder) convertView.getTag(); 
     		}         		
     		
-    		TaxiRequestIndexResponse taxiRequestIndexResponse=mApp.getCurrentTaxiRequestIndex();
-    		TaxiRequest tx=(TaxiRequest) taxiRequestIndexResponse.getTaxiRequest(position);
+    		TaxiRequest tx=(TaxiRequest) mTaxiRequestIndexResponse.getTaxiRequest(position);
     			
     		holder.date.setText(tx.getCreatedAt("dd日"));
     		holder.month.setText(tx.getCreatedAt("MM月"));
     		holder.source.setText("打车位置:"+tx.getSource());
     		holder.state.setText("交易状态:"+tx.getHumanBreifTextState());
-    		/*
-    		holder.date.setTextSize(adjustFontSize+5);    
-    		holder.source.setTextSize(adjustFontSize+3);    
-    		holder.state.setTextSize(adjustFontSize+3);    
-    		*/
     		if(tx.isTaxiRequestSuccess())
     			holder.state.setTextColor(Color.GREEN);
     		else
     			holder.state.setTextColor(Color.RED);
-    		holder.state.setTypeface(Typeface.MONOSPACE,Typeface.ITALIC);
+//    		holder.state.setTypeface(Typeface.MONOSPACE,Typeface.ITALIC);
     		//holder.cBox.setChecked(isSelected.get(position));            
     		return convertView;        
     	}            
