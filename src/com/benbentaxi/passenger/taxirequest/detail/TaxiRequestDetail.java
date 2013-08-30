@@ -9,7 +9,6 @@ import com.benbentaxi.passenger.R;
 import com.benbentaxi.passenger.location.DemoApplication;
 import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 import com.benbentaxi.passenger.taxirequest.TaxiRequestApiConstant;
-import com.benbentaxi.passenger.taxirequest.confirm.ConfirmTask;
 
 import android.net.Uri;
 import android.os.Bundle;
