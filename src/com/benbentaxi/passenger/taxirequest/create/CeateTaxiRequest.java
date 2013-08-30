@@ -3,6 +3,7 @@ package com.benbentaxi.passenger.taxirequest.create;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.benbentaxi.api.ApiConstant;
 import com.benbentaxi.api.FormRequest;
 
 import android.util.Log;
@@ -31,6 +32,7 @@ public class CeateTaxiRequest extends FormRequest
 			json.put(CreateTaxiRequestApiConstant.PASSENGER_VOICE, strAudio);
 			json.put(CreateTaxiRequestApiConstant.PASSENGER_VOICE_FORMAT, "3gp");	
 			json.put(CreateTaxiRequestApiConstant.SOURCE,mCeateTaxiRequestForm.getSource());
+			json.put(ApiConstant.TENAT_NAME,mCeateTaxiRequestForm.getCity());
 			_json_data.put(CreateTaxiRequestApiConstant.TAXI_REQUEST, json);
 		} catch (JSONException e) {
 			Log.e(TAG,"设置打车数据出错["+CreateTaxiRequestApiConstant.SOURCE+"]");

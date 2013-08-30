@@ -20,6 +20,7 @@ public class BackgroundService extends Service{
 	private static final int	MSG_NEAR_BY_DRIVERS							= 0;
 	private static final int	MSG_TEXT_AD									= 1;
 	private static final long	REFRESH_NEARBY_DRIVER_INTERVAL   			= 600000;
+//	private static final long	REFRESH_NEARBY_DRIVER_INTERVAL   			= 600;
 	private static final long   REFRESH_NEARBY_DRVIER_SHORT_INTERVAL		= 1000;
 	private static final long	REFRESH_TEXT_AD_INTERVAL					= 100000;
 	public  static final String	NEARYBY_DRIVER_ACTION						= "nearbydrvier_action";

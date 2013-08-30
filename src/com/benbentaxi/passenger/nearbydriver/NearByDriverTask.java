@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.benbentaxi.Configure;
 import com.benbentaxi.Session;
+import com.benbentaxi.api.ApiConstant;
 import com.benbentaxi.api.JsonHttpRequest;
 import com.benbentaxi.passenger.location.DemoApplication;
 
@@ -13,14 +14,17 @@ public class NearByDriverTask {
 	public Configure  mConfigure					= null;
 	private DemoApplication mApp 					= null;
 	private Session			mSession 				= null;
-	
+	private String			mTenantName				= null;
 	private JsonHttpRequest mJsonHttpRequest		= null;
 
 	public NearByDriverTask(DemoApplication app)
 	{
 		mConfigure 				= new Configure();
 		mApp 	   				= app;
-		this.mSession 	  		= mApp.getCurrentSession();
+		mSession 	  			= mApp.getCurrentSession();
+		if (mApp.getCurrentPassengerLocation() != null){
+			mTenantName				= mApp.getCurrentPassengerLocation().getCity();
+		}
 		
 	}
 	private double lng()
@@ -36,7 +40,13 @@ public class NearByDriverTask {
 		return -1;
 	}
 	protected String getApiUrl() {
-		return "http://"+mConfigure.getService()+"/api/v1/users/nearby_driver?lat="+lat()+"&lng="+lng();
+		String prefix	=	 "http://"+mConfigure.getService()+"/api/v1/users/nearby_driver?lat="+lat()+"&lng="+lng();
+		if (mTenantName == null){
+			return prefix;
+		}
+		else{
+			return prefix+"&"+ApiConstant.TENAT_NAME+"="+mTenantName;
+		}
 	}
 
 	public NearByDriverTrackResponse send() {

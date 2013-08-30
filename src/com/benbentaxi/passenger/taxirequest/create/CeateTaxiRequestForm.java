@@ -7,18 +7,18 @@ import com.benbentaxi.passenger.R;
 import com.benbentaxi.passenger.location.DemoApplication;
 
 import android.app.Activity;
-import android.os.Handler;
 
 public class CeateTaxiRequestForm extends ViewForm{
 	//private final String TAG			     = RegisterForm.class.getName();
 	private String mAudio					 ="";
 	private String mMobile					 ="";
 	private BDLocation mBDLocation 			 = null;
+	DemoApplication mApp					 = null; 
 	public CeateTaxiRequestForm(Activity activity) {			
 		super(activity);		
-		DemoApplication app 	= (DemoApplication)activity.getApplication();
-		mBDLocation				= app.getCurrentPassengerLocation();
-		mMobile					= (app.getCurrentPassenger()!=null)? app.getCurrentPassenger().getMobile():"";
+		mApp					= (DemoApplication)activity.getApplication();
+		mBDLocation				= mApp.getCurrentPassengerLocation();
+		mMobile					= (mApp.getCurrentPassenger()!=null)? mApp.getCurrentPassenger().getMobile():"";
 		mAudio					= ((CreateTaxiRequestActivity)activity).getAudioFile2String();
 	}
 	protected void init()
@@ -56,6 +56,16 @@ public class CeateTaxiRequestForm extends ViewForm{
 			return "";
 		}else if (mBDLocation.getAddrStr() != null){
 			return mBDLocation.getAddrStr();
+		}else{
+			return "";
+		}
+	}
+	public String getCity()
+	{
+		if (mBDLocation == null){
+			return "";
+		}else if (mBDLocation.getCity() != null){
+			return mBDLocation.getCity();
 		}else{
 			return "";
 		}

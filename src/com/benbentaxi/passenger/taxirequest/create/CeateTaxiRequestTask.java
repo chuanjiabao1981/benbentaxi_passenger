@@ -13,13 +13,14 @@ import com.benbentaxi.passenger.taxirequest.TaxiRequest;
 
 
 public class CeateTaxiRequestTask extends PostTask{
-	private final String API1 			="/api/v1/taxi_requests";
-	private CeateTaxiRequest 	mCeateTaxiRequest;
-	private Configure       mConfigure;
-	private CeateTaxiRequestForm    mCeateTaxiRequestForm;
-	private Session mSession = null;
-	private DemoApplication mApp = null;
-	private final String TAG			     = CeateTaxiRequestTask.class.getName();
+	private final static String API1 									=	"/api/v1/taxi_requests";
+	private final static String TAG			     						= CeateTaxiRequestTask.class.getName();
+
+	private CeateTaxiRequest 	mCeateTaxiRequest						= 	null;
+	private Configure       mConfigure									=	null;
+	private CeateTaxiRequestForm    mCeateTaxiRequestForm				=	null;
+	private Session mSession 											= 	null;
+	private DemoApplication mApp 										= 	null;
 
 	public CeateTaxiRequestTask(CeateTaxiRequestForm ceateTaxiRequestForm)
 	{
@@ -48,8 +49,6 @@ public class CeateTaxiRequestTask extends PostTask{
 	protected String getApiUrl()
 	{
 		return "http://"+mConfigure.getService()+API1;
-		
-		
 	}
 	
 	
