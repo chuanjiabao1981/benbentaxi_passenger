@@ -54,10 +54,10 @@ public class LocationOverlayDemo extends ActionBarActivity {
 	public final static int MSG_HANDLE_MAP_MOVE 							= 1;
 	public final static int MSG_HANDLE_POS_REFRESH 							= 2;
 	public final static int MSG_HANDLE_REFRESH_CURRENT_TAXIREQUEST 			= 4;
-	public final static int MSG_HANDLE_TAXIREQUEST_DRIVER_RESPONSE 			= 5;
+	public final static int MSG_HANDLE_TAXIREQUEST_SHOW 					= 5;
 	public final static int MSG_HANDLE_TAXIREQUEST_PLAYER_SHOW				= 6;
 	public final static int MSG_HANDLE_TAXIREQUEST_PLAYER_HIDE				= 7;
-	public final static int MSG_HANDLE_TAXI_EQUEST_PASSENGER_CONFIRM		= 8;
+	public final static int MSG_HANDLE_TAXIREQUEST_SUCCESS					= 8;
 	
 	
 	private NearbyDrvierReceiver mNearbyDrvierReceiver						= null;
@@ -95,11 +95,12 @@ public class LocationOverlayDemo extends ActionBarActivity {
         	case MSG_HANDLE_REFRESH_CURRENT_TAXIREQUEST:
         		doRefreshCurrentTaxiRequest();
         		break;
-        	case MSG_HANDLE_TAXIREQUEST_DRIVER_RESPONSE:
-        		doDriverResponse((TaxiRequest) msg.obj);
-        		break;
-        	case MSG_HANDLE_TAXI_EQUEST_PASSENGER_CONFIRM:
+        	case MSG_HANDLE_TAXIREQUEST_SHOW:
         		doShowTaxiRequestDetialInfo((TaxiRequest) msg.obj);
+        		break;
+        	case MSG_HANDLE_TAXIREQUEST_SUCCESS:
+        		doDriverResponse((TaxiRequest) msg.obj);
+
         		break;
         	case ConfirmPopupWindow.MSG_HANDLE_TAXIREQUEST_CONFIRM_TIMEOUT:
         		if (msg.obj != null){

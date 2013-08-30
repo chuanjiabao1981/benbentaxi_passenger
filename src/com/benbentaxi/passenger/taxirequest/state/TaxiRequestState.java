@@ -2,7 +2,6 @@ package com.benbentaxi.passenger.taxirequest.state;
 
 public enum TaxiRequestState {
 	Waiting_Driver_Response(0,"等待司机响应。","等待"),
-	Waiting_Passenger_Confirm(1,"等待乘客确认。","成功"),
 	Success(2,"打车成功。","成功"),
 	TimeOut(3,"用户响应超时,请重新打车！","失败"),
 	Canceled_By_Passenger(4,"被乘客取消打车请求。","取消"),	

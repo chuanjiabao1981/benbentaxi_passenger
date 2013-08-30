@@ -36,41 +36,34 @@
 	   	<ProgressBar
 	        android:id="@+id/confirmProgress"
 	        style="?android:attr/progressBarStyleLarge"
+	        android:layout_marginTop="15dp"
 	        android:layout_gravity="center"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content" />
 
-	   	<TextView
+	   	<!--TextView
 	   	    android:id="@+id/confirmCountDonwTimerText"
 	   	    android:layout_width="match_parent"
 	        android:layout_height="match_parent"
 	   	    android:gravity="center"
-	   	    android:text="" />
+	   	    android:text="" /-->
 	    
     </LinearLayout>
 
         
     <LinearLayout
 	    android:layout_width="match_parent"
-	    android:layout_height="60dp"
-	    android:layout_marginBottom="10dp"
+	    android:layout_height="80dp"
 	    android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/btnConfirmCancel"
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:layout_marginLeft="10dp"
-            style="@style/confirmButton"
-            android:text="@string/confirm_cancel" />
         
         <Button
             android:id="@+id/btnConfirmOk"
-            android:layout_width="0dip"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             style="@style/confirmButton"
             android:text="@string/confirm_ok" />
 	    
