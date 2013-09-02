@@ -13,8 +13,8 @@ import com.benbentaxi.session.SessionResponse;
 public class RegisterTask extends PostTask{
 	private final String API1 			="/api/v1/users/create_passenger";
 	private RegisterRequest 	mRegisterRequest;
-	private Configure       mConfigure;
-	private RegisterForm    mRegisterForm;
+	private Configure       	mConfigure;
+	private RegisterForm    	mRegisterForm;
 	private DemoApplication 	mApp;
 
 	private final String TAG			     = RegisterTask.class.getName();

@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 public class RegisterActivity extends Activity {
 	//private String TAG = RegisterActivity.class.getName();
-
+	private Button mGetVerifyCodeButton	=	null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,20 @@ public class RegisterActivity extends Activity {
 						startActivity(loginIntent);
 					}
 		});
+		mGetVerifyCodeButton 		  = (Button)findViewById(R.id.get_verify_code_button);
+		mGetVerifyCodeButton.setOnClickListener(
+				new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						RegisterForm 				registerForm 				= new RegisterForm(RegisterActivity.this,mGetVerifyCodeButton);
+						RegisterVerifyTask			registerVerifyTask			= new RegisterVerifyTask(registerForm);
+						registerVerifyTask.go();
+					}
+				}
+				);
 	}
+	
+	
 
 }

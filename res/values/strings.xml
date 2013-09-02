@@ -46,4 +46,6 @@
     <string name="sending">发送中...</string>
 	<string name="cancel_taxi_request">取消打车</string>
 	<string name="press_to_record">点击图标录音</string>
+	<string name="verify_code">验证码</string>
+	<string name="get_verify_code">获取</string>
 </resources>

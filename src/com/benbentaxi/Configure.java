@@ -8,7 +8,8 @@ public class Configure {
 	}
 	public String getHost()
 	{
-		return "42.121.55.211";
+		return "192.168.1.103";
+		//return "42.121.55.211";
 	}
 	public String getEquipmentId()
 	{

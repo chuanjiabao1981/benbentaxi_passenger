@@ -6,12 +6,19 @@ import com.benbentaxi.api.ViewForm;
 import com.benbentaxi.passenger.R;
 
 import android.app.Activity;
+import android.util.Log;
+import android.widget.Button;
 
 public class RegisterForm extends ViewForm{
-	//private final String TAG			     = RegisterForm.class.getName();
-
+	private final String TAG			     = RegisterForm.class.getName();
+	private Button mGetVerifyCodeButton 	 = null;
 	public RegisterForm(Activity activity) {
 		super(activity);
+	}
+	public RegisterForm(Activity activity,Button button)
+	{
+		super(activity);
+		mGetVerifyCodeButton = button;
 	}
 	protected void init()
 	{
@@ -20,6 +27,7 @@ public class RegisterForm extends ViewForm{
 		addControl(RegisterApiConstant.PASSWORD,R.id.register_password);
 		addControl(RegisterApiConstant.PAWWWORD_CONFIRM,R.id.register_password_confirm);
 		addControl(RegisterApiConstant.NAME,R.id.register_name);
+		addControl(RegisterApiConstant.VERIFY_CODE,R.id.verify_code);
 		addSpinnerControl(RegisterApiConstant.TENAT, R.id.tenant_item);
 	}
 	@Override
@@ -38,6 +46,20 @@ public class RegisterForm extends ViewForm{
 	public String getPass()
 	{
 		return this.getControlVal(RegisterApiConstant.PASSWORD);
+	}
+	public void disableGetVerifyCode(){
+		if (mGetVerifyCodeButton != null){ 
+			Log.d(TAG,"set button disable");
+			mGetVerifyCodeButton.setText("已发送");
+			mGetVerifyCodeButton.setClickable(false);
+		}
+	}
+	public void enableGetVerifyCode(){
+		if (mGetVerifyCodeButton != null){ 
+			Log.d(TAG,"set button enable");
+			mGetVerifyCodeButton.setClickable(true);
+		}
+
 	}
 	 
 }
