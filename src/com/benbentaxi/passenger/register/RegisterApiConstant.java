@@ -7,6 +7,7 @@ public class RegisterApiConstant {
 	public final static String NAME 					= "name";
 	public final static String USER						= "user";
 	public final static String TENAT					= "tenant_name";
-	public final static String VERIFY_CODE				= "register_verification";
+	public final static String REGISTER_VERIFICATION	= "register_verification";
+	public final static String VERIFY_CODE				= "verify_code";
 
 }

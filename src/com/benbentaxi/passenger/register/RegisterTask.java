@@ -54,6 +54,7 @@ public class RegisterTask extends PostTask{
 			app.setCurrentPassenger(passenger);
 			Intent intent = new Intent(this.mRegisterForm.getActivity(),LocationOverlayDemo.class);
 			this.mRegisterForm.getActivity().startActivity(intent);
+			this.mRegisterForm.getActivity().finish();
 		}
 	}
 	@Override

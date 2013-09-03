@@ -6,12 +6,15 @@ import com.benbentaxi.api.ViewForm;
 import com.benbentaxi.passenger.R;
 
 import android.app.Activity;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.widget.Button;
 
 public class RegisterForm extends ViewForm{
 	private final String TAG			     = RegisterForm.class.getName();
+	private final long	 WAITING_TIME		 = 90000;
 	private Button mGetVerifyCodeButton 	 = null;
+	private CountDownTimer mCountDownTimer	 = null;
 	public RegisterForm(Activity activity) {
 		super(activity);
 	}
@@ -19,6 +22,18 @@ public class RegisterForm extends ViewForm{
 	{
 		super(activity);
 		mGetVerifyCodeButton = button;
+		mCountDownTimer      = new CountDownTimer(WAITING_TIME, 1000) {
+
+		     public void onTick(long millisUntilFinished) {
+		    	 mGetVerifyCodeButton.setClickable(false);
+		    	 mGetVerifyCodeButton.setText((millisUntilFinished) / 1000+"秒");
+		     }
+
+		     public void onFinish() {
+		    	 mGetVerifyCodeButton.setClickable(true);
+		    	 mGetVerifyCodeButton.setText("发送");
+		     }
+		  };
 	}
 	protected void init()
 	{
@@ -50,14 +65,24 @@ public class RegisterForm extends ViewForm{
 	public void disableGetVerifyCode(){
 		if (mGetVerifyCodeButton != null){ 
 			Log.d(TAG,"set button disable");
-			mGetVerifyCodeButton.setText("已发送");
-			mGetVerifyCodeButton.setClickable(false);
+			//mGetVerifyCodeButton.setClickable(false);
+	    	mGetVerifyCodeButton.setText("发送中");
+			mGetVerifyCodeButton.setEnabled(false);
+		}
+	}
+	public void waitingVerifyCode()
+	{
+		if (mGetVerifyCodeButton != null)
+		{
+			mCountDownTimer.start();
 		}
 	}
 	public void enableGetVerifyCode(){
 		if (mGetVerifyCodeButton != null){ 
 			Log.d(TAG,"set button enable");
-			mGetVerifyCodeButton.setClickable(true);
+			mCountDownTimer.cancel();
+			mGetVerifyCodeButton.setEnabled(true);
+	    	mGetVerifyCodeButton.setText("发送");
 		}
 
 	}

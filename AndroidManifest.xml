@@ -141,7 +141,7 @@
             android:excludeFromRecents="true"
             android:label="@string/title_activity_register"
             android:screenOrientation="portrait"
-            android:noHistory="true" >
+         >
         </activity>
         <activity
             android:name="com.benbentaxi.passenger.taxirequest.detail.TaxiRequestDetail"
