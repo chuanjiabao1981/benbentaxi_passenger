@@ -15,12 +15,10 @@ public class PassengerLocation
 	private LocationClient mLocClient;
 	private Handler				mHandler;
 	private DemoApplication     mApp;
-//	private Activity 			mA;
 	public PassengerLocation(Activity a,Handler h)
 	{
 		mLocClient 	= new LocationClient(a.getApplicationContext());
         mHandler 	= h;
-//        mA			= a;
         mApp		= (DemoApplication) a.getApplication();
         mLocClient.registerLocationListener( new MyLocationListenner() );
         LocationClientOption option = new LocationClientOption();
@@ -67,7 +65,6 @@ public class PassengerLocation
                 return ;
             }
             mHandler.sendMessage(mHandler.obtainMessage(LocationOverlayDemo.MSG_HANDLE_POS_REFRESH, location));
-//            Toast.makeText(mA, "aaaaaaaaaa"+location.getAddrStr()+"|"+location.getLocType(), Toast.LENGTH_LONG).show();
             mApp.setCurrentPassengerLocation(location);
     		Log.d(TAG,"定位成功:"+location.getLocType()+"|"+location.getLongitude()+"|"+location.getLatitude());
 

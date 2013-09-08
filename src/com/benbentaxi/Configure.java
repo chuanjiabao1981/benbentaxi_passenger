@@ -4,7 +4,7 @@ public class Configure {
 
 	public String getService()
 	{
-		return getHost()+":8081";
+		return getHost()+":80";
 	}
 	public String getHost()
 	{
